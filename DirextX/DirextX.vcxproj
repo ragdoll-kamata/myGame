@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AddCemeteryCommand.cpp" />
+    <ClCompile Include="AddHandCommand.cpp" />
+    <ClCompile Include="Card.cpp" />
+    <ClCompile Include="CardCommand.cpp" />
+    <ClCompile Include="CardCommandFactory.cpp" />
+    <ClCompile Include="CardCostCommand.cpp" />
+    <ClCompile Include="CardElemetCommand.cpp" />
+    <ClCompile Include="CardExplanationCommand.cpp" />
+    <ClCompile Include="CardManager.cpp" />
+    <ClCompile Include="CardNameCommand.cpp" />
+    <ClCompile Include="CardTypeCommand.cpp" />
+    <ClCompile Include="ElementFilterCommand.cpp" />
+    <ClCompile Include="engine\3d\Animation.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\AABBShape.cpp" />
+    <ClCompile Include="engine\Audio\Audio.cpp" />
+    <ClCompile Include="engine\3d\Particle\Primitive\Cylinder.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\EmissionShape.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\EmissionShapeFactory.cpp" />
+    <ClCompile Include="engine\base\Buffer.cpp" />
+    <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp" />
+    <ClCompile Include="engine\math\CollisionDetection.cpp" />
+    <ClCompile Include="engine\base\DeltaTime.cpp" />
+    <ClCompile Include="engine\3d\Camera.cpp" />
+    <ClCompile Include="engine\3d\CameraManager.cpp" />
+    <ClCompile Include="engine\base\DirectXCommon.cpp" />
+    <ClCompile Include="engine\input\Input.cpp" />
+    <ClCompile Include="engine\base\Logger.cpp" />
+    <ClCompile Include="engine\3d\Particle\Field\Field.cpp" />
+    <ClCompile Include="engine\3d\Particle\Field\FieldManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\LineShape.cpp" />
+    <ClCompile Include="engine\3d\LineManager.cpp" />
+    <ClCompile Include="engine\Font\FontAtlasManager.cpp" />
+    <ClCompile Include="engine\Font\FontLoader.cpp" />
+    <ClCompile Include="engine\Scene\Framework.cpp" />
+    <ClCompile Include="ErrorMessage.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="engine\ImGui\ImGuiManager.cpp" />
+    <ClCompile Include="engine\base\IndexBuffer.cpp" />
+    <ClCompile Include="LoadCard.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="engine\math\MathUtility.cpp" />
+    <ClCompile Include="engine\3d\Model.cpp" />
+    <ClCompile Include="engine\3d\ModelCommon.cpp" />
+    <ClCompile Include="engine\3d\ModelManager.cpp" />
+    <ClCompile Include="engine\3d\Object3d.cpp" />
+    <ClCompile Include="engine\3d\Object3dCommon.cpp" />
+    <ClCompile Include="engine\2d\Sprite.cpp" />
+    <ClCompile Include="engine\2d\SpriteCommon.cpp" />
+    <ClCompile Include="engine\base\StringUtility.cpp" />
+    <ClCompile Include="engine\base\TextureManager.cpp" />
+    <ClCompile Include="engine\base\WinApp.cpp" />
+    <ClCompile Include="engine\base\SrvManager.cpp" />
+    <ClCompile Include="MyGame.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleEmitterManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\Primitive\Plane.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\PointShape.cpp" />
+    <ClCompile Include="engine\3d\Particle\Primitive\Primitive.cpp" />
+    <ClCompile Include="engine\3d\Particle\Primitive\Ring.cpp" />
+    <ClCompile Include="engine\3d\Particle\Shape\SphereShape.cpp" />
+    <ClCompile Include="engine\base\Skeleton.cpp" />
+    <ClCompile Include="engine\base\SkinCluster.cpp" />
+    <ClCompile Include="OpenDeckCommand.cpp" />
+    <ClCompile Include="SceneFactory.cpp" />
+    <ClCompile Include="engine\Scene\SceneManager.cpp" />
+    <ClCompile Include="engine\2d\Text.cpp" />
+    <ClCompile Include="engine\2d\TextCommon.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="engine\3d\Particle\Field\WindField.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AddCemeteryCommand.h" />
+    <ClInclude Include="AddHandCommand.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="CardCommand.h" />
+    <ClInclude Include="CardCostCommand.h" />
+    <ClInclude Include="CardElemetCommand.h" />
+    <ClInclude Include="CardExplanationCommand.h" />
+    <ClInclude Include="CardManager.h" />
+    <ClInclude Include="CardNameCommand.h" />
+    <ClInclude Include="CardTypeCommand.h" />
+    <ClInclude Include="ElementFilterCommand.h" />
+    <ClInclude Include="engine\3d\Animation.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\AABBShape.h" />
+    <ClInclude Include="engine\3d\Particle\Primitive\Cylinder.h" />
+    <ClInclude Include="engine\3d\Particle\EffectSpawnParams.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\EmissionShape.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\EmissionShapeFactory.h" />
+    <ClInclude Include="engine\base\Buffer.h" />
+    <ClInclude Include="engine\Audio\minimp3.h" />
+    <ClInclude Include="engine\Audio\minimp3_ex.h" />
+    <ClInclude Include="engine\Scene\AbstractSceneFactory.h" />
+    <ClInclude Include="engine\Audio\Audio.h" />
+    <ClInclude Include="engine\base\D3DResourceLeakChecker.h" />
+    <ClInclude Include="engine\math\AABB.h" />
+    <ClInclude Include="engine\math\CollisionDetection.h" />
+    <ClInclude Include="engine\base\DeltaTime.h" />
+    <ClInclude Include="engine\3d\Camera.h" />
+    <ClInclude Include="engine\3d\CameraManager.h" />
+    <ClInclude Include="engine\base\DirectXCommon.h" />
+    <ClInclude Include="engine\input\Input.h" />
+    <ClInclude Include="engine\base\Logger.h" />
+    <ClInclude Include="engine\math\MathUtility.h" />
+    <ClInclude Include="engine\math\Matrix2x2.h" />
+    <ClInclude Include="engine\math\Matrix3x3.h" />
+    <ClInclude Include="engine\math\Matrix4x4.h" />
+    <ClInclude Include="engine\3d\Model.h" />
+    <ClInclude Include="engine\3d\ModelCommon.h" />
+    <ClInclude Include="engine\3d\ModelManager.h" />
+    <ClInclude Include="engine\3d\Object3d.h" />
+    <ClInclude Include="engine\3d\Object3dCommon.h" />
+    <ClInclude Include="engine\2d\Sprite.h" />
+    <ClInclude Include="engine\2d\SpriteCommon.h" />
+    <ClInclude Include="engine\base\StringUtility.h" />
+    <ClInclude Include="engine\base\TextureManager.h" />
+    <ClInclude Include="engine\math\Transform.h" />
+    <ClInclude Include="engine\math\Vector2.h" />
+    <ClInclude Include="engine\math\Vector3.h" />
+    <ClInclude Include="engine\math\Vector4.h" />
+    <ClInclude Include="engine\base\WinApp.h" />
+    <ClInclude Include="engine\base\SrvManager.h" />
+    <ClInclude Include="engine\3d\Particle\Field\Field.h" />
+    <ClInclude Include="engine\3d\Particle\Field\FieldManager.h" />
+    <ClInclude Include="engine\base\FlagsOperatorTemplate.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\LineShape.h" />
+    <ClInclude Include="engine\3d\LineManager.h" />
+    <ClInclude Include="engine\3d\Particle\Particle.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleEmitterManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h" />
+    <ClInclude Include="engine\3d\Particle\Primitive\Plane.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\PointShape.h" />
+    <ClInclude Include="engine\3d\Particle\Primitive\Primitive.h" />
+    <ClInclude Include="engine\3d\Particle\RandomRotateType.h" />
+    <ClInclude Include="engine\3d\Particle\Primitive\Ring.h" />
+    <ClInclude Include="engine\3d\Node.h" />
+    <ClInclude Include="engine\3d\Particle\Shape\SphereShape.h" />
+    <ClInclude Include="engine\base\Skeleton.h" />
+    <ClInclude Include="engine\base\SkinCluster.h" />
+    <ClInclude Include="engine\Font\FontAtlasManager.h" />
+    <ClInclude Include="engine\Font\FontLoader.h" />
+    <ClInclude Include="engine\Scene\Framework.h" />
+    <ClInclude Include="ErrorMessage.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="engine\Font\GlyphBitmap.h" />
+    <ClInclude Include="engine\Font\GlyphInfo.h" />
+    <ClInclude Include="engine\ImGui\ImGuiManager.h" />
+    <ClInclude Include="engine\base\IndexBuffer.h" />
+    <ClInclude Include="LoadCard.h" />
+    <ClInclude Include="MyGame.h" />
+    <ClInclude Include="engine\math\Sphere.h" />
+    <ClInclude Include="engine\Scene\BaseScene.h" />
+    <ClInclude Include="OpenDeckCommand.h" />
+    <ClInclude Include="SceneFactory.h" />
+    <ClInclude Include="engine\Scene\SceneManager.h" />
+    <ClInclude Include="engine\2d\Text.h" />
+    <ClInclude Include="engine\2d\TextCommon.h" />
+    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="engine\3d\Particle\Field\WindField.h" />
+    <ClInclude Include="engine\base\VertexBuffer.h" />
+    <ClInclude Include="CardCommandFactory.h" />
+    <ClInclude Include="utf8.h" />
+    <ClInclude Include="utf8\checked.h" />
+    <ClInclude Include="utf8\core.h" />
+    <ClInclude Include="utf8\cpp11.h" />
+    <ClInclude Include="utf8\cpp17.h" />
+    <ClInclude Include="utf8\cpp20.h" />
+    <ClInclude Include="utf8\unchecked.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
+      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="externals\freetype-2.13.3\builds\windows\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="externals\imgui\imgui.vcxproj">
+      <Project>{ef93858b-3c9b-438f-8b7e-7a1002c8d784}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\shaders\Line.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="resource\shaders\Object3d.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="resource\shaders\Particle.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="resource\shaders\Sprite.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="resource\shaders\Text.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resource\shaders\Line.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resource\shaders\Line.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Object3d.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Particle.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Particle.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resource\shaders\SkinningObject3d.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Sprite.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Sprite.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Text.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resource\shaders\Text.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{75b08f18-0ac1-45a6-854f-72ab8deb1981}</ProjectGuid>
+    <RootNamespace>DirextX</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(ProjectDir);$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <IncludePath>
+    </IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <IncludePath>
+    </IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalOptions>/ignore:4049 /ignore:4048 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir);$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\math;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
+      <Optimization>MinSpace</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

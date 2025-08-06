@@ -1,0 +1,6 @@
+#pragma once
+#include "Vector3.h"
+struct Sphere final {
+	Vector3 center;
+	float radius;
+};
