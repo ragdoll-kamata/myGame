@@ -17,6 +17,8 @@
 
 # Build results
 generated/
+DirextX/externals/freetype-2.13.3/objs/
+DirextX/externals/freetype-demos/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

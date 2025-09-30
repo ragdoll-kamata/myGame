@@ -1,2 +1,0 @@
-C:\Users\akito\Downloads\DirextX-- (1)\DirextX--\generated\obj\freetype\Debug\freetype.dll
-C:\Users\akito\Desktop\DirextX--\generated\obj\freetype\Debug\freetype.dll
