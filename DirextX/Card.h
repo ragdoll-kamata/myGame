@@ -5,8 +5,9 @@
 
 #include <Sprite.h>
 #include <Text.h>
-class CardManager;
 
+class CardManager;
+class LoadCard;
 
 enum class CardZone {
 	Hand,
@@ -33,6 +34,11 @@ enum class CardType {
 
 
 class Card {
+public:
+	bool InitializeCard(LoadCard* loadCard);
+
+	void Draw();
+	void TextDraw();
 public:
 	void SetCardManager(CardManager* cardManager) {
 		cardManager_ = cardManager;
@@ -66,7 +72,15 @@ private:
 	int cost_ = 0; // コスト
 	CardElement elementCost_ = CardElement::None; // コストの要素
 
+	std::string fileName = "white.png";
+public:
 
+	void SetPos(Vector2& pos) {
+		sprite_->SetPosition(pos);
+	}
+	Vector2 GetPos() {
+		return sprite_->GetPosition();
+	}
 public:
 	// 
 	void SetName(const std::u32string& name) {
@@ -78,6 +92,7 @@ public:
 	void SetDescription(const std::u32string& description) {
 		if (!description_) {
 			description_ = std::make_unique<Text>();
+			description_->Initialize(description, {}, 120.0f);
 		}
 		description_->SetText(description);
 	}
@@ -104,6 +119,12 @@ public:
 	}
 	CardElement GetElementCost() const {
 		return elementCost_;
+	}
+	void SetFileName(std::string name) {
+		fileName = name;
+	}
+	std::string GetFileName() {
+		return fileName;
 	}
 
 private:

@@ -20,6 +20,7 @@
     <ClCompile Include="CardElemetCommand.cpp" />
     <ClCompile Include="CardExplanationCommand.cpp" />
     <ClCompile Include="CardManager.cpp" />
+    <ClCompile Include="CardMove.cpp" />
     <ClCompile Include="CardNameCommand.cpp" />
     <ClCompile Include="CardTypeCommand.cpp" />
     <ClCompile Include="ElementFilterCommand.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="CardElemetCommand.h" />
     <ClInclude Include="CardExplanationCommand.h" />
     <ClInclude Include="CardManager.h" />
+    <ClInclude Include="CardMove.h" />
     <ClInclude Include="CardNameCommand.h" />
     <ClInclude Include="CardTypeCommand.h" />
     <ClInclude Include="ElementFilterCommand.h" />

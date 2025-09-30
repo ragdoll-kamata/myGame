@@ -27,7 +27,7 @@ public:
 		Matrix4x4 WVP;
 	};
 
-	void Initialize(SpriteCommon* spriteCommon,std::string textureFilePath);
+	void Initialize(std::string textureFilePath);
 
 	void Updata();
 
@@ -78,7 +78,7 @@ private:
 
 	Vector2 position_ = { 0.0f,0.0f };
 	float rotation_ = 0.0f;
-	Vector2 size_ = { 100.0f,100.0f };
+	Vector2 size_ = {100.0f, 100.0f};
 	Vector2 anchorPoint_ = { 0.0f,0.0f };
 
 	bool isFlipX_ = false;

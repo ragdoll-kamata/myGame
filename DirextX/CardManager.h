@@ -3,13 +3,24 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <random>
 #include "Card.h"
+#include "LoadCard.h"
 struct CardFile {
 	std::string modName;
 	std::string filePath;
 	std::string fileName;
 };
 class CardManager {
+public:
+	bool StartCardSet();
+
+	void StartTrun();
+
+	void MaenTrun();
+
+	void EndTrun();
+
 public:
 
 
@@ -20,6 +31,7 @@ public:
 
 	void MoveCard(Card* card, CardZone cardZone);
 private:
+	std::mt19937 g;
 	//　カード場
 	std::vector<std::unique_ptr<Card>> allCards;
 	std::unordered_map<CardZone, std::vector<Card*>> zoneMap{

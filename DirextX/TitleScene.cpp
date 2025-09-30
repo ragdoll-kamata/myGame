@@ -15,7 +15,7 @@ void TitleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("title.png");
 
 	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(SpriteCommon::GetInstance(),"title.png");
+	sprite_->Initialize("title.png");
 
 	text_ = std::make_unique<Text>();
 	text_->Initialize(U"<time=1.0>タ<time=0.1>イム\nいけるかな<time=0.5>...", {640.0f,360.0f}, 400);

@@ -27,7 +27,11 @@ struct TokenGroup {
 class LoadCard {
 public:
 	void LoadCardFile(std::string filename);
+
+	bool CardFunctionLoad(Card* card, std::string functionName);
+
 private:
+	bool FunctionLoad(Card* card, int functionID);
 
 	std::vector<std::string> ParseLine(std::string& text);
 
@@ -55,7 +59,7 @@ private:
 		{TokenGroupType::NestEnd,   [&](int i) {return AdaptationNestEnd(i);   }},
 	};
 	std::vector<TokenGroup> tokenGroups;
-	int newNestID = 0;
+	int newNestID = 1;
 
 	std::stack<int> nestStack;
 	

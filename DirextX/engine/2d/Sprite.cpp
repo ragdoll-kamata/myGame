@@ -5,9 +5,9 @@
 
 using namespace MathUtility;
 
-void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
+void Sprite::Initialize(std::string textureFilePath)
 {
-	spriteCommon_ = spriteCommon;
+	spriteCommon_ = SpriteCommon::GetInstance();
 
 	CreateVertex();
 	CreateIndex();

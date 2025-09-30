@@ -116,6 +116,31 @@ void LoadCard::LoadCardFile(std::string filename) {
 	}
 }
 
+bool LoadCard::CardFunctionLoad(Card* card, std::string functionName) {
+	if (functionMap.contains(functionName)) {
+		if (FunctionLoad(card, functionMap[functionName])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool LoadCard::FunctionLoad(Card* card, int functionID) {
+	if (cardCommands.contains(functionID)) {
+		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
+			int i = command->Execute(card);
+			if (i >= 0) {
+				if (i > 0) {
+					FunctionLoad(card, i);
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 std::vector<std::string> LoadCard::ParseLine(std::string& text) {
 	std::vector<std::string> tokens;
 	std::string token;

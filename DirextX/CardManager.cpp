@@ -2,8 +2,35 @@
 #include <iostream>
 #include <filesystem>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "LoadCard.h"
 namespace fs = std::filesystem;
+
+bool CardManager::StartCardSet() {
+	std::ifstream file("StartCard.txt");
+	if (!file) {
+		std::cerr << "ファイルを開けませんでした。" << std::endl;
+		return false;
+	}
+
+	std::string line;
+	int lineNumber = 0;
+	while (std::getline(file, line)) {
+		if (loadCardMap.contains(line)) {
+			for (int i = 0; i < 10; i++) {
+				std::unique_ptr<Card> card(new Card());
+				card->InitializeCard(loadCardMap[line].get());
+				zoneMap[CardZone::Deck].push_back(card.get());
+				allCards.push_back(std::move(card));
+			}
+		}
+	}
+	
+	std::shuffle(allCards.begin(), allCards.end(), g);
+	return true;
+}
 
 std::vector<Card*> CardManager::OpenDeck(int num) {
 	std::vector<Card*> result;
@@ -34,6 +61,9 @@ void CardManager::AllCardLoad(const std::string& file) {
 			loadCardMap.insert(std::pair(fileName, std::move(loadCard)));
 		}
 	}
+	std::random_device rd; // 乱数の種
+	g.seed(rd());
+
 }
 
 void CardManager::MoveCard(Card* card, CardZone cardZone) {
