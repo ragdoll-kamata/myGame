@@ -1,1 +1,86 @@
-﻿  freetype.vcxproj -> C:\Users\akito\Desktop\DirextX--\generated\obj\freetype\Debug\freetype.dll
+﻿  autofit.c
+  ftbase.c
+  ftbbox.c
+  ftbdf.c
+  ftbitmap.c
+  ftcid.c
+  ftfstype.c
+  ftgasp.c
+  ftglyph.c
+  ftgxval.c
+  ftinit.c
+  ftmm.c
+  ftotval.c
+  ftpatent.c
+  ftpfr.c
+  ftstroke.c
+  ftsynth.c
+  fttype1.c
+  ftwinfnt.c
+  bdf.c
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afblue.c(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+  ftcache.c
+  cff.c
+  type1cid.c
+  dlgwrap.c
+  ftgzip.c
+  ftlzw.c
+  pcf.c
+  pfr.c
+  psaux.c
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afblue.c(257,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+  pshinter.c
+  psmodule.c
+  raster.c
+  sfnt.c
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\autofit\afscript.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/autofit/autofit.c' をコンパイルしています)
+  
+  smooth.c
+  sdf.c
+  svg.c
+  truetype.c
+  type1.c
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\sfnt\sfdriver.c(1036,36): warning C4244: '関数': '__int64' から 'const unsigned int' への変換です。データが失われる可能性があります。
+  (ソース ファイル '../../../src/sfnt/sfnt.c' をコンパイルしています)
+  
+  type42.c
+  winfnt.c
+  ftdebug.c
+  ftsystem.c
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\sfnt\ttload.c(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/sfnt/sfnt.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\type1\t1load.c(1780,64): warning C4244: '=': '__int64' から 'FT_Int' への変換です。データが失われる可能性があります。
+  (ソース ファイル '../../../src/type1/type1.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\type1\t1load.c(1953,36): warning C4244: '=': '__int64' から 'FT_Int' への変換です。データが失われる可能性があります。
+  (ソース ファイル '../../../src/type1/type1.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\truetype\ttobjs.c(999,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '../../../src/truetype/truetype.c' をコンパイルしています)
+  
+C:\Users\akito\Desktop\個人製作\DirextX\externals\freetype-2.13.3\src\type42\t42parse.c(878,62): warning C4244: '=': '__int64' から 'FT_Int' への変換です。データが失われる可能性があります。
+  (ソース ファイル '../../../src/type42/type42.c' をコンパイルしています)
+  
+     ライブラリ C:\Users\akito\Desktop\個人製作\DirextX\..\generated\obj\freetype\Debug\freetype.lib とオブジェクト C:\Users\akito\Desktop\個人製作\DirextX\..\generated\obj\freetype\Debug\freetype.exp を作成中
+  freetype.vcxproj -> C:\Users\akito\Desktop\個人製作\generated\obj\freetype\Debug\freetype.dll

@@ -53,8 +53,12 @@ void CardManager::AllCardLoad(const std::string& file) {
 	for (const auto& entry : fs::recursive_directory_iterator(basePath)) {
 		if (entry.is_regular_file()) {
 			auto path = entry.path();
-			std::string modName = path.parent_path().filename().string(); // mod名
-			std::string fileName = path.filename().string();
+			std::u8string modName8 = path.parent_path().filename().u8string(); // mod名
+			std::string modName(modName8.begin(), modName8.end());
+
+			std::u8string fileName8 = path.filename().u8string();
+			std::string fileName(fileName8.begin(), fileName8.end());
+
 			cardFiles.push_back({modName, path.string(), fileName});
 			std::unique_ptr<LoadCard> loadCard = std::make_unique<LoadCard>();
 			loadCard->LoadCardFile(path.string());
