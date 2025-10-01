@@ -6,30 +6,43 @@
 #include <random>
 #include "Card.h"
 #include "LoadCard.h"
+#include "Button.h"
+#include "TrunState.h"
 struct CardFile {
 	std::string modName;
 	std::string filePath;
 	std::string fileName;
 };
+
 class CardManager {
 public:
+	void Initialize();
+
 	bool StartCardSet();
 
-	void StartTrun();
+	void Update(TrunState& trunState);
 
-	void MaenTrun();
+	void Draw();
 
-	void EndTrun();
+	void TextDraw();
 
+private:
+	void StartTrun(TrunState& trunState);
+
+	void MainTrun(TrunState& trunState);
+
+	void EndTrun(TrunState& trunState);
 public:
 
 
 	std::vector<Card*> OpenDeck(int num);
 
-	void AllCardLoad(const std::string& file);
+	
 
 
 	void MoveCard(Card* card, CardZone cardZone);
+public:
+	void AllCardLoad(const std::string& file);
 private:
 	std::mt19937 g;
 	//　カード場
@@ -44,5 +57,16 @@ private:
 	};
 
 	std::unordered_map<std::string,std::unique_ptr<LoadCard>> loadCardMap;
+private:
+	std::unique_ptr<Button> endTurnButton = nullptr;
+
+	std::unique_ptr<Button> startOpenButton = nullptr;
+	std::unique_ptr<Button> startOpenEndButton = nullptr;
+
+	bool isStartOpen = false;
+	bool isEndStartTrun = false;
+
+	const int startMaxOpenCard = 5;
+	int nowOpenCard = 0;
 };
 

@@ -69,6 +69,9 @@ public:
 	void SetPosition(const Vector2& pos) {
 		pos_ = pos;
 	}
+	Vector2 GetPosition() const {
+		return pos_;
+	}
 	void SetAnchorPoint(const Vector2& anchor) {
 		anchorPoint_ = anchor;
 		isLayoutDirty_ = true;
@@ -83,6 +86,7 @@ public:
 	void SetSize(const Vector2& size) {
 		size_ = size;
 	}
+	void CalcFitSize(float width);
 	Vector2 GetSize()const {
 		return size_;
 	}

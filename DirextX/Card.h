@@ -37,6 +37,8 @@ class Card {
 public:
 	bool InitializeCard(LoadCard* loadCard);
 
+	void Update();
+
 	void Draw();
 	void TextDraw();
 public:
@@ -56,14 +58,10 @@ public:
 	void SetIsDraw(bool isDraw) {
 		isDraw_ = isDraw;
 	}
+	bool IsDraw() const {
+		return isDraw_;
+	}
 
-private:
-	CardManager* cardManager_;
-
-	CardZone zone_ = CardZone::None;
-
-	bool isDraw_ = false;
-	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
 private:
 	std::unique_ptr<Text> name_ = nullptr;
 	std::unique_ptr<Text> description_ = nullptr;
@@ -73,6 +71,15 @@ private:
 	CardElement elementCost_ = CardElement::None; // コストの要素
 
 	std::string fileName = "white.png";
+private:
+	CardZone zone_ = CardZone::None;
+
+	CardManager* cardManager_;
+
+	bool isDraw_ = false;
+	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
+	Vector2 pos = {0.0f, 0.0f};
+	bool isMove = false;
 public:
 
 	void SetPos(Vector2& pos) {
@@ -81,6 +88,14 @@ public:
 	Vector2 GetPos() {
 		return sprite_->GetPosition();
 	}
+	void SetNewPos(Vector2& newPos) {
+		pos = newPos;
+		isMove = true;
+	}
+	bool IsMove() const {
+		return isMove;
+	}
+
 public:
 	// 
 	void SetName(const std::u32string& name) {

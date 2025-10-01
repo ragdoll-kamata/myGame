@@ -21,90 +21,7 @@ void LoadCard::LoadCardFile(std::string filename) {
 	while (std::getline(file, line)) {
 		lineNumber++;
 		std::vector<std::string> parse = ParseLine(line);
-		std::string preToken;
-		std::string key;
-		TokenGroup commandTokens;
-		commandTokens.lineNumber = lineNumber;
-		for (const auto& token : parse) {
-			if (token == "{") {
-				if (!commandTokens.tokens.empty()) {
-					if (commandTokens.type == TokenGroupType::Command) {
-						ErrorMessage::GetInstance()->SetMessage(U"コマンドの後にネストは使えないよ");
-						ErrorMessage::GetInstance()->SetErrorLine(lineNumber);
-						return;
-					}
-					tokenGroups.push_back(commandTokens);
-					commandTokens.tokens.clear();
-					commandTokens.type = TokenGroupType::None;
-				}
-				tokenGroups.push_back({{token}, TokenGroupType::NestStart});
-				continue;
-
-			}
-			if (token == "}") {
-				if (!commandTokens.tokens.empty()) {
-					tokenGroups.push_back(commandTokens);
-					commandTokens.tokens.clear();
-					commandTokens.type = TokenGroupType::None;
-				}
-				tokenGroups.push_back({{token}, TokenGroupType::NestEnd});
-				continue;
-			}
-			if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
-				commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
-				commandTokens.type == TokenGroupType::For) {
-				if (token == ",") continue; // コマンドの引数はカンマで区切る
-				commandTokens.tokens.push_back(token);
-
-			}
-			if (token.front() == '@') {
-				if (!commandTokens.tokens.empty()) {
-					ErrorMessage::GetInstance()->SetMessage(U"関数定義前に何か書いてあるのはおかしいよ");
-					ErrorMessage::GetInstance()->SetErrorLine(lineNumber);
-					return;
-				}
-				tokenGroups.push_back({{token}, TokenGroupType::Function});
-				continue;
-			}
-			if (token == "if") {
-				commandTokens.type = TokenGroupType::If;
-				commandTokens.tokens.push_back(token);
-				continue;
-			}
-			if (token == "else") {
-				tokenGroups.push_back({{token}, TokenGroupType::Else});
-				continue;
-			}
-			if (token == "elseif") {
-				commandTokens.type = TokenGroupType::ElseIf;
-				commandTokens.tokens.push_back(token);
-				continue;
-			}
-			if (token == "while") {
-				commandTokens.type = TokenGroupType::While;
-				commandTokens.tokens.push_back(token);
-				continue;
-			}
-			if (token == "for") {
-				commandTokens.type = TokenGroupType::For;
-				commandTokens.tokens.push_back(token);
-				continue;
-			}
-			if (token == ":") {
-				if (commandTokens.type == TokenGroupType::Command) {
-					ErrorMessage::GetInstance()->SetMessage(U"同じ行にコマンドは1個までだよ");
-					ErrorMessage::GetInstance()->SetErrorLine(lineNumber);
-					return;
-				}
-				commandTokens.tokens.push_back(preToken);
-				commandTokens.tokens.push_back(token);
-				commandTokens.type = TokenGroupType::Command;
-			}
-			preToken = token;
-		}
-		if (!commandTokens.tokens.empty() && commandTokens.type != TokenGroupType::None) {
-			tokenGroups.push_back(commandTokens);
-		}
+		CreateTokenGroup(parse, lineNumber);
 	}
 
 	for (int i = 0; i < tokenGroups.size(); ++i) {
@@ -181,6 +98,92 @@ std::vector<std::string> LoadCard::ParseLine(std::string& text) {
 	}
 	if (!token.empty()) tokens.push_back(token);
 	return tokens;
+}
+
+void LoadCard::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
+	std::string preToken;
+	TokenGroup commandTokens;
+	commandTokens.lineNumber = leneNum;
+	for (const auto& token : tokens) {
+		if (token == "{") {
+			if (!commandTokens.tokens.empty()) {
+				if (commandTokens.type == TokenGroupType::Command) {
+					ErrorMessage::GetInstance()->SetMessage(U"コマンドの後にネストは使えないよ");
+					ErrorMessage::GetInstance()->SetErrorLine(leneNum);
+					return;
+				}
+				tokenGroups.push_back(commandTokens);
+				commandTokens.tokens.clear();
+				commandTokens.type = TokenGroupType::None;
+			}
+			tokenGroups.push_back({{token}, TokenGroupType::NestStart});
+			continue;
+
+		}
+		if (token == "}") {
+			if (!commandTokens.tokens.empty()) {
+				tokenGroups.push_back(commandTokens);
+				commandTokens.tokens.clear();
+				commandTokens.type = TokenGroupType::None;
+			}
+			tokenGroups.push_back({{token}, TokenGroupType::NestEnd});
+			continue;
+		}
+		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
+			commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
+			commandTokens.type == TokenGroupType::For) {
+			if (token == ",") continue; // コマンドの引数はカンマで区切る
+			commandTokens.tokens.push_back(token);
+
+		}
+		if (token.front() == '@') {
+			if (!commandTokens.tokens.empty()) {
+				ErrorMessage::GetInstance()->SetMessage(U"関数定義前に何か書いてあるのはおかしいよ");
+				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
+				return;
+			}
+			tokenGroups.push_back({{token}, TokenGroupType::Function});
+			continue;
+		}
+		if (token == "if") {
+			commandTokens.type = TokenGroupType::If;
+			commandTokens.tokens.push_back(token);
+			continue;
+		}
+		if (token == "else") {
+			tokenGroups.push_back({{token}, TokenGroupType::Else});
+			continue;
+		}
+		if (token == "elseif") {
+			commandTokens.type = TokenGroupType::ElseIf;
+			commandTokens.tokens.push_back(token);
+			continue;
+		}
+		if (token == "while") {
+			commandTokens.type = TokenGroupType::While;
+			commandTokens.tokens.push_back(token);
+			continue;
+		}
+		if (token == "for") {
+			commandTokens.type = TokenGroupType::For;
+			commandTokens.tokens.push_back(token);
+			continue;
+		}
+		if (token == ":") {
+			if (commandTokens.type == TokenGroupType::Command) {
+				ErrorMessage::GetInstance()->SetMessage(U"同じ行にコマンドは1個までだよ");
+				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
+				return;
+			}
+			commandTokens.tokens.push_back(preToken);
+			commandTokens.tokens.push_back(token);
+			commandTokens.type = TokenGroupType::Command;
+		}
+		preToken = token;
+	}
+	if (!commandTokens.tokens.empty() && commandTokens.type != TokenGroupType::None) {
+		tokenGroups.push_back(commandTokens);
+	}
 }
 
 bool LoadCard::AdaptationCommand(int i) {

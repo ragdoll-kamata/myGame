@@ -217,6 +217,7 @@
     <ClCompile Include="AddHandCommand.cpp" />
     <ClCompile Include="AddCemeteryCommand.cpp" />
     <ClCompile Include="CardMove.cpp" />
+    <ClCompile Include="Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -479,6 +480,8 @@
     <ClInclude Include="AddHandCommand.h" />
     <ClInclude Include="AddCemeteryCommand.h" />
     <ClInclude Include="CardMove.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="TrunState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

@@ -77,6 +77,12 @@ void Text::Draw() {
 	}
 }
 
+void Text::CalcFitSize(float width) {
+	float scale = width / textWidth_;
+	size_.x = scale;
+	size_.y = scale;
+}
+
 void Text::TextLayout() {
 	
 	if (!isFullLayout) {

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="AddCemeteryCommand.cpp" />
     <ClCompile Include="AddHandCommand.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CardCommand.cpp" />
     <ClCompile Include="CardCommandFactory.cpp" />
@@ -86,6 +87,7 @@
   <ItemGroup>
     <ClInclude Include="AddCemeteryCommand.h" />
     <ClInclude Include="AddHandCommand.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardCommand.h" />
     <ClInclude Include="CardCostCommand.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="utf8\cpp17.h" />
     <ClInclude Include="utf8\cpp20.h" />
     <ClInclude Include="utf8\unchecked.h" />
+    <ClInclude Include="TrunState.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

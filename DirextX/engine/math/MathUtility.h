@@ -53,6 +53,8 @@ namespace MathUtility
 
 	float Lerp(float a, float b, float t);
 
+	Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
+
 	Vector3 Lerp(const Vector3& a, const Vector3& b, float t);
 
 	Vector3 Normalize(Vector3 a);

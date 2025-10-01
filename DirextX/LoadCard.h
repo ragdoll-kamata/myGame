@@ -35,6 +35,10 @@ private:
 
 	std::vector<std::string> ParseLine(std::string& text);
 
+	void CreateTokenGroup(std::vector<std::string>& tokens, int leneNum);
+
+
+
 
 
 	bool AdaptationCommand(int i);

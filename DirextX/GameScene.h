@@ -3,6 +3,8 @@
 #include <memory>
 #include "CardManager.h"
 
+#include "TrunState.h"
+
 
 class GameScene : public BaseScene
 {
@@ -25,5 +27,6 @@ public:
 
 private:
 	std::unique_ptr<CardManager> cardManager_;
+	TrunState trunState_ = TrunState::Start;
 };
 

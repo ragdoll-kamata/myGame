@@ -51,6 +51,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 		return CreateElementFilterCommand(commandTokens[0], commandTokens[1], commandTokens[2]);
 	}
 
+	//　変数操作
+	if (commandTokens[0].front() == '#') {
+
+	}
+	if (commandTokens[0].front() == '$') {
+
+	}
+
 	// keyの名前のコマンドが存在しない場合
 	ErrorMessage::GetInstance()->SetMessage(U"そんなコマンドキーは存在しないよ");
 	return std::unique_ptr<CardCommand>();
@@ -98,6 +106,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardCostCommand(std::stri
 
 //////////////////////////////
 
+
 // 山札系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateOpenDeckCommand(std::string num, std::string card) {
 	std::unique_ptr<OpenDeckCommand> cmd = std::make_unique<OpenDeckCommand>();
@@ -107,6 +116,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateOpenDeckCommand(std::stri
 
 	return nullptr;
 }
+
 // 手札系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateAddHandCommand(std::string card) {
 	std::unique_ptr<AddHandCommand> cmd = std::make_unique<AddHandCommand>();
@@ -116,6 +126,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateAddHandCommand(std::strin
 
 	return nullptr;
 }
+
 // 墓地系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateAddCemeteryCommand(std::string card) {
 	std::unique_ptr<AddCemeteryCommand> cmd = std::make_unique<AddCemeteryCommand>();
@@ -125,6 +136,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateAddCemeteryCommand(std::s
 
 	return nullptr;
 }
+
 // カードフィルター系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std::string element, std::string card, std::string card2) {
 	std::unique_ptr<ElementFilterCommand> cmd = std::make_unique<ElementFilterCommand>();
