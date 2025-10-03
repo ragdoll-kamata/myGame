@@ -51,7 +51,7 @@ bool CardManager::StartCardSet() {
 }
 
 void CardManager::Update(TrunState& trunState) {
-	StartTrun(trunState);
+	trunMap[trunState](trunState);
 	for (const auto& card : allCards) {
 		card->Update();
 	}
@@ -109,41 +109,7 @@ void CardManager::StartTrun(TrunState& trunState) {
 			}
 		}
 		if (!is) {
-			int lIndex = 0;
-			int dIndex = 0;
-			for (const auto& card : zoneMap[CardZone::Open]) {
-				if (card->GetElement() == CardElement::Light) {
-					lIndex++;
-				}
-				if (card->GetElement() == CardElement::Darkness) {
-					dIndex++;
-				}
-			}
-			int index = 0;
-			if (lIndex > dIndex) {
-				index = 1;
-			} else if(lIndex < dIndex){
-				index = 2;
-			}
-			for (const auto& card : zoneMap[CardZone::Open]) {
-				if (index == 0) {
-					MoveCard(card, CardZone::Hand);
-				} else {
-					if (card->GetElement() == CardElement::Light && index == 1) {
-						MoveCard(card, CardZone::Hand);
-					}
-					if (card->GetElement() == CardElement::Darkness && index == 2) {
-						MoveCard(card, CardZone::Hand);
-					}
-					if (card->GetElement() == CardElement::None) {
-						MoveCard(card, CardZone::Hand);
-					}
-				}
-			}
-			for (const auto& card : zoneMap[CardZone::Open]) {
-				MoveCard(card, CardZone::Cemetery);
-				card->SetIsDraw(false);
-			}
+			OpenDeckAdjustment();
 			trunState = TrunState::Main;
 		}
 		//
@@ -157,6 +123,61 @@ void CardManager::MainTrun(TrunState& trunState) {
 }
 
 void CardManager::EndTrun(TrunState& trunState) {
+}
+
+void CardManager::OpenDeckAdjustment() {
+	int lIndex = 0;
+	int dIndex = 0;
+	std::vector<Card*> LightCards;
+	std::vector<Card*> DarknessCards;
+	std::vector<Card*> NoneCards;
+	for (const auto& card : zoneMap[CardZone::Open]) {
+		if (card->GetElement() == CardElement::Light) {
+			lIndex++;
+			LightCards.push_back(card);
+		}
+		if (card->GetElement() == CardElement::Darkness) {
+			dIndex++;
+			DarknessCards.push_back(card);
+		}
+		if (card->GetElement() == CardElement::None) {
+			NoneCards.push_back(card);
+		}
+	}
+	std::list<Card*> removeCards;
+	std::list<Card*> addCards;
+	addCards.insert(addCards.end(), NoneCards.begin(), NoneCards.end());
+	if (lIndex > dIndex) {
+		removeCards.insert(removeCards.end(), DarknessCards.begin(), DarknessCards.end());
+		addCards.insert(addCards.end(), LightCards.begin(), LightCards.end());
+	} else if (lIndex < dIndex) {
+		removeCards.insert(removeCards.end(), LightCards.begin(), LightCards.end());
+		addCards.insert(addCards.end(), DarknessCards.begin(), DarknessCards.end());
+	} else {
+		addCards.insert(addCards.end(), LightCards.begin(), LightCards.end());
+		addCards.insert(addCards.end(), DarknessCards.begin(), DarknessCards.end());
+	}
+
+	for (const auto& card : addCards) {
+		MoveCard(card, CardZone::Hand);
+	}
+	HandAdjustment();
+	for (const auto& card : removeCards) {
+		card->SetIsDraw(false);
+		MoveCard(card, CardZone::Cemetery);
+	}
+}
+
+void CardManager::HandAdjustment() {
+	Vector2 pos;
+	int i = 0;
+	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
+	for (const auto& card : zoneMap[CardZone::Hand]) {
+		pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
+		pos.y = 720.0f - 80.0f;
+		card->SetNewPos(pos);
+		i++;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

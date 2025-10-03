@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <random>
+#include <functional>
 #include "Card.h"
 #include "LoadCard.h"
 #include "Button.h"
@@ -32,12 +33,16 @@ private:
 	void MainTrun(TrunState& trunState);
 
 	void EndTrun(TrunState& trunState);
+
+	void OpenDeckAdjustment();
+
+	void HandAdjustment();
 public:
 
 
 	std::vector<Card*> OpenDeck(int num);
 
-	
+
 
 
 	void MoveCard(Card* card, CardZone cardZone);
@@ -56,13 +61,17 @@ private:
 		{CardZone::Open, {}}
 	};
 
-	std::unordered_map<std::string,std::unique_ptr<LoadCard>> loadCardMap;
+	std::unordered_map<std::string, std::unique_ptr<LoadCard>> loadCardMap;
 private:
 	std::unique_ptr<Button> endTurnButton = nullptr;
 
 	std::unique_ptr<Button> startOpenButton = nullptr;
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
-
+	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
+		{TrunState::Start, [&](TrunState i) {return StartTrun(i); }},
+		{TrunState::Main,  [&](TrunState i) {return MainTrun(i);  }},
+		{TrunState::End,   [&](TrunState i) {return EndTrun(i);   }},
+	};
 	bool isStartOpen = true;
 	bool isEndStartTrun = false;
 
