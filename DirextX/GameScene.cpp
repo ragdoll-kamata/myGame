@@ -22,8 +22,9 @@ void GameScene::Draw() {
 
 	cardManager_->Draw();
 
-	//TextCommon::GetInstance()->PreDraw();
+	TextCommon::GetInstance()->PreDraw();
 
-	//cardManager_->TextDraw();
+	cardManager_->TextDraw();
 	
+	TextCommon::GetInstance()->PostDraw();
 }

@@ -15,6 +15,7 @@ bool Card::InitializeCard(LoadCard* loadCard) {
 	if (!loadCard->CardFunctionLoad(this, "初期設定")) {
 		return false;
 	}
+	name_->Update();
 	name_->CalcFitSize(120.0f);
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(fileName);
@@ -27,12 +28,15 @@ bool Card::InitializeCard(LoadCard* loadCard) {
 void Card::Update() {
 	if (isMove) {
 		sprite_->SetPosition(MathUtility::Lerp(sprite_->GetPosition(), pos, 0.3f));
-		name_->SetPosition(MathUtility::Lerp(name_->GetPosition(), pos - Vector2{0.0f, -80.0f}, 0.3f));
+		name_->SetPosition(MathUtility::Lerp(name_->GetPosition(), pos - textZure, 0.3f));
 		if (MathUtility::Length(sprite_->GetPosition() - pos) <= 0.1f) {
 			isMove = false;
 			sprite_->SetPosition(pos);
+			name_->SetPosition(pos - textZure);
 		}
 	}
+	sprite_->Updata();
+	name_->Update();
 }
 
 void Card::Draw() {
@@ -45,4 +49,9 @@ void Card::TextDraw() {
 	if (isDraw_) {
 		name_->Draw();
 	}
+}
+
+void Card::SetPos(Vector2& pos) {
+	sprite_->SetPosition(pos);
+	name_->SetPosition(pos - textZure);
 }

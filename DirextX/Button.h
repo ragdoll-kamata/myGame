@@ -8,6 +8,8 @@ public:
 
 	void Initialize(const Vector2& pos, const Vector2& size, std::string name, Vector4 color);
 
+	void Update();
+
 	void Draw();
 
 	bool IsOnCollision(Vector2 pos);

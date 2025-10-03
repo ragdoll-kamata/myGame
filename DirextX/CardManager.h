@@ -63,7 +63,7 @@ private:
 	std::unique_ptr<Button> startOpenButton = nullptr;
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
 
-	bool isStartOpen = false;
+	bool isStartOpen = true;
 	bool isEndStartTrun = false;
 
 	const int startMaxOpenCard = 5;

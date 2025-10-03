@@ -6,7 +6,7 @@ void TextCommon::Initialize(DirectXCommon* directXCommon, SrvManager* srvManager
 	directXCommon_ = directXCommon;
 	srvManager_ = srvManager;
 	fontLoader = std::make_unique<FontLoader>();
-	fontLoader->Initialize(directory + "/" + font, 32);
+	fontLoader->Initialize(directory + "/" + font, 256);
 	fontAtlasManager = std::make_unique<FontAtlasManager>();
 	fontAtlasManager->Initialize(directXCommon_, fontLoader.get(), srvManager_, 2048, 2048);
 	CreateRootSignature();

@@ -19,7 +19,6 @@ int AddHandCommand::Execute(Card* card) {
 	std::vector<Card*> car = card->GetCards(card_);
 	for (Card* c : car) {
 		card->GetCardManager()->MoveCard(c, CardZone::Hand);
-		//card->RemoveCard(card_, c);
 	}
 	return 0;
 }

@@ -40,6 +40,7 @@ bool CardManager::StartCardSet() {
 				card->InitializeCard(loadCardMap[line].get());
 				card->SetCardManager(this);
 				zoneMap[CardZone::Deck].push_back(card.get());
+				card->SetZone(CardZone::Deck);
 				allCards.push_back(std::move(card));
 			}
 		}
@@ -54,6 +55,8 @@ void CardManager::Update(TrunState& trunState) {
 	for (const auto& card : allCards) {
 		card->Update();
 	}
+	startOpenButton->Update();
+	startOpenEndButton->Update();
 }
 
 void CardManager::Draw() {
@@ -173,7 +176,8 @@ std::vector<Card*> CardManager::OpenDeck(int num) {
 	int i = 0;
 	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
 	for (const auto& card : zoneMap[CardZone::Open]) {
-		pos.x = 640.0f + (size / 2 - i) * 122.0f;
+		pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
+		pos.y = 240.0f;
 		card->SetNewPos(pos);
 		i++;
 	}
@@ -183,7 +187,10 @@ std::vector<Card*> CardManager::OpenDeck(int num) {
 void CardManager::MoveCard(Card* card, CardZone cardZone) {
 
 	std::vector<Card*>& zone = zoneMap[card->GetZone()];
-	zone.erase(std::remove(zone.begin(), zone.end(), card), zone.end());
+	auto it = std::find(zone.begin(), zone.end(), card);
+	if (it != zone.end()) {
+		zone.erase(it); // target を vector から削除
+	}
 
 	card->SetZone(cardZone);
 	zoneMap[cardZone].push_back(card);

@@ -15,6 +15,12 @@ void Button::Initialize(const Vector2& pos, const Vector2& size, std::string nam
 	halfSize /= 2.0f;
 }
 
+void Button::Update() {
+	if (isDraw_) {
+		sprite->Updata();
+	}
+}
+
 void Button::Draw() {
 	if (isDraw_) {
 		sprite->Draw();

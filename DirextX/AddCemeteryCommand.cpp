@@ -19,7 +19,6 @@ int AddCemeteryCommand::Execute(Card* card) {
 	std::vector<Card*> car = card->GetCards(card_);
 	for (Card* c : car) {
 		card->GetCardManager()->MoveCard(c, CardZone::Cemetery);
-		//card->RemoveCard(card_, c);
 	}
 	return 0;
 }

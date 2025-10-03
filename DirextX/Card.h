@@ -79,12 +79,11 @@ private:
 	bool isDraw_ = false;
 	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
 	Vector2 pos = {0.0f, 0.0f};
+	const Vector2 textZure = {0.0f, -80.0f};
 	bool isMove = false;
 public:
 
-	void SetPos(Vector2& pos) {
-		sprite_->SetPosition(pos);
-	}
+	void SetPos(Vector2& pos);
 	Vector2 GetPos() {
 		return sprite_->GetPosition();
 	}
