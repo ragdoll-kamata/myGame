@@ -51,7 +51,7 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="engine\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="engine\base\IndexBuffer.cpp" />
-    <ClCompile Include="LoadCard.cpp" />
+    <ClCompile Include="CardData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MathUtility.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -164,7 +164,7 @@
     <ClInclude Include="engine\Font\GlyphInfo.h" />
     <ClInclude Include="engine\ImGui\ImGuiManager.h" />
     <ClInclude Include="engine\base\IndexBuffer.h" />
-    <ClInclude Include="LoadCard.h" />
+    <ClInclude Include="CardData.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />

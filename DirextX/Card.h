@@ -7,7 +7,7 @@
 #include <Text.h>
 
 class CardManager;
-class LoadCard;
+class CardData;
 
 enum class CardZone {
 	Hand,
@@ -35,12 +35,16 @@ enum class CardType {
 
 class Card {
 public:
-	bool InitializeCard(LoadCard* loadCard);
+	bool InitializeCard(CardData* loadCard);
 
 	void Update();
 
 	void Draw();
 	void TextDraw();
+
+	bool IsOnCollision(Vector2 pos);
+
+	void Effect();
 public:
 	void SetCardManager(CardManager* cardManager) {
 		cardManager_ = cardManager;
@@ -69,6 +73,7 @@ private:
 	CardType type_ = CardType::Error; // カードの種類（儀式、建物など）
 	int cost_ = 0; // コスト
 	CardElement elementCost_ = CardElement::None; // コストの要素
+	CardData* cardData_ = nullptr;
 
 	std::string fileName = "white.png";
 private:
@@ -78,6 +83,7 @@ private:
 
 	bool isDraw_ = false;
 	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
+	Vector2 halfSize = {60.0f, 80.0f};
 	Vector2 pos = {0.0f, 0.0f};
 	const Vector2 textZure = {0.0f, -80.0f};
 	bool isMove = false;

@@ -1,18 +1,20 @@
 #include "Card.h"
-#include "LoadCard.h"
+#include "CardData.h"
 
 #include <MathUtility.h>
 
 using namespace MathUtility;
 
-bool Card::InitializeCard(LoadCard* loadCard) {
+bool Card::InitializeCard(CardData* loadCard) {
+	cardData_ = loadCard;
+
 	name_ = std::make_unique<Text>();
 	description_ = std::make_unique<Text>();
 	name_->Initialize(U"名前", {0.0f, 0.0f}, 9999.0f);
 	name_->SetAnchorPoint({0.5f, 1.0f});
 	name_->SetTextFormat(Text::TextFormat::Centor);
 	description_->Initialize(U"説明", {0.0f, 20.0f}, 120.0f);
-	if (!loadCard->CardFunctionLoad(this, "初期設定")) {
+	if (!cardData_->CardFunctionLoad(this, "初期設定")) {
 		return false;
 	}
 	name_->Update();
@@ -20,7 +22,7 @@ bool Card::InitializeCard(LoadCard* loadCard) {
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(fileName);
 	sprite_->SetAnchorPoint({0.5f, 0.5f});
-	sprite_->SetSize({120.0f, 160.0f});
+	sprite_->SetSize(halfSize * 2.0f);
 
 	return true;
 }
@@ -48,6 +50,28 @@ void Card::Draw() {
 void Card::TextDraw() {
 	if (isDraw_) {
 		name_->Draw();
+	}
+}
+
+bool Card::IsOnCollision(Vector2 pos) {
+
+	Vector2 hPos{
+		std::clamp(pos.x, sprite_->GetPosition().x - halfSize.x, sprite_->GetPosition().x + halfSize.x),
+		std::clamp(pos.y, sprite_->GetPosition().y - halfSize.y, sprite_->GetPosition().y + halfSize.y),
+	};
+
+	hPos.x -= pos.x;
+	hPos.y -= pos.y;
+	float len = MathUtility::Length(hPos);
+	if (len <= 0.0f) {
+		return true;
+	}
+	return false;
+}
+
+void Card::Effect() {
+	if(!cardData_->CardFunctionLoad(this, "効果")) {
+		// エラー処理
 	}
 }
 

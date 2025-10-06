@@ -6,7 +6,6 @@
 #include <functional>
 #include <memory>
 #include "CardCommand.h"
-#include <stack>
 enum class TokenGroupType {
 	Command,
 	If,
@@ -24,7 +23,7 @@ struct TokenGroup {
 	TokenGroupType type = TokenGroupType::None;
 	int lineNumber = 0;
 };
-class LoadCard {
+class CardData {
 public:
 	void LoadCardFile(std::string filename);
 

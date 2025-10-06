@@ -6,7 +6,7 @@
 #include <random>
 #include <functional>
 #include "Card.h"
-#include "LoadCard.h"
+#include "CardData.h"
 #include "Button.h"
 #include "TrunState.h"
 struct CardFile {
@@ -34,9 +34,13 @@ private:
 
 	void EndTrun(TrunState& trunState);
 
+	void PlayerInput();
+
 	void OpenDeckAdjustment();
 
 	void HandAdjustment();
+
+	void ReShuffleDeck();
 public:
 
 
@@ -49,6 +53,7 @@ public:
 public:
 	void AllCardLoad(const std::string& file);
 private:
+	// 乱数生成器
 	std::mt19937 g;
 	//　カード場
 	std::vector<std::unique_ptr<Card>> allCards;
@@ -61,21 +66,29 @@ private:
 		{CardZone::Open, {}}
 	};
 
-	std::unordered_map<std::string, std::unique_ptr<LoadCard>> loadCardMap;
+	// カードデータ
+	std::unordered_map<std::string, std::unique_ptr<CardData>> CardDataMap;
 private:
 	std::unique_ptr<Button> endTurnButton = nullptr;
 
 	std::unique_ptr<Button> startOpenButton = nullptr;
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
+	// ターン管理
 	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
-		{TrunState::Start, [&](TrunState i) {return StartTrun(i); }},
-		{TrunState::Main,  [&](TrunState i) {return MainTrun(i);  }},
-		{TrunState::End,   [&](TrunState i) {return EndTrun(i);   }},
+		{TrunState::Start, [&](TrunState& i) {return StartTrun(i); }},
+		{TrunState::Main,  [&](TrunState& i) {return MainTrun(i);  }},
+		{TrunState::End,   [&](TrunState& i) {return EndTrun(i);   }},
 	};
 	bool isStartOpen = true;
 	bool isEndStartTrun = false;
 
+	// 開始時のオープンカードの最大枚数
 	const int startMaxOpenCard = 5;
+	// 現在オープンしたカードの枚数
 	int nowOpenCard = 0;
+
+	// 手札調整用
+	bool isHoldCard = false;
+	int holdCardIndex = -1;
 };
 

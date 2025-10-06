@@ -16,6 +16,7 @@ void CardManager::Initialize() {
 	endTurnButton = std::make_unique<Button>();
 	endTurnButton->Initialize({ 1100.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 1.0f, 0.0f, 0.0f, 1.0f });
 	endTurnButton->SetIsDraw(false);
+
 	startOpenButton = std::make_unique<Button>();
 	startOpenButton->Initialize({ 200.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 0.0f, 1.0f, 0.0f, 1.0f });
 	startOpenButton->SetIsDraw(false);
@@ -34,10 +35,10 @@ bool CardManager::StartCardSet() {
 	std::string line;
 	int lineNumber = 0;
 	while (std::getline(file, line)) {
-		if (loadCardMap.contains(line)) {
+		if (CardDataMap.contains(line)) {
 			for (int i = 0; i < 10; i++) {
 				std::unique_ptr<Card> card(new Card());
-				card->InitializeCard(loadCardMap[line].get());
+				card->InitializeCard(CardDataMap[line].get());
 				card->SetCardManager(this);
 				zoneMap[CardZone::Deck].push_back(card.get());
 				card->SetZone(CardZone::Deck);
@@ -55,6 +56,7 @@ void CardManager::Update(TrunState& trunState) {
 	for (const auto& card : allCards) {
 		card->Update();
 	}
+	endTurnButton->Update();
 	startOpenButton->Update();
 	startOpenEndButton->Update();
 }
@@ -66,6 +68,7 @@ void CardManager::Draw() {
 	//endTurnButton->Draw();
 	startOpenButton->Draw();
 	startOpenEndButton->Draw();
+	endTurnButton->Draw();
 }
 
 void CardManager::TextDraw() {
@@ -94,7 +97,6 @@ void CardManager::StartTrun(TrunState& trunState) {
 				isStartOpen = true;
 			}
 			if (startOpenEndButton->IsOnCollision(mousePos)) {
-				nowOpenCard = 0;
 				isEndStartTrun = true;
 			}
 		}
@@ -109,6 +111,9 @@ void CardManager::StartTrun(TrunState& trunState) {
 			}
 		}
 		if (!is) {
+			isEndStartTrun = false;
+			isStartOpen = true;
+			nowOpenCard = 0;
 			OpenDeckAdjustment();
 			trunState = TrunState::Main;
 		}
@@ -120,9 +125,60 @@ void CardManager::StartTrun(TrunState& trunState) {
 }
 
 void CardManager::MainTrun(TrunState& trunState) {
+	endTurnButton->SetIsDraw(true);
+	Input* input = Input::GetInstance();
+	Vector2 mousePos = input->GetMousePos();
+	PlayerInput();
+	if (input->TriggerMouseButton(0)) {
+		if (endTurnButton->IsOnCollision(mousePos)) {
+			endTurnButton->SetIsDraw(false);
+			trunState = TrunState::End;
+		}
+	}
 }
 
 void CardManager::EndTrun(TrunState& trunState) {
+	std::vector<Card*> handCards = zoneMap[CardZone::Hand];
+	for(auto& card : handCards) {
+		card->SetIsDraw(false);
+		MoveCard(card, CardZone::Cemetery);
+	}
+	trunState = TrunState::Start;
+
+}
+
+void CardManager::PlayerInput() {
+	Input* input = Input::GetInstance();
+	Vector2 mousePos = input->GetMousePos();
+	if (!isHoldCard) {
+		if (input->TriggerMouseButton(0)) {
+			int index = 0;
+			for (const auto& card : zoneMap[CardZone::Hand]) {
+				if (card->IsDraw() && card->IsOnCollision(mousePos)) {
+					isHoldCard = true;
+					holdCardIndex = index;
+					break;
+				}
+				index++;
+			}
+		}
+	} else {
+
+		if (input->PressMouseButton(0)) {
+			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
+		}
+		if (input->ReleaseMouseButton(0)) {
+			//for (const auto& card : zoneMap[CardZone::Hand]) {
+			//	if (!card->IsDraw()) {
+			//		card->SetIsDraw(true);
+			//		break;
+			//	}
+			//}
+			isHoldCard = false;
+			HandAdjustment();
+		}
+	}
+
 }
 
 void CardManager::OpenDeckAdjustment() {
@@ -180,12 +236,24 @@ void CardManager::HandAdjustment() {
 	}
 }
 
+void CardManager::ReShuffleDeck() {
+	std::vector<Card*> cemeteryCards = zoneMap[CardZone::Cemetery];
+	for (const auto& card : cemeteryCards) {
+		MoveCard(card, CardZone::Deck);
+	}
+	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
+
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 std::vector<Card*> CardManager::OpenDeck(int num) {
 	std::vector<Card*> result;
 	Vector2 pos{640.0f, -160.0f};
 	for (int i = 0; i < num; i++) {
+		if (zoneMap[CardZone::Deck].empty()) {
+			ReShuffleDeck();
+		}
 		zoneMap[CardZone::Deck].front()->SetPos(pos);
 		result.push_back(zoneMap[CardZone::Deck].front());
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
@@ -233,9 +301,9 @@ void CardManager::AllCardLoad(const std::string& file) {
 			std::string fileName(fileName8.begin(), fileName8.end());
 
 			cardFiles.push_back({modName, path.string(), fileName});
-			std::unique_ptr<LoadCard> loadCard = std::make_unique<LoadCard>();
+			std::unique_ptr<CardData> loadCard = std::make_unique<CardData>();
 			loadCard->LoadCardFile(path.string());
-			loadCardMap.insert(std::pair(fileName, std::move(loadCard)));
+			CardDataMap.insert(std::pair(fileName, std::move(loadCard)));
 		}
 	}
 

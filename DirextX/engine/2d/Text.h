@@ -106,7 +106,11 @@ public:
 	void SetMaxWidth(float maxWidth) {
 		maxWidth_ = maxWidth;
 	}
+
+	static std::u32string GetIntToString(int num, int count);
 private:
+	static int Number(int num1, int num2, std::vector<int>& digits);
+
 	/// <summary>
 	/// テキストレイアウトを行う。
 	/// </summary>

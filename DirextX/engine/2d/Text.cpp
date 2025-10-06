@@ -83,6 +83,40 @@ void Text::CalcFitSize(float width) {
 	size_.y = scale;
 }
 
+std::u32string Text::GetIntToString(int num, int count) {
+	int numcopy = num;
+	std::vector<int> digits;
+
+	Number(numcopy, 1, digits);
+
+	int digitCount = static_cast<int>(digits.size());
+
+	int zeroCount = count - digitCount;
+
+	std::u32string result;
+
+	for(int i= 0; i < zeroCount; i++) {
+		result += U'0';
+	}
+	std::string tmp = std::to_string(num); // int → std::string
+	std::u32string  s(tmp.begin(), tmp.end()); // ASCIIなのでOK
+	result += s;
+
+	return result;
+}
+
+int Text::Number(int num1, int num2, std::vector<int>& digits) {
+	int i = num1;
+	if (num1 >= num2 * 10) {
+		i = Number(num1, num2 * 10, digits);
+		i = i / num2;
+	} else {
+		i = num1 / num2;
+	}
+	digits.push_back(i);
+	return num1 % num2;
+}
+
 void Text::TextLayout() {
 	
 	if (!isFullLayout) {

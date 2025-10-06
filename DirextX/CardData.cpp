@@ -1,15 +1,13 @@
-#include "LoadCard.h"
+#include "CardData.h"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-
-
 #include "CardCommandFactory.h"
 #include "ErrorMessage.h"
 
-void LoadCard::LoadCardFile(std::string filename) {
+void CardData::LoadCardFile(std::string filename) {
 	std::ifstream file(filename);
 	if (!file) {
 		std::cerr << "ファイルを開けませんでした。" << std::endl;
@@ -33,7 +31,7 @@ void LoadCard::LoadCardFile(std::string filename) {
 	}
 }
 
-bool LoadCard::CardFunctionLoad(Card* card, std::string functionName) {
+bool CardData::CardFunctionLoad(Card* card, std::string functionName) {
 	if (functionMap.contains(functionName)) {
 		if (FunctionLoad(card, functionMap[functionName])) {
 			return true;
@@ -42,7 +40,7 @@ bool LoadCard::CardFunctionLoad(Card* card, std::string functionName) {
 	return false;
 }
 
-bool LoadCard::FunctionLoad(Card* card, int functionID) {
+bool CardData::FunctionLoad(Card* card, int functionID) {
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
 			int i = command->Execute(card);
@@ -58,7 +56,7 @@ bool LoadCard::FunctionLoad(Card* card, int functionID) {
 	return true;
 }
 
-std::vector<std::string> LoadCard::ParseLine(std::string& text) {
+std::vector<std::string> CardData::ParseLine(std::string& text) {
 	std::vector<std::string> tokens;
 	std::string token;
 	bool isSkip = false;
@@ -100,7 +98,7 @@ std::vector<std::string> LoadCard::ParseLine(std::string& text) {
 	return tokens;
 }
 
-void LoadCard::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
+void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 	std::string preToken;
 	TokenGroup commandTokens;
 	commandTokens.lineNumber = leneNum;
@@ -186,7 +184,7 @@ void LoadCard::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 	}
 }
 
-bool LoadCard::AdaptationCommand(int i) {
+bool CardData::AdaptationCommand(int i) {
 	if (nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストに入ってないよ");
 		return false;
@@ -218,27 +216,27 @@ bool LoadCard::AdaptationCommand(int i) {
 	return true;
 }
 
-bool LoadCard::AdaptationIf(int i) {
+bool CardData::AdaptationIf(int i) {
 	return false;
 }
 
-bool LoadCard::AdaptationElseIf(int i) {
+bool CardData::AdaptationElseIf(int i) {
 	return false;
 }
 
-bool LoadCard::AdaptationElse(int i) {
+bool CardData::AdaptationElse(int i) {
 	return false;
 }
 
-bool LoadCard::AdaptationWhile(int i) {
+bool CardData::AdaptationWhile(int i) {
 	return false;
 }
 
-bool LoadCard::AdaptationFor(int i) {
+bool CardData::AdaptationFor(int i) {
 	return false;
 }
 
-bool LoadCard::AdaptationFunction(int i) {
+bool CardData::AdaptationFunction(int i) {
 	if (tokenGroups[i + 1].type != TokenGroupType::NestStart) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストが見つからないよ");
 		return false;
@@ -254,13 +252,13 @@ bool LoadCard::AdaptationFunction(int i) {
 	return true;
 }
 
-bool LoadCard::AdaptationNestStart(int i) {
+bool CardData::AdaptationNestStart(int i) {
 	nestStack.push(newNestID);
 	newNestID++;
 	return true;
 }
 
-bool LoadCard::AdaptationNestEnd(int i) {
+bool CardData::AdaptationNestEnd(int i) {
 	if (nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストの終わりが多いよ");
 		return false;
