@@ -20,9 +20,14 @@ void CardManager::Initialize() {
 	startOpenButton = std::make_unique<Button>();
 	startOpenButton->Initialize({ 200.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 0.0f, 1.0f, 0.0f, 1.0f });
 	startOpenButton->SetIsDraw(false);
+
 	startOpenEndButton = std::make_unique<Button>();
 	startOpenEndButton->Initialize({ 440.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 0.0f, 0.0f, 1.0f, 1.0f });
 	startOpenEndButton->SetIsDraw(false);
+
+	cardExecutionField = std::make_unique<Button>();
+	cardExecutionField->Initialize({1150.0f, 400.0f}, {120.0f * 1.2f, 160.0f * 1.2f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
+	cardExecutionField->SetIsDraw(true);
 }
 
 bool CardManager::StartCardSet() {
@@ -56,12 +61,17 @@ void CardManager::Update(TrunState& trunState) {
 	for (const auto& card : allCards) {
 		card->Update();
 	}
+
+	ExecutionCard();
+
 	endTurnButton->Update();
 	startOpenButton->Update();
 	startOpenEndButton->Update();
+	cardExecutionField->Update();
 }
 
 void CardManager::Draw() {
+	cardExecutionField->Draw();
 	for (const auto& card : allCards) {
 		card->Draw();
 	}
@@ -69,6 +79,7 @@ void CardManager::Draw() {
 	startOpenButton->Draw();
 	startOpenEndButton->Draw();
 	endTurnButton->Draw();
+	
 }
 
 void CardManager::TextDraw() {
@@ -155,6 +166,7 @@ void CardManager::PlayerInput() {
 			int index = 0;
 			for (const auto& card : zoneMap[CardZone::Hand]) {
 				if (card->IsDraw() && card->IsOnCollision(mousePos)) {
+					card->SetIsMove(false);
 					isHoldCard = true;
 					holdCardIndex = index;
 					break;
@@ -168,12 +180,10 @@ void CardManager::PlayerInput() {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
 		}
 		if (input->ReleaseMouseButton(0)) {
-			//for (const auto& card : zoneMap[CardZone::Hand]) {
-			//	if (!card->IsDraw()) {
-			//		card->SetIsDraw(true);
-			//		break;
-			//	}
-			//}
+			if(cardExecutionField->IsOnCollision(mousePos)) {
+				zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
+				MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+			}
 			isHoldCard = false;
 			HandAdjustment();
 		}
@@ -182,11 +192,14 @@ void CardManager::PlayerInput() {
 }
 
 void CardManager::OpenDeckAdjustment() {
+	
 	int lIndex = 0;
 	int dIndex = 0;
 	std::vector<Card*> LightCards;
 	std::vector<Card*> DarknessCards;
 	std::vector<Card*> NoneCards;
+
+	// 光と闇の数を数える
 	for (const auto& card : zoneMap[CardZone::Open]) {
 		if (card->GetElement() == CardElement::Light) {
 			lIndex++;
@@ -202,22 +215,43 @@ void CardManager::OpenDeckAdjustment() {
 	}
 	std::list<Card*> removeCards;
 	std::list<Card*> addCards;
+
+	//// 手札に加えるカードと墓地に送るカードを決定
+	// 無属性は必ず手札に加える
 	addCards.insert(addCards.end(), NoneCards.begin(), NoneCards.end());
+
+	//// 光と闇の数で場合分け
 	if (lIndex > dIndex) {
+		// 光の方が多いなら、闇を墓地に送る
 		removeCards.insert(removeCards.end(), DarknessCards.begin(), DarknessCards.end());
 		addCards.insert(addCards.end(), LightCards.begin(), LightCards.end());
 	} else if (lIndex < dIndex) {
+		// 闇の方が多いなら、光を墓地に送る
 		removeCards.insert(removeCards.end(), LightCards.begin(), LightCards.end());
 		addCards.insert(addCards.end(), DarknessCards.begin(), DarknessCards.end());
 	} else {
+		// 同じなら両方手札に加える
 		addCards.insert(addCards.end(), LightCards.begin(), LightCards.end());
 		addCards.insert(addCards.end(), DarknessCards.begin(), DarknessCards.end());
 	}
+	std::list<Card*> openCards;
+	openCards.insert(openCards.end(), zoneMap[CardZone::Open].begin(), zoneMap[CardZone::Open].end());
 
-	for (const auto& card : addCards) {
-		MoveCard(card, CardZone::Hand);
+	//// 実際にカードを移動
+
+	// 手札に加えるカードを移動
+	for (const auto& card : openCards) {
+		for (const auto& card2 : addCards) {
+			if(card == card2) {
+				MoveCard(card, CardZone::Hand);
+				break;
+			}
+		}
 	}
+	// 手札のポジション調整
 	HandAdjustment();
+
+	// 墓地に送るカードを移動
 	for (const auto& card : removeCards) {
 		card->SetIsDraw(false);
 		MoveCard(card, CardZone::Cemetery);
@@ -243,6 +277,13 @@ void CardManager::ReShuffleDeck() {
 	}
 	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
 
+}
+
+void CardManager::ExecutionCard() {
+	if (!zoneMap[CardZone::Execution].empty()) {
+		zoneMap[CardZone::Execution].front()->Effect();
+		MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

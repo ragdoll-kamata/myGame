@@ -14,6 +14,10 @@ struct CardFile {
 	std::string filePath;
 	std::string fileName;
 };
+struct CardMoveData {
+	Card* card;
+	Vector2 pos;
+};
 
 class CardManager {
 public:
@@ -38,11 +42,13 @@ private:
 
 	void OpenDeckAdjustment();
 
-	void HandAdjustment();
+	
 
 	void ReShuffleDeck();
-public:
 
+	void ExecutionCard();
+public:
+	void HandAdjustment();
 
 	std::vector<Card*> OpenDeck(int num);
 
@@ -73,6 +79,8 @@ private:
 
 	std::unique_ptr<Button> startOpenButton = nullptr;
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
+
+	std::unique_ptr<Button> cardExecutionField = nullptr;
 	// ターン管理
 	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
 		{TrunState::Start, [&](TrunState& i) {return StartTrun(i); }},

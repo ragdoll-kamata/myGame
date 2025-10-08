@@ -65,6 +65,9 @@ public:
 	bool IsDraw() const {
 		return isDraw_;
 	}
+	void SetIsMove(bool isMove) {
+		this->isMove = isMove;
+	}
 
 private:
 	std::unique_ptr<Text> name_ = nullptr;
@@ -76,6 +79,7 @@ private:
 	CardData* cardData_ = nullptr;
 
 	std::string fileName = "white.png";
+	//std::vector<CardCommand*> effectCommands; // 効果コマンドのリスト
 private:
 	CardZone zone_ = CardZone::None;
 

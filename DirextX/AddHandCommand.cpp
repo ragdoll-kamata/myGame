@@ -20,5 +20,6 @@ int AddHandCommand::Execute(Card* card) {
 	for (Card* c : car) {
 		card->GetCardManager()->MoveCard(c, CardZone::Hand);
 	}
+	card->GetCardManager()->HandAdjustment();
 	return 0;
 }

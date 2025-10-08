@@ -3,7 +3,7 @@
 class ErrorMessage {
 public:
 
-	std::u32string GetMessage() const {
+	std::u32string GetErrorMessage() const {
 		return message;
 	}
 	void SetMessage(const std::u32string& msg) {
