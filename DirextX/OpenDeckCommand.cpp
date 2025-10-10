@@ -33,6 +33,7 @@ int OpenDeckCommand::Execute(Card* card) {
 	int number = ParseInt(num_, card);
 	std::vector<Card*> ca = card->GetCardManager()->OpenDeck(number);
 	for (Card* c : ca) {
+
 		card->AddCard(card_, c);
 	}
 	return 0;

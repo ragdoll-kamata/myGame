@@ -1,14 +1,17 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <list>
 #include <memory>
 #include <unordered_map>
 #include <random>
 #include <functional>
+
 #include "Card.h"
 #include "CardData.h"
 #include "Button.h"
 #include "TrunState.h"
+#include "MoveCard.h"
 struct CardFile {
 	std::string modName;
 	std::string filePath;
@@ -30,6 +33,8 @@ public:
 	void Draw();
 
 	void TextDraw();
+
+	void AddMoveCard(std::list<std::unique_ptr<MoveCardCo>>&& moveCard);
 
 private:
 	void StartTrun(TrunState& trunState);
@@ -75,6 +80,8 @@ private:
 	// カードデータ
 	std::unordered_map<std::string, std::unique_ptr<CardData>> CardDataMap;
 private:
+	std::vector<std::list<std::unique_ptr<MoveCardCo>> > moveCards;
+
 	std::unique_ptr<Button> endTurnButton = nullptr;
 
 	std::unique_ptr<Button> startOpenButton = nullptr;

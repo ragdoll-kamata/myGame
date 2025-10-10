@@ -89,6 +89,17 @@ void CardManager::TextDraw() {
 
 }
 
+void CardManager::AddMoveCard(std::list<std::unique_ptr<MoveCardCo>>&& moveCard) {
+	moveCards.push_back(std::move(moveCard));
+	for (auto it = moveCards.begin(); it != moveCards.end();) {
+		if (it->empty()) {
+			it = moveCards.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
 void CardManager::StartTrun(TrunState& trunState) {
 	Input* input = Input::GetInstance();
 	startOpenButton->SetIsDraw(true);
@@ -296,13 +307,11 @@ std::vector<Card*> CardManager::OpenDeck(int num) {
 			ReShuffleDeck();
 		}
 		zoneMap[CardZone::Deck].front()->SetPos(pos);
+		zoneMap[CardZone::Deck].front()->SetIsDraw(true);
 		result.push_back(zoneMap[CardZone::Deck].front());
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
 
-	for (const auto& card : result) {
-		card->SetIsDraw(true);
-	}
 	int i = 0;
 	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
 	for (const auto& card : zoneMap[CardZone::Open]) {
