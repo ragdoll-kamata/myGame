@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <queue>
 #include <memory>
 #include <unordered_map>
 #include <random>
@@ -11,7 +12,8 @@
 #include "CardData.h"
 #include "Button.h"
 #include "TrunState.h"
-#include "MoveCard.h"
+#include "CardMove.h"
+
 struct CardFile {
 	std::string modName;
 	std::string filePath;
@@ -34,7 +36,7 @@ public:
 
 	void TextDraw();
 
-	void AddMoveCard(std::list<std::unique_ptr<MoveCardCo>>&& moveCard);
+	void AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard);
 
 private:
 	void StartTrun(TrunState& trunState);
@@ -80,7 +82,7 @@ private:
 	// カードデータ
 	std::unordered_map<std::string, std::unique_ptr<CardData>> CardDataMap;
 private:
-	std::vector<std::list<std::unique_ptr<MoveCardCo>> > moveCards;
+	std::vector<std::vector<std::unique_ptr<CardMove>>> cardMoves;
 
 	std::unique_ptr<Button> endTurnButton = nullptr;
 

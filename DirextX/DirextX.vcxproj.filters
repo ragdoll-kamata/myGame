@@ -189,9 +189,6 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="MyGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -202,23 +199,47 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CardData.cpp" />
-    <ClCompile Include="CardCommand.cpp" />
     <ClCompile Include="Card.cpp" />
-    <ClCompile Include="OpenDeckCommand.cpp" />
     <ClCompile Include="CardManager.cpp" />
-    <ClCompile Include="ElementFilterCommand.cpp" />
-    <ClCompile Include="CardCommandFactory.cpp" />
     <ClCompile Include="ErrorMessage.cpp" />
-    <ClCompile Include="CardNameCommand.cpp" />
-    <ClCompile Include="CardTypeCommand.cpp" />
-    <ClCompile Include="CardElemetCommand.cpp" />
-    <ClCompile Include="CardExplanationCommand.cpp" />
-    <ClCompile Include="CardCostCommand.cpp" />
-    <ClCompile Include="AddHandCommand.cpp" />
-    <ClCompile Include="AddCemeteryCommand.cpp" />
     <ClCompile Include="CardMove.cpp" />
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="MoveCard.cpp" />
+    <ClCompile Include="AddCemeteryCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Cemetery</Filter>
+    </ClCompile>
+    <ClCompile Include="AddHandCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Hand</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenDeckCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Deck</Filter>
+    </ClCompile>
+    <ClCompile Include="CardCommand.cpp">
+      <Filter>ソース ファイル\CardCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="CardCommandFactory.cpp">
+      <Filter>ソース ファイル\CardCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementFilterCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="CardExplanationCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="CardElemetCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="CardCostCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="CardNameCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="CardTypeCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -447,14 +468,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CardData.h" />
-    <ClInclude Include="CardCommand.h" />
     <ClInclude Include="Card.h" />
-    <ClInclude Include="OpenDeckCommand.h" />
     <ClInclude Include="CardManager.h" />
-    <ClInclude Include="ElementFilterCommand.h" />
-    <ClInclude Include="CardCommandFactory.h" />
     <ClInclude Include="ErrorMessage.h" />
-    <ClInclude Include="CardNameCommand.h" />
     <ClInclude Include="utf8.h" />
     <ClInclude Include="utf8\checked.h">
       <Filter>utf8</Filter>
@@ -474,16 +490,42 @@
     <ClInclude Include="utf8\unchecked.h">
       <Filter>utf8</Filter>
     </ClInclude>
-    <ClInclude Include="CardTypeCommand.h" />
-    <ClInclude Include="CardElemetCommand.h" />
-    <ClInclude Include="CardExplanationCommand.h" />
-    <ClInclude Include="CardCostCommand.h" />
-    <ClInclude Include="AddHandCommand.h" />
-    <ClInclude Include="AddCemeteryCommand.h" />
     <ClInclude Include="CardMove.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="TrunState.h" />
-    <ClInclude Include="MoveCard.h" />
+    <ClInclude Include="CardCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="CardCommandFactory.h">
+      <Filter>ヘッダー ファイル\CardCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenDeckCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Deck</Filter>
+    </ClInclude>
+    <ClInclude Include="AddHandCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Hand</Filter>
+    </ClInclude>
+    <ClInclude Include="AddCemeteryCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Cemetery</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementFilterCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="CardCostCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="CardElemetCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="CardExplanationCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="CardNameCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="CardTypeCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
@@ -589,6 +631,42 @@
     </Filter>
     <Filter Include="utf8">
       <UniqueIdentifier>{0707febe-96bc-4718-b93f-29cf918a4d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand">
+      <UniqueIdentifier>{b7f2f3cb-6c61-425e-8188-6c44854f7727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Deck">
+      <UniqueIdentifier>{4f6c83e1-f64a-4c2e-8a3d-d269aa8919f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Hand">
+      <UniqueIdentifier>{ede2682b-37e8-4043-9b27-9357dddf04a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Cemetery">
+      <UniqueIdentifier>{960118c6-a624-441a-bb4e-6df0d1ffd259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Filter">
+      <UniqueIdentifier>{3b048ffc-a686-4fa6-b502-5f57addfb13c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Initialize">
+      <UniqueIdentifier>{212532e5-2f02-4833-9110-be9ab1cf7d5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand">
+      <UniqueIdentifier>{64ceed2c-adb9-443d-89ec-20e2c8786535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Deck">
+      <UniqueIdentifier>{c3a1ada4-3457-4688-a58c-cebf387eb8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Hand">
+      <UniqueIdentifier>{9a62ff0e-fe10-416f-afa9-ccad523748e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Cemetery">
+      <UniqueIdentifier>{caac18e6-bb2b-4546-8bc0-98b3965d4852}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Filter">
+      <UniqueIdentifier>{7a10ab4d-7b7a-4b4d-836d-e12e0362af0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Initialize">
+      <UniqueIdentifier>{0090a755-4442-4e4d-8626-f8dc72a64862}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

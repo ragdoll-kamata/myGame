@@ -1,28 +1,36 @@
 #include "CardMove.h"
-#include "DeltaTime.h"
-#include "MathUtility.h"
-
 #include "Card.h"
+#include "DeltaTime.h"
 
-void CardMove::Initialize(float time) {
-	time_ = time;
+using namespace MathUtility;
+
+CardMove::~CardMove() {
 }
 
-bool CardMove::Updata() {
-	nawTime += DeltaTime::GetInstance()->GetDeltaTime();
-	nawTime = std::min<float>(nawTime, time_);
-	float t = nawTime / time_;
-	for (int i = 0; i < cards.size(); i++) {
-		Vector2 pos;
-		Card* card = cards[i];
-		Vector2 start = start_[std::min<int>(i, static_cast<int>(start_.size() - 1))];
-		Vector2 end = end_[std::min<int>(i, static_cast<int>(end_.size() - 1))];
-		pos.x = MathUtility::Lerp(start.x, end.x, t);
-		pos.y = MathUtility::Lerp(start.y, end.y, t);
-		card->SetPos(pos);
+void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw) {
+	card_ = card;
+	pos_ = pos;
+	time_ = time;
+	isEndDraw_ = isEndDraw;
+	nowTime_ = 0.0f;
+	isEnd_ = false;
+	startPos_ = card_->GetPos();
+}
+
+void CardMove::Update() {
+	if (isEnd_) {
+		return;
 	}
-	if (t == 1.0f) {
-		return true;
+	nowTime_ += DeltaTime::GetInstance()->GetDeltaTime();
+	if (nowTime_ >= time_) {
+		card_->SetPos(pos_);
+		isEnd_ = true;
+		card_->SetIsMove(false);
+		card_->SetIsDraw(isEndDraw_);
+		return;
 	}
-	return false;
+	float t = nowTime_ / time_;
+	float t2 =  1.0f -t;
+	Vector2 newPos = Lerp(startPos_, pos_, 1.0f - t2 * t2 * t2);
+	card_->SetPos(newPos);
 }

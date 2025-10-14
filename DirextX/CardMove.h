@@ -1,27 +1,22 @@
 #pragma once
-#include <vector>
 #include "Vector2.h"
 class Card;
 class CardMove {
 public:
-	void Initialize( float time);
+	~CardMove();
+	void Initialize(Card* card, Vector2 pos, float time, float isEndDraw);
+	void Update();
+	bool IsEnd() {
+		return isEnd_;
+	}
 
-	bool Updata();
-
-	void AddCard(Card* card) {
-		cards.push_back(card);
-	}
-	void AddStartPos(Vector2 start) {
-		start_.push_back(start);
-	}
-	void AddEndPos(Vector2 end) {
-		end_.push_back(end);
-	}
 private:
-	std::vector<Card*>cards;
-	std::vector<Vector2> start_;
-	std::vector<Vector2> end_;
-	float time_;
-	float nawTime;
-};
+	Vector2 pos_;
+	Vector2 startPos_;
+	Card* card_;
+	float time_ = 0.0f;
+	float nowTime_ = 0.0f;
+	bool isEnd_ = false;
+	bool isEndDraw_ = false;
 
+};

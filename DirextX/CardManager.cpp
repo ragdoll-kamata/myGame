@@ -8,21 +8,23 @@
 
 #include <Input.h>
 
+
+
 namespace fs = std::filesystem;
 
 void CardManager::Initialize() {
 	std::random_device rd; // 乱数の種
 	g.seed(rd());
 	endTurnButton = std::make_unique<Button>();
-	endTurnButton->Initialize({ 1100.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 1.0f, 0.0f, 0.0f, 1.0f });
+	endTurnButton->Initialize({1100.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 0.0f, 1.0f});
 	endTurnButton->SetIsDraw(false);
 
 	startOpenButton = std::make_unique<Button>();
-	startOpenButton->Initialize({ 200.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 0.0f, 1.0f, 0.0f, 1.0f });
+	startOpenButton->Initialize({200.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {0.0f, 1.0f, 0.0f, 1.0f});
 	startOpenButton->SetIsDraw(false);
 
 	startOpenEndButton = std::make_unique<Button>();
-	startOpenEndButton->Initialize({ 440.0f, 600.0f }, { 200.0f, 100.0f }, "white.png", { 0.0f, 0.0f, 1.0f, 1.0f });
+	startOpenEndButton->Initialize({440.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {0.0f, 0.0f, 1.0f, 1.0f});
 	startOpenEndButton->SetIsDraw(false);
 
 	cardExecutionField = std::make_unique<Button>();
@@ -64,6 +66,21 @@ void CardManager::Update(TrunState& trunState) {
 
 	ExecutionCard();
 
+	if (cardMoves.size() > 0) {
+		bool isEnd = false;
+		//for (const auto& card : cardMoves[0]) {
+		//	card->Update();
+		//	if (!card->IsEnd()) {
+		//		isEnd = true;
+		//	}
+		//}
+		if (!isEnd) {
+			cardMoves.front().clear();
+			cardMoves.erase(cardMoves.begin());
+		}
+	}
+
+
 	endTurnButton->Update();
 	startOpenButton->Update();
 	startOpenEndButton->Update();
@@ -75,11 +92,11 @@ void CardManager::Draw() {
 	for (const auto& card : allCards) {
 		card->Draw();
 	}
-	//endTurnButton->Draw();
+	endTurnButton->Draw();
 	startOpenButton->Draw();
 	startOpenEndButton->Draw();
 	endTurnButton->Draw();
-	
+
 }
 
 void CardManager::TextDraw() {
@@ -89,15 +106,8 @@ void CardManager::TextDraw() {
 
 }
 
-void CardManager::AddMoveCard(std::list<std::unique_ptr<MoveCardCo>>&& moveCard) {
-	moveCards.push_back(std::move(moveCard));
-	for (auto it = moveCards.begin(); it != moveCards.end();) {
-		if (it->empty()) {
-			it = moveCards.erase(it);
-		} else {
-			++it;
-		}
-	}
+void CardManager::AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard) {
+	cardMoves.push_back(std::move(moveCard));
 }
 
 void CardManager::StartTrun(TrunState& trunState) {
@@ -161,7 +171,7 @@ void CardManager::MainTrun(TrunState& trunState) {
 
 void CardManager::EndTrun(TrunState& trunState) {
 	std::vector<Card*> handCards = zoneMap[CardZone::Hand];
-	for(auto& card : handCards) {
+	for (auto& card : handCards) {
 		card->SetIsDraw(false);
 		MoveCard(card, CardZone::Cemetery);
 	}
@@ -191,7 +201,7 @@ void CardManager::PlayerInput() {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
 		}
 		if (input->ReleaseMouseButton(0)) {
-			if(cardExecutionField->IsOnCollision(mousePos)) {
+			if (cardExecutionField->IsOnCollision(mousePos)) {
 				zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
 				MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
 			}
@@ -203,7 +213,7 @@ void CardManager::PlayerInput() {
 }
 
 void CardManager::OpenDeckAdjustment() {
-	
+
 	int lIndex = 0;
 	int dIndex = 0;
 	std::vector<Card*> LightCards;
@@ -253,7 +263,7 @@ void CardManager::OpenDeckAdjustment() {
 	// 手札に加えるカードを移動
 	for (const auto& card : openCards) {
 		for (const auto& card2 : addCards) {
-			if(card == card2) {
+			if (card == card2) {
 				MoveCard(card, CardZone::Hand);
 				break;
 			}

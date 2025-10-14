@@ -65,7 +65,6 @@
     <ClCompile Include="engine\base\TextureManager.cpp" />
     <ClCompile Include="engine\base\WinApp.cpp" />
     <ClCompile Include="engine\base\SrvManager.cpp" />
-    <ClCompile Include="MoveCard.cpp" />
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleEmitterManager.cpp" />
@@ -166,7 +165,6 @@
     <ClInclude Include="engine\ImGui\ImGuiManager.h" />
     <ClInclude Include="engine\base\IndexBuffer.h" />
     <ClInclude Include="CardData.h" />
-    <ClInclude Include="MoveCard.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />
