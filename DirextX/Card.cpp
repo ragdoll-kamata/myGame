@@ -23,6 +23,7 @@ bool Card::InitializeCard(CardData* loadCard) {
 	sprite_->Initialize(fileName);
 	sprite_->SetAnchorPoint({0.5f, 0.5f});
 	sprite_->SetSize(halfSize * 2.0f);
+	sprite_->SetPosition(pos);
 
 	return true;
 }
@@ -31,7 +32,7 @@ void Card::Update() {
 	if (isMove) {
 		sprite_->SetPosition(MathUtility::Lerp(sprite_->GetPosition(), pos, 0.15f));
 		name_->SetPosition(MathUtility::Lerp(name_->GetPosition(), pos - textZure, 0.15f));
-		if (MathUtility::Length(sprite_->GetPosition() - pos) <= 0.1f) {
+		if (MathUtility::Length(sprite_->GetPosition() - pos) <= 1.0f) {
 			isMove = false;
 			sprite_->SetPosition(pos);
 			name_->SetPosition(pos - textZure);

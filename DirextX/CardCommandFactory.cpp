@@ -147,3 +147,8 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 	return nullptr;
 }
 
+std::unique_ptr<CardCommand> CardCommandFactory::CreateNestMoveCommand(int index) {
+
+	return std::unique_ptr<CardCommand>();
+}
+

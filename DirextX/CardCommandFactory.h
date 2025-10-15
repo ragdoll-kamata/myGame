@@ -22,4 +22,6 @@ namespace CardCommandFactory
 
 	std::unique_ptr<CardCommand> CreateElementFilterCommand(std::string element, std::string card, std::string card2);
 
+
+	std::unique_ptr<CardCommand> CreateNestMoveCommand(int index);
 }

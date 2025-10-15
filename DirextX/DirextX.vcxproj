@@ -52,6 +52,7 @@
     <ClCompile Include="engine\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="engine\base\IndexBuffer.cpp" />
     <ClCompile Include="CardData.cpp" />
+    <ClCompile Include="HandCardMove.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MathUtility.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="engine\3d\Particle\Shape\SphereShape.cpp" />
     <ClCompile Include="engine\base\Skeleton.cpp" />
     <ClCompile Include="engine\base\SkinCluster.cpp" />
+    <ClCompile Include="NestMoveCommand.cpp" />
     <ClCompile Include="OpenDeckCommand.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="engine\Scene\SceneManager.cpp" />
@@ -165,9 +167,11 @@
     <ClInclude Include="engine\ImGui\ImGuiManager.h" />
     <ClInclude Include="engine\base\IndexBuffer.h" />
     <ClInclude Include="CardData.h" />
+    <ClInclude Include="HandCardMove.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />
+    <ClInclude Include="NestMoveCommand.h" />
     <ClInclude Include="OpenDeckCommand.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="engine\Scene\SceneManager.h" />

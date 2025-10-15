@@ -24,6 +24,7 @@ void CardData::LoadCardFile(std::string filename) {
 
 	for (int i = 0; i < tokenGroups.size(); ++i) {
 		auto& group = tokenGroups[i];
+		// トークングループのタイプに対応する関数を呼び出す
 		if (!tokenGroupFunctions[group.type](i)) {
 			ErrorMessage::GetInstance()->SetErrorLine(tokenGroups[i].lineNumber);
 			return; // エラーが発生した場合は処理を中断
@@ -61,39 +62,49 @@ std::vector<std::string> CardData::ParseLine(std::string& text) {
 	std::string token;
 	bool isSkip = false;
 	for (char c : text) {
+		// コメント処理
 		if (c == '/') {
 			if (!isSkip) {
+				// 最初の/ならスキップフラグを立てる
 				isSkip = true;
 			} else {
+				// 2つ目の/ならコメント開始なのでループを抜ける
 				break;
 			}
 		} else {
+			// /以外の文字が来たらスキップフラグをリセットして、/をトークンに追加
 			if (isSkip) {
 				token.push_back('/');
 			}
 			isSkip = false;
 		}
 
+		// 空白文字でトークンを区切る
 		if (isspace(static_cast<unsigned char>(c))) {
 			if (!token.empty()) {
 				tokens.push_back(token);
 				token.clear();
 			}
 		} else if (c == '{' || c == '}' || c == ':' || c == ',') {
+			// これらの文字はそれ自体がトークン
 			if (!token.empty()) {
 				tokens.push_back(token);
 				token.clear();
 			}
 			tokens.push_back(std::string(1, c));
 		} else if (c == '/') {
-
+			//
 		} else {
+			// その他の文字はトークンに追加
 			token.push_back(c);
 		}
 	}
+
 	if (isSkip) {
+		// 行の最後が/で終わっていた場合、その/をトークンに追加
 		token.push_back('/');
 	}
+	// 最後のトークンを追加
 	if (!token.empty()) tokens.push_back(token);
 	return tokens;
 }
@@ -103,6 +114,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 	TokenGroup commandTokens;
 	commandTokens.lineNumber = leneNum;
 	for (const auto& token : tokens) {
+		// ネストの開始と終了はそれ自体がトークン
 		if (token == "{") {
 			if (!commandTokens.tokens.empty()) {
 				if (commandTokens.type == TokenGroupType::Command) {
@@ -118,6 +130,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			continue;
 
 		}
+		// ネストの終了
 		if (token == "}") {
 			if (!commandTokens.tokens.empty()) {
 				tokenGroups.push_back(commandTokens);
@@ -127,13 +140,14 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			tokenGroups.push_back({{token}, TokenGroupType::NestEnd});
 			continue;
 		}
+		// コマンドの引数
 		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
 			commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
 			commandTokens.type == TokenGroupType::For) {
 			if (token == ",") continue; // コマンドの引数はカンマで区切る
 			commandTokens.tokens.push_back(token);
-
 		}
+		// 関数定義
 		if (token.front() == '@') {
 			if (!commandTokens.tokens.empty()) {
 				ErrorMessage::GetInstance()->SetMessage(U"関数定義前に何か書いてあるのはおかしいよ");
@@ -143,6 +157,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			tokenGroups.push_back({{token}, TokenGroupType::Function});
 			continue;
 		}
+		// 制御構文
 		if (token == "if") {
 			commandTokens.type = TokenGroupType::If;
 			commandTokens.tokens.push_back(token);
@@ -167,6 +182,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			commandTokens.tokens.push_back(token);
 			continue;
 		}
+		// コマンド
 		if (token == ":") {
 			if (commandTokens.type == TokenGroupType::Command) {
 				ErrorMessage::GetInstance()->SetMessage(U"同じ行にコマンドは1個までだよ");
@@ -179,12 +195,14 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 		}
 		preToken = token;
 	}
+	// 最後のトークンを追加
 	if (!commandTokens.tokens.empty() && commandTokens.type != TokenGroupType::None) {
 		tokenGroups.push_back(commandTokens);
 	}
 }
 
 bool CardData::AdaptationCommand(int i) {
+	// ネストの中でないとコマンドは使えない
 	if (nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストに入ってないよ");
 		return false;
@@ -194,9 +212,11 @@ bool CardData::AdaptationCommand(int i) {
 	std::vector<std::string> commandTokens;
 	bool isCommand = false;
 	for (const auto& token : tokenGroups[i].tokens) {
+		// コマンドの引数
 		if (isCommand) {
 			commandTokens.push_back(token);
 		}
+		// コマンドのキー
 		if (token == ":") {
 			key = pre;
 			isCommand = true;
@@ -237,32 +257,46 @@ bool CardData::AdaptationFor(int i) {
 }
 
 bool CardData::AdaptationFunction(int i) {
+	// 関数定義はネストの外でしかできない
 	if (tokenGroups[i + 1].type != TokenGroupType::NestStart) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストが見つからないよ");
 		return false;
 	}
+	// ネストの中で関数定義はできない
 	if(!nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネスト内で関数定義はできないよ");
 		return false;
 	}
 	std::string functionName = tokenGroups[i].tokens[0].substr(1); // '@'を除去
 
+	if (functionMap.contains(functionName)) {
+		ErrorMessage::GetInstance()->SetMessage(U"同じ名前の関数が既に存在するよ");
+		return false;
+	}
+	// 新しいネストIDをスタックに追加して、そのIDを関数名と紐づける
 	functionMap[functionName] = newNestID;
 
 	return true;
 }
 
 bool CardData::AdaptationNestStart(int i) {
+	// ネストの開始は関数定義の直後か、ネストの中でしか使えない
 	nestStack.push(newNestID);
 	newNestID++;
 	return true;
 }
 
 bool CardData::AdaptationNestEnd(int i) {
+	// ネストの終了はネストの中でしか使えない
 	if (nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストの終わりが多いよ");
 		return false;
 	}
+	int index = nestStack.top();
 	nestStack.pop();
+	//if(!nestStack.empty()){
+	//	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateNestMoveCommand(nestStack.top());
+	//	cardCommands[index].push_back(std::move(command));
+	//}
 	return true;
 }

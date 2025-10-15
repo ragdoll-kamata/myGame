@@ -8,7 +8,10 @@
 
 #include <Input.h>
 
+#include "TextCommon.h"
+#include "SpriteCommon.h"
 
+#include "HandCardMove.h"
 
 namespace fs = std::filesystem;
 
@@ -43,7 +46,7 @@ bool CardManager::StartCardSet() {
 	int lineNumber = 0;
 	while (std::getline(file, line)) {
 		if (CardDataMap.contains(line)) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 15; i++) {
 				std::unique_ptr<Card> card(new Card());
 				card->InitializeCard(CardDataMap[line].get());
 				card->SetCardManager(this);
@@ -68,17 +71,23 @@ void CardManager::Update(TrunState& trunState) {
 
 	if (cardMoves.size() > 0) {
 		bool isEnd = false;
-		//for (const auto& card : cardMoves[0]) {
-		//	card->Update();
-		//	if (!card->IsEnd()) {
-		//		isEnd = true;
-		//	}
-		//}
+		for (const auto& card : cardMoves[0]) {
+			card->Update();
+			if (!card->IsEnd()) {
+				isEnd = true;
+			}
+		}
 		if (!isEnd) {
 			cardMoves.front().clear();
 			cardMoves.erase(cardMoves.begin());
+			if (cardMoves.size() > 0) {
+				for (const auto& card : cardMoves[0]) {
+					card->SetStart();
+				}
+			}
 		}
 	}
+
 
 
 	endTurnButton->Update();
@@ -88,15 +97,23 @@ void CardManager::Update(TrunState& trunState) {
 }
 
 void CardManager::Draw() {
-	cardExecutionField->Draw();
-	for (const auto& card : allCards) {
-		card->Draw();
-	}
+
+	SpriteCommon::GetInstance()->PreDraw();
 	endTurnButton->Draw();
 	startOpenButton->Draw();
 	startOpenEndButton->Draw();
 	endTurnButton->Draw();
+	cardExecutionField->Draw();
+	for (const auto& card : allCards) {
+		SpriteCommon::GetInstance()->PreDraw();
+		card->Draw();
+		TextCommon::GetInstance()->PreDraw();
 
+		card->TextDraw();
+
+		TextCommon::GetInstance()->PostDraw();
+
+	}
 }
 
 void CardManager::TextDraw() {
@@ -170,12 +187,21 @@ void CardManager::MainTrun(TrunState& trunState) {
 }
 
 void CardManager::EndTrun(TrunState& trunState) {
+	isHoldCard = false;
 	std::vector<Card*> handCards = zoneMap[CardZone::Hand];
+	std::vector<std::unique_ptr<CardMove>> moves;
 	for (auto& card : handCards) {
-		card->SetIsDraw(false);
+		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
+		move->Initialize(card, CemeteryCardPos(), 0.5f, false);
+		moves.push_back(std::move(move));
 		MoveCard(card, CardZone::Cemetery);
 	}
-	trunState = TrunState::Start;
+	if (!moves.empty()) {
+		AddCardMove(std::move(moves));
+	}
+	if (cardMoves.empty()) {
+		trunState = TrunState::Start;
+	}
 
 }
 
@@ -199,8 +225,7 @@ void CardManager::PlayerInput() {
 
 		if (input->PressMouseButton(0)) {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
-		}
-		if (input->ReleaseMouseButton(0)) {
+		} else if (input->ReleaseMouseButton(0)) {
 			if (cardExecutionField->IsOnCollision(mousePos)) {
 				zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
 				MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
@@ -269,14 +294,21 @@ void CardManager::OpenDeckAdjustment() {
 			}
 		}
 	}
-	// 手札のポジション調整
-	HandAdjustment();
+	std::vector<std::unique_ptr<CardMove>> moves;
+	std::unique_ptr<HandCardMove> handMove = std::make_unique<HandCardMove>();
+	handMove->Initialize(openCards.front(), 0.3f);
+	moves.push_back(std::move(handMove));
+	AddCardMove(std::move(moves));
 
+	moves.clear();
 	// 墓地に送るカードを移動
 	for (const auto& card : removeCards) {
-		card->SetIsDraw(false);
+		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
+		move->Initialize(card, CemeteryCardPos(), 0.5f, false);
+		moves.push_back(std::move(move));
 		MoveCard(card, CardZone::Cemetery);
 	}
+	AddCardMove(std::move(moves));
 }
 
 void CardManager::HandAdjustment() {
@@ -284,16 +316,21 @@ void CardManager::HandAdjustment() {
 	int i = 0;
 	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
 	for (const auto& card : zoneMap[CardZone::Hand]) {
-		pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
-		pos.y = 720.0f - 80.0f;
+
+		pos = HandCardPos(i);
 		card->SetNewPos(pos);
+		card->SetIsDraw(true);
 		i++;
 	}
 }
 
 void CardManager::ReShuffleDeck() {
 	std::vector<Card*> cemeteryCards = zoneMap[CardZone::Cemetery];
+	Vector2 pos = Vector2{-100.0, -100.0f};
 	for (const auto& card : cemeteryCards) {
+		card->SetPos(pos);
+		card->RessetVariable();
+		card->SetIsDraw(false);
 		MoveCard(card, CardZone::Deck);
 	}
 	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
@@ -309,7 +346,7 @@ void CardManager::ExecutionCard() {
 
 /////////////////////////////////////////////////////////////////////////////
 
-std::vector<Card*> CardManager::OpenDeck(int num) {
+std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 	std::vector<Card*> result;
 	Vector2 pos{640.0f, -160.0f};
 	for (int i = 0; i < num; i++) {
@@ -321,14 +358,15 @@ std::vector<Card*> CardManager::OpenDeck(int num) {
 		result.push_back(zoneMap[CardZone::Deck].front());
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
-
-	int i = 0;
-	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
-	for (const auto& card : zoneMap[CardZone::Open]) {
-		pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
-		pos.y = 240.0f;
-		card->SetNewPos(pos);
-		i++;
+	if (!isCommand) {
+		int i = 0;
+		int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
+		for (const auto& card : zoneMap[CardZone::Open]) {
+			pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
+			pos.y = 240.0f;
+			card->SetNewPos(pos);
+			i++;
+		}
 	}
 	return result;
 }
@@ -361,11 +399,43 @@ void CardManager::AllCardLoad(const std::string& file) {
 			std::string fileName(fileName8.begin(), fileName8.end());
 
 			cardFiles.push_back({modName, path.string(), fileName});
-			std::unique_ptr<CardData> loadCard = std::make_unique<CardData>();
-			loadCard->LoadCardFile(path.string());
-			CardDataMap.insert(std::pair(fileName, std::move(loadCard)));
+			std::unique_ptr<CardData> cardData = std::make_unique<CardData>();
+			cardData->LoadCardFile(path.string());
+			CardDataMap.insert(std::pair(fileName, std::move(cardData)));
 		}
 	}
 
 
+}
+
+Vector2 CardManager::GetCardPos(CardZone zone, int index) {
+	if (zone == CardZone::Hand) {
+		return HandCardPos(index);
+	} else if (zone == CardZone::Open) {
+		return OpenCardPos(index);
+	} else if (zone == CardZone::Cemetery) {
+		return CemeteryCardPos();
+	}
+
+	return Vector2();
+}
+
+Vector2 CardManager::HandCardPos(int index) {
+	Vector2 pos;
+	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
+	pos.x = 640.0f - (size / 2.0f - index) * 122.0f;
+	pos.y = 720.0f - 80.0f;
+	return pos;
+}
+
+Vector2 CardManager::OpenCardPos(int index) {
+	Vector2 pos;
+	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
+	pos.x = 640.0f - (size / 2.0f - index) * 126.0f;
+	pos.y = 240.0f;
+	return pos;
+}
+
+Vector2 CardManager::CemeteryCardPos() {
+	return Vector2(-100.0f, 80.0f);
 }

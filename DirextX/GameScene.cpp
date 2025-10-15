@@ -18,13 +18,7 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	SpriteCommon::GetInstance()->PreDraw();
 
 	cardManager_->Draw();
 
-	TextCommon::GetInstance()->PreDraw();
-
-	cardManager_->TextDraw();
-	
-	TextCommon::GetInstance()->PostDraw();
 }

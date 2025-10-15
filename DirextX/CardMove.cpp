@@ -34,3 +34,7 @@ void CardMove::Update() {
 	Vector2 newPos = Lerp(startPos_, pos_, 1.0f - t2 * t2 * t2);
 	card_->SetPos(newPos);
 }
+
+void CardMove::SetStart() {
+	startPos_ = card_->GetPos();
+}

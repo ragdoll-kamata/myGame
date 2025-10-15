@@ -240,6 +240,8 @@
     <ClCompile Include="CardTypeCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
+    <ClCompile Include="HandCardMove.cpp" />
+    <ClCompile Include="NestMoveCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -526,6 +528,8 @@
     <ClInclude Include="CardTypeCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
+    <ClInclude Include="HandCardMove.h" />
+    <ClInclude Include="NestMoveCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

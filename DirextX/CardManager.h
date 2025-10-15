@@ -47,6 +47,8 @@ private:
 
 	void PlayerInput();
 
+	
+
 	void OpenDeckAdjustment();
 
 	
@@ -57,14 +59,17 @@ private:
 public:
 	void HandAdjustment();
 
-	std::vector<Card*> OpenDeck(int num);
-
-
-
+	std::vector<Card*> OpenDeck(int num, bool isCommand = false);
 
 	void MoveCard(Card* card, CardZone cardZone);
 public:
 	void AllCardLoad(const std::string& file);
+
+	Vector2 GetCardPos(CardZone zone, int index);
+private:
+	Vector2 HandCardPos(int index);
+	Vector2 OpenCardPos(int index);
+	Vector2 CemeteryCardPos();
 private:
 	// 乱数生成器
 	std::mt19937 g;

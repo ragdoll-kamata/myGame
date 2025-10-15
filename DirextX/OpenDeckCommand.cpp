@@ -2,6 +2,7 @@
 #include "CardManager.h"
 #include "ElementFilterCommand.h"
 #include "ErrorMessage.h"
+#include "CardMove.h"
 
 bool OpenDeckCommand::Initialize(std::string num, std::string card) {
 	if (card.front() != '$') {
@@ -31,11 +32,19 @@ int OpenDeckCommand::Execute(Card* card) {
 		return -1; // Error: card is null
 	}
 	int number = ParseInt(num_, card);
-	std::vector<Card*> ca = card->GetCardManager()->OpenDeck(number);
+	std::vector<Card*> ca = card->GetCardManager()->OpenDeck(number, true);
+	int i = 0;
+	std::vector<std::unique_ptr<CardMove>> moves;
 	for (Card* c : ca) {
-
+		Vector2 pos = card->GetCardManager()->GetCardPos(CardZone::Open, i);
+		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
+		move->Initialize(c, pos, 0.5f, true);
+		moves.push_back(std::move(move));
 		card->AddCard(card_, c);
+		c->SetIsDraw(true);
+		i++;
 	}
+	card->GetCardManager()->AddCardMove(std::move(moves));
 	return 0;
 }
 

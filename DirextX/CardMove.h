@@ -5,12 +5,15 @@ class CardMove {
 public:
 	~CardMove();
 	void Initialize(Card* card, Vector2 pos, float time, float isEndDraw);
-	void Update();
+	virtual void Update();
+
+	void SetStart();
+
 	bool IsEnd() {
 		return isEnd_;
 	}
 
-private:
+protected:
 	Vector2 pos_;
 	Vector2 startPos_;
 	Card* card_;
