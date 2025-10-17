@@ -63,13 +63,14 @@ bool CardManager::StartCardSet() {
 
 void CardManager::Update(TrunState& trunState) {
 	trunMap[trunState](trunState);
+
 	for (const auto& card : allCards) {
 		card->Update();
 	}
 
-	ExecutionCard();
-
+	bool isMove = false;
 	if (cardMoves.size() > 0) {
+		isMove = true;
 		bool isEnd = false;
 		for (const auto& card : cardMoves[0]) {
 			card->Update();
@@ -78,6 +79,9 @@ void CardManager::Update(TrunState& trunState) {
 			}
 		}
 		if (!isEnd) {
+			for (const auto& card : cardMoves[0]) {
+				card->End();
+			}
 			cardMoves.front().clear();
 			cardMoves.erase(cardMoves.begin());
 			if (cardMoves.size() > 0) {
@@ -87,8 +91,11 @@ void CardManager::Update(TrunState& trunState) {
 			}
 		}
 	}
+	if (!isMove) {
+		ExecutionCard();
+	}
 
-
+	
 
 	endTurnButton->Update();
 	startOpenButton->Update();
@@ -225,6 +232,7 @@ void CardManager::PlayerInput() {
 
 		if (input->PressMouseButton(0)) {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
+			zoneMap[CardZone::Hand][holdCardIndex]->SetIsMove(false);
 		} else if (input->ReleaseMouseButton(0)) {
 			if (cardExecutionField->IsOnCollision(mousePos)) {
 				zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
@@ -296,7 +304,11 @@ void CardManager::OpenDeckAdjustment() {
 	}
 	std::vector<std::unique_ptr<CardMove>> moves;
 	std::unique_ptr<HandCardMove> handMove = std::make_unique<HandCardMove>();
-	handMove->Initialize(openCards.front(), 0.3f);
+	std::vector<Card*> handCards;
+	for (const auto& card : addCards) {
+		handCards.push_back(card);
+	}
+	handMove->Initialize(handCards[0], handCards, 0.3f);
 	moves.push_back(std::move(handMove));
 	AddCardMove(std::move(moves));
 
@@ -316,7 +328,14 @@ void CardManager::HandAdjustment() {
 	int i = 0;
 	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
 	for (const auto& card : zoneMap[CardZone::Hand]) {
-
+		if (card->IsCommandMove()) {
+			size--;
+		}
+	}
+	for (const auto& card : zoneMap[CardZone::Hand]) {
+		if(card->IsCommandMove()){
+			continue;
+		}
 		pos = HandCardPos(i);
 		card->SetNewPos(pos);
 		card->SetIsDraw(true);

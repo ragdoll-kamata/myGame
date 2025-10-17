@@ -68,7 +68,12 @@ public:
 	void SetIsMove(bool isMove) {
 		this->isMove = isMove;
 	}
-
+	void SetIsCommandMove(bool isCommandMove) {
+		isCommandMove_ = isCommandMove;
+	}
+	bool IsCommandMove() const {
+		return isCommandMove_;
+	}
 private:
 	std::unique_ptr<Text> name_ = nullptr;
 	std::unique_ptr<Text> description_ = nullptr;
@@ -91,6 +96,7 @@ private:
 	Vector2 pos = {-100.0f, -100.0f};
 	const Vector2 textZure = {0.0f, -80.0f};
 	bool isMove = false;
+	bool isCommandMove_ = false;
 public:
 
 	void SetPos(Vector2& pos);

@@ -26,7 +26,7 @@ int AddHandCommand::Execute(Card* card) {
 	if (car.size() <= 0) {
 		time = 0.0f;
 	}
-	move->Initialize(card, time);
+	move->Initialize(card, car, time);
 	std::vector<std::unique_ptr<CardMove>> moves;
 	moves.push_back(std::move(move));
 	card->GetCardManager()->AddCardMove(std::move(moves));

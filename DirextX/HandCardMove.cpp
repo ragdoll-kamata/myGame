@@ -4,13 +4,20 @@
 #include "DeltaTime.h"
 
 
-void HandCardMove::Initialize(Card* card, float time) {
+void HandCardMove::Initialize(Card* card, std::vector<Card*> cards, float time) {
 	card_ = card;
+	cards_ = cards;
 	time_ = time;
+	for(const auto& card : cards_){
+		card->SetIsCommandMove(true);
+	}
 }
 
 void HandCardMove::Update() {
 	if (!isStart_) {
+		for (const auto& card : cards_) {
+			card->SetIsCommandMove(false);
+		}
 		card_->GetCardManager()->HandAdjustment();
 		isStart_ = true;
 	}
@@ -21,4 +28,5 @@ void HandCardMove::Update() {
 	}
 	
 }
+
 

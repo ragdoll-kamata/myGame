@@ -9,6 +9,8 @@ public:
 
 	void SetStart();
 
+	void End();
+
 	bool IsEnd() {
 		return isEnd_;
 	}

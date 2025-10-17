@@ -15,6 +15,7 @@ void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw) 
 	nowTime_ = 0.0f;
 	isEnd_ = false;
 	startPos_ = card_->GetPos();
+	//card_->SetIsCommandMove(true);
 }
 
 void CardMove::Update() {
@@ -30,11 +31,21 @@ void CardMove::Update() {
 		return;
 	}
 	float t = nowTime_ / time_;
-	float t2 =  1.0f -t;
+	float t2 = 1.0f - t;
 	Vector2 newPos = Lerp(startPos_, pos_, 1.0f - t2 * t2 * t2);
 	card_->SetPos(newPos);
 }
 
 void CardMove::SetStart() {
+	if(card_ == nullptr){
+		return;
+	}
 	startPos_ = card_->GetPos();
+}
+
+void CardMove::End() {
+	if (card_ == nullptr) {
+		return;
+	}
+	card_->SetIsCommandMove(false);
 }

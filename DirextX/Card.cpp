@@ -29,7 +29,7 @@ bool Card::InitializeCard(CardData* loadCard) {
 }
 
 void Card::Update() {
-	if (isMove) {
+	if (isMove && !isCommandMove_) {
 		sprite_->SetPosition(MathUtility::Lerp(sprite_->GetPosition(), pos, 0.15f));
 		name_->SetPosition(MathUtility::Lerp(name_->GetPosition(), pos - textZure, 0.15f));
 		if (MathUtility::Length(sprite_->GetPosition() - pos) <= 1.0f) {
