@@ -10,6 +10,8 @@ public:
 		Type,
 		Int,
 		Name,
+		Bool,
+		Operators,
 	};
 	struct ParseBoolData {
 		ParseBoolType type;
