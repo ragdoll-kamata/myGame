@@ -70,10 +70,11 @@ bool Card::IsOnCollision(Vector2 pos) {
 	return false;
 }
 
-void Card::Effect() {
+bool Card::Effect() {
 	if(!cardData_->CardFunctionLoad(this, "効果")) {
 		// エラー処理
 	}
+	return true;
 }
 
 void Card::SetPos(Vector2& pos) {

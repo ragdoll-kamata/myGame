@@ -4,7 +4,8 @@
 #include "DeltaTime.h"
 
 
-void HandCardMove::Initialize(Card* card, std::vector<Card*> cards, float time) {
+void HandCardMove::Initialize(CardManager* cardManager, Card* card, std::vector<Card*> cards, float time) {
+	cardManager_ = cardManager;
 	card_ = card;
 	cards_ = cards;
 	time_ = time;
@@ -18,7 +19,7 @@ void HandCardMove::Update() {
 		for (const auto& card : cards_) {
 			card->SetIsCommandMove(false);
 		}
-		card_->GetCardManager()->HandAdjustment();
+		cardManager_->HandAdjustment();
 		isStart_ = true;
 	}
 	nowTime_ += DeltaTime::GetInstance()->GetDeltaTime();

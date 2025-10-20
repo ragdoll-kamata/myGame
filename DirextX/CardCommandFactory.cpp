@@ -16,7 +16,7 @@
 
 #include "ErrorMessage.h"
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, std::vector<std::string> commandTokens) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, std::vector<std::string>& commandTokens) {
 	
 	// 初期設定コマンド
 	if (key == "カード名") {
@@ -145,6 +145,10 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 	}
 
 	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateIfCommand(CardData* cardData, int nestID, std::vector<std::string> commandTokens) {
+	return std::unique_ptr<CardCommand>();
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateNestMoveCommand(int index) {

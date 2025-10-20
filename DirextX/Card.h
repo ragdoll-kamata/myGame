@@ -44,14 +44,9 @@ public:
 
 	bool IsOnCollision(Vector2 pos);
 
-	void Effect();
+	bool Effect();
 public:
-	void SetCardManager(CardManager* cardManager) {
-		cardManager_ = cardManager;
-	}
-	CardManager* GetCardManager() const {
-		return cardManager_;
-	}
+
 	void SetZone(CardZone zone) {
 		zone_ = zone;
 	}

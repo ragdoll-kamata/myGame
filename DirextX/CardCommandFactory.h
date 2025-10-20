@@ -2,9 +2,10 @@
 #include<memory>
 #include "CardCommand.h"
 
+class CardData;
 namespace CardCommandFactory
 {
-	std::unique_ptr<CardCommand> CreateCommand(std::string key, std::vector<std::string> commandTokens);
+	std::unique_ptr<CardCommand> CreateCommand(std::string key, std::vector<std::string>& commandTokens);
 
 	std::unique_ptr<CardCommand> CreareCardNameCommand(std::string cardName);
 	std::unique_ptr<CardCommand> CreareCardTypeCommand(std::string cardType);
@@ -22,6 +23,8 @@ namespace CardCommandFactory
 
 	std::unique_ptr<CardCommand> CreateElementFilterCommand(std::string element, std::string card, std::string card2);
 
+
+	std::unique_ptr<CardCommand> CreateIfCommand(CardData* cardData, int nestID, std::vector<std::string> commandTokens);
 
 	std::unique_ptr<CardCommand> CreateNestMoveCommand(int index);
 }

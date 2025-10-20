@@ -20,12 +20,12 @@ int AddCemeteryCommand::Execute(Card* card) {
 	std::vector<Card*> car = card->GetCards(card_);
 	std::vector<std::unique_ptr<CardMove>> moves;
 	for (Card* c : car) {
-		Vector2 pos = card->GetCardManager()->GetCardPos(CardZone::Cemetery, 0);
+		Vector2 pos = cardManager_->GetCardPos(CardZone::Cemetery, 0);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 		move->Initialize(c, pos, 0.5f, true);
 		moves.push_back(std::move(move));
-		card->GetCardManager()->MoveCard(c, CardZone::Cemetery);
+		cardManager_->MoveCard(c, CardZone::Cemetery);
 	}
-	card->GetCardManager()->AddCardMove(std::move(moves));
+	cardManager_->AddCardMove(std::move(moves));
 	return 0;
 }

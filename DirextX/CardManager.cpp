@@ -49,7 +49,6 @@ bool CardManager::StartCardSet() {
 			for (int i = 0; i < 15; i++) {
 				std::unique_ptr<Card> card(new Card());
 				card->InitializeCard(CardDataMap[line].get());
-				card->SetCardManager(this);
 				zoneMap[CardZone::Deck].push_back(card.get());
 				card->SetZone(CardZone::Deck);
 				allCards.push_back(std::move(card));
@@ -95,7 +94,7 @@ void CardManager::Update(TrunState& trunState) {
 		ExecutionCard();
 	}
 
-	
+
 
 	endTurnButton->Update();
 	startOpenButton->Update();
@@ -195,6 +194,9 @@ void CardManager::MainTrun(TrunState& trunState) {
 
 void CardManager::EndTrun(TrunState& trunState) {
 	isHoldCard = false;
+	if (!zoneMap[CardZone::Execution].empty()) {
+		return;
+	}
 	std::vector<Card*> handCards = zoneMap[CardZone::Hand];
 	std::vector<std::unique_ptr<CardMove>> moves;
 	for (auto& card : handCards) {
@@ -206,9 +208,11 @@ void CardManager::EndTrun(TrunState& trunState) {
 	if (!moves.empty()) {
 		AddCardMove(std::move(moves));
 	}
-	if (cardMoves.empty()) {
-		trunState = TrunState::Start;
+	if (!cardMoves.empty()) {
+		return;
 	}
+
+	trunState = TrunState::Start;
 
 }
 
@@ -302,13 +306,14 @@ void CardManager::OpenDeckAdjustment() {
 			}
 		}
 	}
+	// 手札に加えるカードの移動アニメーション
 	std::vector<std::unique_ptr<CardMove>> moves;
 	std::unique_ptr<HandCardMove> handMove = std::make_unique<HandCardMove>();
 	std::vector<Card*> handCards;
 	for (const auto& card : addCards) {
 		handCards.push_back(card);
 	}
-	handMove->Initialize(handCards[0], handCards, 0.3f);
+	handMove->Initialize(this, handCards[0], handCards, 0.3f);
 	moves.push_back(std::move(handMove));
 	AddCardMove(std::move(moves));
 
@@ -333,7 +338,7 @@ void CardManager::HandAdjustment() {
 		}
 	}
 	for (const auto& card : zoneMap[CardZone::Hand]) {
-		if(card->IsCommandMove()){
+		if (card->IsCommandMove()) {
 			continue;
 		}
 		pos = HandCardPos(i);
@@ -358,8 +363,9 @@ void CardManager::ReShuffleDeck() {
 
 void CardManager::ExecutionCard() {
 	if (!zoneMap[CardZone::Execution].empty()) {
-		zoneMap[CardZone::Execution].front()->Effect();
-		MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+		if (zoneMap[CardZone::Execution].front()->Effect()) {
+			MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+		}
 	}
 }
 

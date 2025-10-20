@@ -19,17 +19,17 @@ int AddHandCommand::Execute(Card* card) {
 	}
 	std::vector<Card*> car = card->GetCards(card_);
 	for (Card* c : car) {
-		card->GetCardManager()->MoveCard(c, CardZone::Hand);
+		cardManager_->MoveCard(c, CardZone::Hand);
 	}
 	std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
 	float time = 0.4f;
 	if (car.size() <= 0) {
 		time = 0.0f;
 	}
-	move->Initialize(card, car, time);
+	move->Initialize(cardManager_, card, car, time);
 	std::vector<std::unique_ptr<CardMove>> moves;
 	moves.push_back(std::move(move));
-	card->GetCardManager()->AddCardMove(std::move(moves));
+	cardManager_->AddCardMove(std::move(moves));
 
 	return 0;
 }

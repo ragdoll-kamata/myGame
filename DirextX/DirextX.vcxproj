@@ -53,6 +53,7 @@
     <ClCompile Include="engine\base\IndexBuffer.cpp" />
     <ClCompile Include="CardData.cpp" />
     <ClCompile Include="HandCardMove.cpp" />
+    <ClCompile Include="IfCommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MathUtility.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="engine\base\IndexBuffer.h" />
     <ClInclude Include="CardData.h" />
     <ClInclude Include="HandCardMove.h" />
+    <ClInclude Include="IfCommand.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />

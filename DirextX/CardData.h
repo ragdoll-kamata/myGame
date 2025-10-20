@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <queue>
 #include <unordered_map>
 #include <functional>
 #include <memory>
@@ -28,6 +29,8 @@ public:
 	void LoadCardFile(std::string filename);
 
 	bool CardFunctionLoad(Card* card, std::string functionName);
+
+	std::vector<CardCommand*> GetCardCommands(int functionID);
 
 private:
 	bool FunctionLoad(Card* card, int functionID);
@@ -65,6 +68,8 @@ private:
 	int newNestID = 1;
 
 	std::stack<int> nestStack;
+
+	std::queue<std::function<bool()>> commandQueue;
 	
 
 

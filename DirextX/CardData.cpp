@@ -41,6 +41,16 @@ bool CardData::CardFunctionLoad(Card* card, std::string functionName) {
 	return false;
 }
 
+std::vector<CardCommand*> CardData::GetCardCommands(int functionID) {
+	std::vector<CardCommand*> commands;
+	if (cardCommands.contains(functionID)) {
+		for (const auto& command : cardCommands[functionID]) {
+			commands.push_back(command.get());
+		}
+	}
+	return commands;
+}
+
 bool CardData::FunctionLoad(Card* card, int functionID) {
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
@@ -93,7 +103,7 @@ std::vector<std::string> CardData::ParseLine(std::string& text) {
 			}
 			tokens.push_back(std::string(1, c));
 		} else if (c == '/') {
-			//
+			// /は処理済み
 		} else {
 			// その他の文字はトークンに追加
 			token.push_back(c);
@@ -114,7 +124,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 	TokenGroup commandTokens;
 	commandTokens.lineNumber = leneNum;
 	for (const auto& token : tokens) {
-		// ネストの開始と終了はそれ自体がトークン
+		// ネストの開始
 		if (token == "{") {
 			if (!commandTokens.tokens.empty()) {
 				if (commandTokens.type == TokenGroupType::Command) {
@@ -237,7 +247,35 @@ bool CardData::AdaptationCommand(int i) {
 }
 
 bool CardData::AdaptationIf(int i) {
-	return false;
+	// ネストの中でないとifは使えない
+	if (nestStack.empty()) {
+		ErrorMessage::GetInstance()->SetMessage(U"ネストに入ってないよ");
+		return false;
+	}
+	cardCommands[nestStack.top()].push_back(nullptr); // 仮のNULLコマンドを追加
+	int commandIndex = static_cast<int>(cardCommands[nestStack.top()].size()) - 1;
+	int nextNestID = newNestID;
+	int nestIndex = nestStack.top();
+	std::vector<std::string> conditionTokens;
+	for (const auto& token : tokenGroups[i].tokens) {
+		// ifの条件式
+		if (token != "if") {
+			conditionTokens.push_back(token);
+		}
+	}
+	commandQueue.push([this, commandIndex, nestIndex, nextNestID, conditionTokens]() {
+		if (cardCommands[nextNestID].size() <= 0) {
+			ErrorMessage::GetInstance()->SetMessage(U"ifの中身がないよ");
+			return false;
+		}
+		std::unique_ptr<CardCommand> ifCommand = CardCommandFactory::CreateIfCommand(this, nextNestID, conditionTokens);
+		if (ifCommand == nullptr) {
+			return false;
+		}
+		cardCommands[nestIndex][commandIndex] = std::move(ifCommand);
+		return false;
+	});
+	return true;
 }
 
 bool CardData::AdaptationElseIf(int i) {
