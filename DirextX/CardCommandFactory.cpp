@@ -14,6 +14,9 @@
 
 #include "ElementFilterCommand.h"
 
+#include "IfCommand.h"
+#include "ReturnCommand.h"
+
 #include "ErrorMessage.h"
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, std::vector<std::string>& commandTokens) {
@@ -148,11 +151,19 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateIfCommand(CardData* cardData, int nestID, std::vector<std::string> commandTokens) {
-	return std::unique_ptr<CardCommand>();
+	std::unique_ptr<IfCommand> cmd = std::make_unique<IfCommand>();
+	if (cmd->Initialize(cardData, nestID, commandTokens)) {
+		return cmd;
+	}
+	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateReturnCommand() {
+	std::unique_ptr<ReturnCommand> cmd = std::make_unique<ReturnCommand>();
+	return cmd;
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateNestMoveCommand(int index) {
-
 	return std::unique_ptr<CardCommand>();
 }
 

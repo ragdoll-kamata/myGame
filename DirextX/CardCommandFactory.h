@@ -26,5 +26,7 @@ namespace CardCommandFactory
 
 	std::unique_ptr<CardCommand> CreateIfCommand(CardData* cardData, int nestID, std::vector<std::string> commandTokens);
 
+	std::unique_ptr<CardCommand> CreateReturnCommand();
+
 	std::unique_ptr<CardCommand> CreateNestMoveCommand(int index);
 }

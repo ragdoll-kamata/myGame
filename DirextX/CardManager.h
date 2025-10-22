@@ -59,6 +59,10 @@ private:
 public:
 	void HandAdjustment();
 
+	std::vector<Card*> GetZoneCards(CardZone zone) {
+		return zoneMap[zone];
+	}
+
 	std::vector<Card*> OpenDeck(int num, bool isCommand = false);
 
 	void MoveCard(Card* card, CardZone cardZone);

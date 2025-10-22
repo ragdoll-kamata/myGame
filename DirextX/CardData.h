@@ -17,6 +17,7 @@ enum class TokenGroupType {
 	Function,
 	NestStart,
 	NestEnd,
+	Return,
 	None,
 };
 struct TokenGroup {
@@ -52,6 +53,7 @@ private:
 	bool AdaptationFunction(int i);
 	bool AdaptationNestStart(int i);
 	bool AdaptationNestEnd(int i);
+	bool AdaptationReturn(int i);
 private:
 	std::unordered_map<TokenGroupType, std::function<bool(int)>> tokenGroupFunctions{
 		{TokenGroupType::Command,   [&](int i) {return AdaptationCommand(i);   }},
@@ -63,6 +65,7 @@ private:
 		{TokenGroupType::Function,  [&](int i) {return AdaptationFunction(i);  }},
 		{TokenGroupType::NestStart, [&](int i) {return AdaptationNestStart(i); }},
 		{TokenGroupType::NestEnd,   [&](int i) {return AdaptationNestEnd(i);   }},
+		{TokenGroupType::Return,    [&](int i) {return AdaptationReturn(i);    }},
 	};
 	std::vector<TokenGroup> tokenGroups;
 	int newNestID = 1;

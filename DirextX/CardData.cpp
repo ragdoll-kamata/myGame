@@ -30,6 +30,10 @@ void CardData::LoadCardFile(std::string filename) {
 			return; // エラーが発生した場合は処理を中断
 		}
 	}
+	while (!commandQueue.empty()) {
+		commandQueue.front()();
+		commandQueue.pop();
+	}
 }
 
 bool CardData::CardFunctionLoad(Card* card, std::string functionName) {
@@ -55,9 +59,12 @@ bool CardData::FunctionLoad(Card* card, int functionID) {
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
 			int i = command->Execute(card);
-			if (i >= 0) {
+			if (i >= 0 || i <= -2) {
 				if (i > 0) {
 					FunctionLoad(card, i);
+				}
+				if (i == -3) {
+					return true;
 				}
 			} else {
 				return false;
@@ -150,6 +157,15 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			tokenGroups.push_back({{token}, TokenGroupType::NestEnd});
 			continue;
 		}
+		if (token == "return") {
+			if(!commandTokens.tokens.empty()) {
+				ErrorMessage::GetInstance()->SetMessage(U"returnの前に何か書いてあるのはおかしいよ");
+				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
+				return;
+			}
+			tokenGroups.push_back({{token}, TokenGroupType::Return});
+			continue;
+		}
 		// コマンドの引数
 		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
 			commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
@@ -192,6 +208,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			commandTokens.tokens.push_back(token);
 			continue;
 		}
+
 		// コマンド
 		if (token == ":") {
 			if (commandTokens.type == TokenGroupType::Command) {
@@ -202,6 +219,18 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			commandTokens.tokens.push_back(preToken);
 			commandTokens.tokens.push_back(token);
 			commandTokens.type = TokenGroupType::Command;
+		}
+		if(token.front() == '#' || token.front() == '$') {
+			if (commandTokens.type == TokenGroupType::None) {
+				// コマンドがまだ決まっていない場合、コマンド名として扱う
+				commandTokens.tokens.push_back(token);
+				commandTokens.type = TokenGroupType::Command;
+			} else {
+				// ここに来るのはおかしい
+				ErrorMessage::GetInstance()->SetMessage(U"変数はコマンド名にできないよ");
+				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
+				return;
+			}
 		}
 		preToken = token;
 	}
@@ -273,7 +302,7 @@ bool CardData::AdaptationIf(int i) {
 			return false;
 		}
 		cardCommands[nestIndex][commandIndex] = std::move(ifCommand);
-		return false;
+		return true;
 	});
 	return true;
 }
@@ -336,5 +365,16 @@ bool CardData::AdaptationNestEnd(int i) {
 	//	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateNestMoveCommand(nestStack.top());
 	//	cardCommands[index].push_back(std::move(command));
 	//}
+	return true;
+}
+
+bool CardData::AdaptationReturn(int i) {
+	// ネストの中でないとreturnは使えない
+	if (nestStack.empty()) {
+		ErrorMessage::GetInstance()->SetMessage(U"ネストに入ってないよ");
+		return false;
+	}
+	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateReturnCommand();
+	cardCommands[nestStack.top()].push_back(std::move(command));
 	return true;
 }

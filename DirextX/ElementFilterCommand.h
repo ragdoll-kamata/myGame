@@ -8,6 +8,6 @@ private:
 	std::string filterCard_;
 	std::string card_;
 	CardElement element_;
-
+	bool isCardValue_ = false;
 };
 

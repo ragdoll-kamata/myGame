@@ -80,6 +80,7 @@
     <ClCompile Include="engine\base\SkinCluster.cpp" />
     <ClCompile Include="NestMoveCommand.cpp" />
     <ClCompile Include="OpenDeckCommand.cpp" />
+    <ClCompile Include="ReturnCommand.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="engine\Scene\SceneManager.cpp" />
     <ClCompile Include="engine\2d\Text.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="engine\Scene\BaseScene.h" />
     <ClInclude Include="NestMoveCommand.h" />
     <ClInclude Include="OpenDeckCommand.h" />
+    <ClInclude Include="ReturnCommand.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="engine\Scene\SceneManager.h" />
     <ClInclude Include="engine\2d\Text.h" />

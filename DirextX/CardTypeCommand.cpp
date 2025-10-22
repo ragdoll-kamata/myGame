@@ -5,7 +5,7 @@ bool CardTypeCommand::Initialize(const std::string& type) {
 		ErrorMessage::GetInstance()->SetMessage(U"タイプが空だよ");
 		return false; // Invalid type
 	}
-	type_ = ParseCardType(type);
+	type_ = ParseCardType(type, nullptr);
 	if (type_ == CardType::Error) {
 		ErrorMessage::GetInstance()->SetMessage(U"そんなタイプはないよ");
 		return false; // Parsing failed

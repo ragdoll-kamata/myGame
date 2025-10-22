@@ -17,14 +17,24 @@ public:
 		ParseBoolType type;
 		std::string value;
 	};
+	struct ParseBoolGroup {
+		std::vector<ParseBoolData> datas;
+		bool chein; // true: &&, false: ||
+	};
+	struct ParseBoolResult {
+		std::vector<ParseBoolGroup> groups;
+	};
+
 	virtual int Execute(Card* card) = 0;
 
 	int ParseInt(std::string num, Card* card);
-	CardElement ParseCardElement(std::string element, Card* card = nullptr);
-	CardType ParseCardType(std::string type);
+	CardElement ParseCardElement(std::string element, Card* card);
+	CardType ParseCardType(std::string type, Card* card);
 	std::u32string Utf8ToU32(const std::string& str);
 
-	bool ParseBool(std::vector<std::string>& boolTokens, Card* card);
+	ParseBoolResult ParseBool(std::vector<std::string>& boolTokens);
+
+	bool ExecuteBool(ParseBoolResult& parseBoolResult, Card* card);
 
 	static void SetCardManager(CardManager* cardManager) {
 		cardManager_ = cardManager;

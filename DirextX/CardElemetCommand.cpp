@@ -6,7 +6,7 @@ bool CardElemetCommand::Initialize(const std::string& element) {
 		ErrorMessage::GetInstance()->SetMessage(U"名前ないよ");
 		return false; // Initialization failed due to empty name
 	}
-	element_ = ParseCardElement(element);
+	element_ = ParseCardElement(element, nullptr);
 	if (element_ == CardElement::Error) {
 		ErrorMessage::GetInstance()->SetMessage(U"そんな属性ないよ");
 		return false;

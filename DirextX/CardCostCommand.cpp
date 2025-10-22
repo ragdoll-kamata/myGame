@@ -15,7 +15,7 @@ bool CardCostCommand::Initialize(const std::string& element, const std::string& 
 		}
 	}
 	num_ = num;
-	element_ = ParseCardElement(element);
+	element_ = ParseCardElement(element, nullptr);
 	if (element_ == CardElement::Error) {
 		ErrorMessage::GetInstance()->SetMessage(U"そんな属性ないよ");
 		return false;

@@ -46,7 +46,7 @@ bool CardManager::StartCardSet() {
 	int lineNumber = 0;
 	while (std::getline(file, line)) {
 		if (CardDataMap.contains(line)) {
-			for (int i = 0; i < 15; i++) {
+			for (int i = 0; i < 5; i++) {
 				std::unique_ptr<Card> card(new Card());
 				card->InitializeCard(CardDataMap[line].get());
 				zoneMap[CardZone::Deck].push_back(card.get());

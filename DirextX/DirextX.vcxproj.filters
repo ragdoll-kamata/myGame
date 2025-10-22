@@ -243,6 +243,7 @@
     <ClCompile Include="HandCardMove.cpp" />
     <ClCompile Include="NestMoveCommand.cpp" />
     <ClCompile Include="IfCommand.cpp" />
+    <ClCompile Include="ReturnCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -532,6 +533,7 @@
     <ClInclude Include="HandCardMove.h" />
     <ClInclude Include="NestMoveCommand.h" />
     <ClInclude Include="IfCommand.h" />
+    <ClInclude Include="ReturnCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

@@ -34,14 +34,17 @@ int OpenDeckCommand::Execute(Card* card) {
 	int number = ParseInt(num_, card);
 	std::vector<Card*> ca = cardManager_->OpenDeck(number, true);
 	int i = 0;
+	std::vector<Card*> openCards = cardManager_->GetZoneCards(CardZone::Open);
 	std::vector<std::unique_ptr<CardMove>> moves;
-	for (Card* c : ca) {
+	for(Card* c : ca) {
+		card->AddCard(card_, c);
+		c->SetIsDraw(true);
+	}
+	for (Card* c : openCards) {
 		Vector2 pos = cardManager_->GetCardPos(CardZone::Open, i);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 		move->Initialize(c, pos, 0.5f, true);
 		moves.push_back(std::move(move));
-		card->AddCard(card_, c);
-		c->SetIsDraw(true);
 		i++;
 	}
 	cardManager_->AddCardMove(std::move(moves));
