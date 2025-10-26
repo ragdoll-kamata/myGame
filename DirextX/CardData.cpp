@@ -172,6 +172,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			commandTokens.type == TokenGroupType::For) {
 			if (token == ",") continue; // コマンドの引数はカンマで区切る
 			commandTokens.tokens.push_back(token);
+			continue;
 		}
 		// 関数定義
 		if (token.front() == '@') {

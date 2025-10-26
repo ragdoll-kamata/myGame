@@ -29,18 +29,18 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 
 		}
 		// カード変数の場合
-		if(num.front() == '$') {
-			if(card == nullptr) {
+		if (num.front() == '$') {
+			if (card == nullptr) {
 				return -1;
 			}
 			size_t pos = num.find('.');
 			std::string str = num.substr(pos + 1);
-			if(str == "枚数") {
+			if (str == "枚数") {
 				std::string key = num.substr(0, pos);
 				std::vector<Card*> cards = card->GetCards(key);
 				return static_cast<int>(cards.size());
 			}
-			
+
 		}
 
 
@@ -95,7 +95,7 @@ CardType CardCommand::ParseCardType(std::string type, Card* card) {
 		return CardType::Building;
 	}
 
-	if(type.front() == '$') {
+	if (type.front() == '$') {
 		if (card == nullptr) {
 			return CardType::Error;
 		}
@@ -123,34 +123,40 @@ CardCommand::ParseBoolResult CardCommand::ParseBool(std::vector<std::string>& bo
 	parseBoolResult.groups.push_back(ParseBoolGroup());
 	for (const auto& token : boolTokens) {
 		ParseBoolData data;
+		data.value = token;
+
+		if (token.front() == '!' && token != "!=") {
+			data.reverse = true;
+			data.value = token.substr(1);
+		}
+
 		//// 結合子の処理
 		if (token == "&&") {
-			parseBoolResult.groups[index].chein = true;
+			parseBoolResult.groups[index].chain = true;
 			parseBoolResult.groups.push_back(ParseBoolGroup());
 			index++;
 			continue;
 		}
 		if (token == "||") {
-			parseBoolResult.groups[index].chein = false;
+			parseBoolResult.groups[index].chain = false;
 			parseBoolResult.groups.push_back(ParseBoolGroup());
 			index++;
 			continue;
 		}
 		if (token == "==" || token == "<=" || token == "<" || token == ">=" || token == ">" || token == "!=") {
 			data.type = ParseBoolType::Operators;
-			data.value = token;
-			parseBoolResult.groups[index].datas.push_back(data);
+			parseBoolResult.groups[index].dates.push_back(data);
 			continue;
 		}
 
 
 		//// 変換できる先を探す
-		
+
 		// 変数の場合
 		if (token.front() == '#') {
 			data.type = ParseBoolType::Int;
 			data.value = token;
-			parseBoolResult.groups[index].datas.push_back(data);
+			parseBoolResult.groups[index].dates.push_back(data);
 			continue;
 		}
 		if (token.front() == '$') {
@@ -158,47 +164,53 @@ CardCommand::ParseBoolResult CardCommand::ParseBool(std::vector<std::string>& bo
 			std::string str = token.substr(pos + 1);
 			if (str == "枚数") {
 				data.type = ParseBoolType::Int;
-				data.value = token;
-				parseBoolResult.groups[index].datas.push_back(data);
+				parseBoolResult.groups[index].dates.push_back(data);
 				continue;
 			}
 			if (str == "属性") {
 				data.type = ParseBoolType::Element;
-				data.value = token;
-				parseBoolResult.groups[index].datas.push_back(data);
+				parseBoolResult.groups[index].dates.push_back(data);
 				continue;
 			}
 			if (str == "タイプ") {
 				data.type = ParseBoolType::Type;
-				data.value = token;
-				parseBoolResult.groups[index].datas.push_back(data);
+				parseBoolResult.groups[index].dates.push_back(data);
 				continue;
 			}
 
 		}
 		// 固定値の場合
+
+		if (token == "true" || token == "True") {
+			data.type = ParseBoolType::Bool;
+			parseBoolResult.groups[index].dates.push_back(data);
+			continue;
+		}
+		if (token == "false" || token == "False") {
+			data.type = ParseBoolType::Bool;
+			parseBoolResult.groups[index].dates.push_back(data);
+			continue;
+		}
+
 		CardElement element = ParseCardElement(token, nullptr);
-		
-		if(element != CardElement::Error) {
+
+		if (element != CardElement::Error) {
 			data.type = ParseBoolType::Element;
-			data.value = token;
-			parseBoolResult.groups[index].datas.push_back(data);
+			parseBoolResult.groups[index].dates.push_back(data);
 			continue;
 		}
 		CardType type = ParseCardType(token, nullptr);
 		if (type != CardType::Error) {
 			data.type = ParseBoolType::Type;
-			data.value = token;
-			parseBoolResult.groups[index].datas.push_back(data);
+			parseBoolResult.groups[index].dates.push_back(data);
 			continue;
 		}
 		int i = ParseInt(token, nullptr);
 		if (i != -1) {
 			data.type = ParseBoolType::Int;
-			data.value = token;
-			parseBoolResult.groups[index].datas.push_back(data);
+			parseBoolResult.groups[index].dates.push_back(data);
 			continue;
-		} 
+		}
 		return ParseBoolResult();
 	}
 	return parseBoolResult;
@@ -207,57 +219,85 @@ CardCommand::ParseBoolResult CardCommand::ParseBool(std::vector<std::string>& bo
 bool CardCommand::ExecuteBool(ParseBoolResult& parseBoolResult, Card* card) {
 	int index = 0;
 	for (const auto& group : parseBoolResult.groups) {
-		if (group.datas.size() != 3) {
+
+		if (group.dates.size() != 3 && group.dates[0].type != ParseBoolType::Bool) {
 			return false;
 		}
-		if (group.datas[1].type != ParseBoolType::Operators) {
+		if (group.dates[0].type != ParseBoolType::Bool && group.dates[1].type != ParseBoolType::Operators) {
 			return false;
 		}
 		bool result = false;
 		// 比較処理
-		if (group.datas[0].type == group.datas[2].type) {
-			if (group.datas[0].type == ParseBoolType::Int) {
-				// 整数の比較
-				int left = ParseInt(group.datas[0].value, card);
-				int right = ParseInt(group.datas[2].value, card);
-				if (group.datas[1].value == "==") {
-					result = (left == right);
-				} else if (group.datas[1].value == "!=") {
-					result = (left != right);
-				} else if (group.datas[1].value == "<") {
-					result = (left < right);
-				} else if (group.datas[1].value == "<=") {
-					result = (left <= right);
-				} else if (group.datas[1].value == ">") {
-					result = (left > right);
-				} else if (group.datas[1].value == ">=") {
-					result = (left >= right);
+		if (group.dates[0].type != ParseBoolType::Bool) {
+			if (group.dates[0].type == group.dates[2].type) {
+				if (group.dates[0].type == ParseBoolType::Int) {
+					// 整数の比較
+					int left = ParseInt(group.dates[0].value, card);
+					int right = ParseInt(group.dates[2].value, card);
+					if (group.dates[1].value == "==") {
+						result = (left == right);
+					} else if (group.dates[1].value == "!=") {
+						result = (left != right);
+					} else if (group.dates[1].value == "<") {
+						result = (left < right);
+					} else if (group.dates[1].value == "<=") {
+						result = (left <= right);
+					} else if (group.dates[1].value == ">") {
+						result = (left > right);
+					} else if (group.dates[1].value == ">=") {
+						result = (left >= right);
+					}
+				} else if (group.dates[0].type == ParseBoolType::Element) {
+					// 属性の比較
+					CardElement left = ParseCardElement(group.dates[0].value, card);
+					CardElement right = ParseCardElement(group.dates[2].value, card);
+					if (group.dates[1].value == "==") {
+						result = (left == right);
+					} else if (group.dates[1].value == "!=") {
+						result = (left != right);
+					}
+				} else if (group.dates[0].type == ParseBoolType::Type) {
+					// タイプの比較
+					CardType left = ParseCardType(group.dates[0].value, card);
+					CardType right = ParseCardType(group.dates[2].value, card);
+					if (group.dates[1].value == "==") {
+						result = (left == right);
+					} else if (group.dates[1].value == "!=") {
+						result = (left != right);
+					}
 				}
-			} else if (group.datas[0].type == ParseBoolType::Element) {
-				// 属性の比較
-				CardElement left = ParseCardElement(group.datas[0].value, card);
-				CardElement right = ParseCardElement(group.datas[2].value, card);
-				if (group.datas[1].value == "==") {
-					result = (left == right);
-				} else if (group.datas[1].value == "!=") {
-					result = (left != right);
+			}
+		} else {
+			// 真偽値の処理
+			if (group.dates.size() == 1) {
+				// 真偽値の処理
+				bool left = (group.dates[0].value == "true" || group.dates[0].value == "True") ? true : false;
+				if (group.dates[0].reverse) {
+					left = !left;
 				}
-			} else if (group.datas[0].type == ParseBoolType::Type) {
-				// タイプの比較
-				CardType left = ParseCardType(group.datas[0].value, card);
-				CardType right = ParseCardType(group.datas[2].value, card);
-				if (group.datas[1].value == "==") {
+				result = left;
+			} else {
+				// 真偽値の比較
+				bool left = (group.dates[0].value == "true" || group.dates[0].value == "True") ? true : false;
+				bool right = (group.dates[2].value == "true" || group.dates[2].value == "True") ? true : false;
+				if (group.dates[0].reverse) {
+					left = !left;
+				}
+				if (group.dates[2].reverse) {
+					right = !right;
+				}
+				if (group.dates[1].value == "==") {
 					result = (left == right);
-				} else if (group.datas[1].value == "!=") {
+				} else if (group.dates[1].value == "!=") {
 					result = (left != right);
 				}
 			}
-
-
+			
 		}
+
 		// 結合処理
 		if (index < parseBoolResult.groups.size() - 1) {
-			if (parseBoolResult.groups[index].chein) {
+			if (parseBoolResult.groups[index].chain) {
 				// AND
 				if (!result) {
 					return false;
