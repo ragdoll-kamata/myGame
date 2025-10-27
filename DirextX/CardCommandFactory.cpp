@@ -55,10 +55,10 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	}
 
 	//　変数操作
-	if (commandTokens[0].front() == '#') {
+	if (key.front() == '#') {
 
 	}
-	if (commandTokens[0].front() == '$') {
+	if (key.front() == '$') {
 
 	}
 

@@ -24,6 +24,7 @@ void CardData::LoadCardFile(std::string filename) {
 
 	for (int i = 0; i < tokenGroups.size(); ++i) {
 		auto& group = tokenGroups[i];
+		lineNum = tokenGroups[i].lineNumber;
 		// トークングループのタイプに対応する関数を呼び出す
 		if (!tokenGroupFunctions[group.type](i)) {
 			ErrorMessage::GetInstance()->SetErrorLine(tokenGroups[i].lineNumber);
@@ -102,7 +103,7 @@ std::vector<std::string> CardData::ParseLine(std::string& text) {
 				tokens.push_back(token);
 				token.clear();
 			}
-		} else if (c == '{' || c == '}' || c == ':' || c == ',') {
+		} else if (c == '{' || c == '}' || c == ':' || c == ',' || c == '(' || c == ')') {
 			// これらの文字はそれ自体がトークン
 			if (!token.empty()) {
 				tokens.push_back(token);
@@ -225,6 +226,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			if (commandTokens.type == TokenGroupType::None) {
 				// コマンドがまだ決まっていない場合、コマンド名として扱う
 				commandTokens.tokens.push_back(token);
+				commandTokens.tokens.push_back(":");
 				commandTokens.type = TokenGroupType::Command;
 			} else {
 				// ここに来るのはおかしい
@@ -293,13 +295,15 @@ bool CardData::AdaptationIf(int i) {
 			conditionTokens.push_back(token);
 		}
 	}
-	commandQueue.push([this, commandIndex, nestIndex, nextNestID, conditionTokens]() {
+	int lineNumber = lineNum;
+	commandQueue.push([this, commandIndex, nestIndex, nextNestID, conditionTokens, lineNumber]() {
 		if (cardCommands[nextNestID].size() <= 0) {
 			ErrorMessage::GetInstance()->SetMessage(U"ifの中身がないよ");
 			return false;
 		}
 		std::unique_ptr<CardCommand> ifCommand = CardCommandFactory::CreateIfCommand(this, nextNestID, conditionTokens);
 		if (ifCommand == nullptr) {
+			ErrorMessage::GetInstance()->SetErrorLine(lineNumber);
 			return false;
 		}
 		cardCommands[nestIndex][commandIndex] = std::move(ifCommand);

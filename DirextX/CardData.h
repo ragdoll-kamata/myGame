@@ -81,6 +81,8 @@ private:
 
 	std::unordered_map<int, std::vector<std::unique_ptr<CardCommand>>> cardCommands;
 
+	int lineNum = 0;
+
 	//int newFunctionId = 0;
 	//int nowFunctionId = -1;
 };

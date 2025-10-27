@@ -13,19 +13,32 @@ public:
 		Bool,
 		Operators,
 	};
+
 	struct ParseBoolData {
 		ParseBoolType type;
 		std::string value;
 		bool reverse = false;
+
 	};
+	struct ParseBoolResult;
 	struct ParseBoolGroup {
 		std::vector<ParseBoolData> dates;
 		bool chain; // true: &&, false: ||
+		std::unique_ptr<ParseBoolResult> next = nullptr;
 	};
 	struct ParseBoolResult {
 		std::vector<ParseBoolGroup> groups;
 	};
+	
 
+	
+
+
+	/// <summary>
+	/// リザルト0なら正常、-1はエラー、-2は待機、-3はreturn、-4はbreak、-5はcontinue
+	/// </summary>
+	/// <param name="card">カード</param>
+	/// <returns>リザルト</returns>
 	virtual int Execute(Card* card) = 0;
 
 	static void SetCardManager(CardManager* cardManager) {
@@ -37,9 +50,9 @@ protected:
 	CardType ParseCardType(std::string type, Card* card);
 	std::u32string Utf8ToU32(const std::string& str);
 
-	ParseBoolResult ParseBool(std::vector<std::string>& boolTokens);
+	std::unique_ptr<ParseBoolResult> ParseBool(std::vector<std::string>& boolTokens);
 
-	bool ExecuteBool(ParseBoolResult& parseBoolResult, Card* card);
+	bool ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult, Card* card);
 
 protected:
 	static CardManager* cardManager_;

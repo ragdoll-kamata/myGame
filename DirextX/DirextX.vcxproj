@@ -54,6 +54,7 @@
     <ClCompile Include="CardData.cpp" />
     <ClCompile Include="HandCardMove.cpp" />
     <ClCompile Include="IfCommand.cpp" />
+    <ClCompile Include="IntVariableControlCommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MathUtility.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -87,6 +88,7 @@
     <ClCompile Include="engine\2d\TextCommon.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="engine\3d\Particle\Field\WindField.cpp" />
+    <ClCompile Include="WhileCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddCemeteryCommand.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="CardData.h" />
     <ClInclude Include="HandCardMove.h" />
     <ClInclude Include="IfCommand.h" />
+    <ClInclude Include="IntVariableControlCommand.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />
@@ -193,6 +196,7 @@
     <ClInclude Include="utf8\cpp20.h" />
     <ClInclude Include="utf8\unchecked.h" />
     <ClInclude Include="TrunState.h" />
+    <ClInclude Include="WhileCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
