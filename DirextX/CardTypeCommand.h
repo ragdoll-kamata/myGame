@@ -5,7 +5,7 @@ class CardTypeCommand :
 public:
 	bool Initialize(const std::string& type);
 
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 private:
 	CardType type_ = CardType::Error;
 };

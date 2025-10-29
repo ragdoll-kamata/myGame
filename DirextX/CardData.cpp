@@ -59,15 +59,11 @@ std::vector<CardCommand*> CardData::GetCardCommands(int functionID) {
 bool CardData::FunctionLoad(Card* card, int functionID) {
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
-			int i = command->Execute(card);
-			if (i >= 0 || i <= -2) {
-				if (i > 0) {
-					FunctionLoad(card, i);
-				}
-				if (i == -3) {
-					return true;
-				}
-			} else {
+			ExecuteResult i = command->Execute(card);
+			if (i == ExecuteResult::Return) {
+				break;
+			}
+			if (i == ExecuteResult::Error) {
 				return false;
 			}
 		}
@@ -97,12 +93,9 @@ std::vector<std::string> CardData::ParseLine(std::string& text) {
 			isSkip = false;
 		}
 
-		// 空白文字でトークンを区切る
+		// 空白文字はスキップ
 		if (isspace(static_cast<unsigned char>(c))) {
-			if (!token.empty()) {
-				tokens.push_back(token);
-				token.clear();
-			}
+			continue;
 		} else if (c == '{' || c == '}' || c == ':' || c == ',' || c == '(' || c == ')') {
 			// これらの文字はそれ自体がトークン
 			if (!token.empty()) {
@@ -230,7 +223,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 				commandTokens.type = TokenGroupType::Command;
 			} else {
 				// ここに来るのはおかしい
-				ErrorMessage::GetInstance()->SetMessage(U"変数はコマンド名にできないよ");
+				ErrorMessage::GetInstance()->SetMessage(U"どんな書き方したの？");
 				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
 				return;
 			}
@@ -289,12 +282,10 @@ bool CardData::AdaptationIf(int i) {
 	int nextNestID = newNestID;
 	int nestIndex = nestStack.top();
 	std::vector<std::string> conditionTokens;
-	for (const auto& token : tokenGroups[i].tokens) {
-		// ifの条件式
-		if (token != "if") {
-			conditionTokens.push_back(token);
-		}
+	if (!ParseBool(i, conditionTokens, U"if")) {
+		return false;
 	}
+
 	int lineNumber = lineNum;
 	commandQueue.push([this, commandIndex, nestIndex, nextNestID, conditionTokens, lineNumber]() {
 		if (cardCommands[nextNestID].size() <= 0) {
@@ -381,5 +372,54 @@ bool CardData::AdaptationReturn(int i) {
 	}
 	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateReturnCommand();
 	cardCommands[nestStack.top()].push_back(std::move(command));
+	return true;
+}
+
+bool CardData::ParseBool(int i, std::vector<std::string>& conditionTokens, std::u32string str) {
+	bool is = false;
+	bool is2 = false;
+	int count = 0;
+	for (const auto& token : tokenGroups[i].tokens) {
+		// ifの条件式
+		if (token == "(") {
+			if (count == 0) {
+				if (!is) {
+					ErrorMessage::GetInstance()->SetMessage(str + U"の後にかっこが無いよ");
+					return false;
+				}
+				is2 = true;
+				count++;
+				continue;
+			}
+			count++;
+		}
+
+		if (token == ")") {
+			count--;
+			if (count <= 0) {
+				if (count == 0) {
+					continue;
+				}
+				ErrorMessage::GetInstance()->SetMessage(U"かっこの終わりが多いよ");
+				return false;
+			}
+		}
+
+		if (token != "if") {
+			conditionTokens.push_back(token);
+			is = false;
+			continue;
+		}
+		is = true;
+	}
+	if (!is2) {
+		ErrorMessage::GetInstance()->SetMessage(U"かっこがないよ");
+		return false;
+	}
+
+	if (count > 0) {
+		ErrorMessage::GetInstance()->SetMessage(U"かっこの終わりが足らないよ");
+		return false;
+	}
 	return true;
 }

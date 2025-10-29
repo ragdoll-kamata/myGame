@@ -9,11 +9,11 @@ bool CardNameCommand::Initialize(const std::string& name) {
 	name_ = Utf8ToU32(name);
 	return true;
 }
-int CardNameCommand::Execute(Card* card) {
+ExecuteResult CardNameCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Execution failed due to null card
+		return ExecuteResult::Error; // Execution failed due to null card
 	}
 	card->SetName(name_);
-	return 0; // Execution successful
+	return ExecuteResult::Normal; // Execution successful
 }

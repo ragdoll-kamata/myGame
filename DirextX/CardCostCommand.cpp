@@ -23,12 +23,12 @@ bool CardCostCommand::Initialize(const std::string& element, const std::string& 
 	return true; // Initialization successful
 }
 
-int CardCostCommand::Execute(Card* card) {
+ExecuteResult CardCostCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Error: card is null
+		return ExecuteResult::Error; // Error: card is null
 	}
 	card->SetCost(ParseInt(num_, card));
 	card->SetElementCost(element_);
-	return 0;
+	return ExecuteResult::Normal;
 }

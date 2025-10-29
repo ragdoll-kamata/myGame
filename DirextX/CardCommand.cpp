@@ -5,6 +5,14 @@
 CardManager* CardCommand::cardManager_ = nullptr;
 
 int CardCommand::ParseInt(std::string num, Card* card) {
+	std::vector<std::string> commands;
+	if (!Parse(num, commands)) {
+		return -1;
+	}
+
+	if (commands.size() > 1) {
+
+	}
 	if (num.front() == '#') {
 		// 変数の場合
 		return card->GetInt(num);
@@ -117,21 +125,30 @@ std::u32string CardCommand::Utf8ToU32(const std::string& str) {
 }
 
 std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(std::vector<std::string>& boolTokens) {
-	// 真偽解析
 	std::unique_ptr<ParseBoolResult> parseBoolResult = std::make_unique<ParseBoolResult>();
 	int index = 0;
 	parseBoolResult->groups.push_back(ParseBoolGroup());
 	bool isGroup = false;
+	std::vector<std::string> tokens;
+
+	// スペースはスキップされてるからパースを通してスペース分けであっても問題なくする
+	for (const auto& token : boolTokens) {
+		if (!Parse(token, tokens)) {
+			return nullptr;
+		}
+	}
+
+
 	// 括弧ように変数コピー
 	std::vector<std::string> subTokens;
-	subTokens = boolTokens;
+	subTokens = tokens;
 
 	int skipCount = 0;
-	for (const auto& token : boolTokens) {
+	for (const auto& token : tokens) {
 		// 括弧の処理のための先頭廃棄
 		subTokens.erase(subTokens.begin());
 
-		
+
 		if (isGroup) {
 			if (token == ")") {
 				skipCount--;
@@ -162,7 +179,7 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(std::vector
 				if (token == ")") {
 					depth--;
 					if (depth == 0) {
-						subTokens2.erase(subTokens2.end()-1);
+						subTokens2.erase(subTokens2.end() - 1);
 						parseBoolResult->groups[index].next = ParseBool(subTokens2);
 						if (parseBoolResult->groups[index].next == nullptr) {
 							return nullptr;
@@ -282,7 +299,7 @@ bool CardCommand::ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult,
 			if (group.dates[0].type != ParseBoolType::Bool && group.dates[1].type != ParseBoolType::Operators) {
 				return false;
 			}
-			
+
 			// 比較処理
 			if (group.dates[0].type != ParseBoolType::Bool) {
 				if (group.dates[0].type == group.dates[2].type) {
@@ -372,4 +389,108 @@ bool CardCommand::ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult,
 		}
 	}
 	return false;
+}
+
+bool CardCommand::Parse(std::string str, std::vector<std::string>& token) {
+	char pre;
+	bool is = false;
+	std::string s;
+	for (char c : str) {
+		if (c == '+' || c == '-' || c == '*' || c == '/' ||
+			c == '=' || c == '!' || c == '<' || c == '>' ||
+			c == '&' || c == '|') {
+
+			if (s != "") {
+				token.push_back(s);
+				s.clear();
+			}
+
+			if (is) {
+				is = false;
+				std::string st;
+				st += pre;
+				st += c;
+				if (st == "==" || st == "<=" || st == ">=" || st == "!=" || st == "||" || st == "&&") {
+					token.push_back(st);
+					continue;
+				}
+				if (st == "+-" || st == "--" || st == "*-" || st == "/-") {
+					token.push_back(std::string(1, pre));
+					token.push_back(std::string(1, c));
+					continue;
+				}
+				return false;
+			}
+			is = true;
+
+			pre = c;
+
+
+			continue;
+		}
+		if (is) {
+			token.push_back(std::string(1, pre));
+			is = false;
+		}
+
+		s += c;
+	}
+	if (s != "") {
+		token.push_back(s);
+	}
+	return true;
+}
+
+std::unique_ptr<CardCommand::IntExprNode> CardCommand::CreateIntExprNode(std::vector<std::string>& tokens) {
+	std::unique_ptr<IntExprNode> numNode;
+	std::unique_ptr<IntExprNode> node;
+	std::unique_ptr<IntExprNode> result;
+
+	for (const std::string& token : tokens) {
+		node = std::make_unique<IntExprNode>();
+		if (token == "+" || token == "-") {
+			if (token == "+") {
+				node->type = IntExprNodeType::Add;
+			} else {
+				node->type = IntExprNodeType::Subtract;
+			}
+			node->left = std::move(result);
+			result = std::move(node);
+			IntExprNode* no = result.get();
+			while (numNode != nullptr) {
+				if (no->left->type != IntExprNodeType::None && no->left->type != IntExprNodeType::Num) {
+					no = no->left.get();
+					continue;
+				}
+				if (no->left->type != IntExprNodeType::Num) {
+					no->left = std::move(numNode);
+				}
+				break;
+			}
+			continue;
+		}
+		if (token == "*" || token == "/") {
+			if (token == "*") {
+				node->type = IntExprNodeType::Multiply;
+			} else {
+				node->type = IntExprNodeType::Division;
+			}
+			continue;
+		}
+
+		numNode->type = IntExprNodeType::Num;
+		numNode->str = token;
+	}
+	return std::unique_ptr<IntExprNode>();
+}
+
+void CardCommand::IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode> node) {
+
+
+	if (root->left->type != IntExprNodeType::Num) {
+
+	}
+	if (root->right->type != IntExprNodeType::Num) {
+
+	}
 }

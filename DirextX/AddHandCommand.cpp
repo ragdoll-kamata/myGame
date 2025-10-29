@@ -12,10 +12,10 @@ bool AddHandCommand::Initialize(const std::string& card) {
 	return true; // Initialization successful
 }
 
-int AddHandCommand::Execute(Card* card) {
+ExecuteResult AddHandCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Error: card is null
+		return ExecuteResult::Error; // Error: card is null
 	}
 	std::vector<Card*> car = card->GetCards(card_);
 	for (Card* c : car) {
@@ -31,5 +31,5 @@ int AddHandCommand::Execute(Card* card) {
 	moves.push_back(std::move(move));
 	cardManager_->AddCardMove(std::move(moves));
 
-	return 0;
+	return ExecuteResult::Normal;
 }

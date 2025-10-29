@@ -26,10 +26,10 @@ bool OpenDeckCommand::Initialize(std::string num, std::string card) {
 	return true; // Initialization successful
 }
 
-int OpenDeckCommand::Execute(Card* card) {
+ExecuteResult OpenDeckCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Error: card is null
+		return ExecuteResult::Error; // Error: card is null
 	}
 	int number = ParseInt(num_, card);
 	std::vector<Card*> ca = cardManager_->OpenDeck(number, true);
@@ -48,6 +48,6 @@ int OpenDeckCommand::Execute(Card* card) {
 		i++;
 	}
 	cardManager_->AddCardMove(std::move(moves));
-	return 0;
+	return ExecuteResult::Normal;
 }
 

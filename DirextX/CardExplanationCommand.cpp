@@ -10,11 +10,11 @@ bool CardExplanationCommand::Initialize(const std::string& explanation) {
 	return true;
 }
 
-int CardExplanationCommand::Execute(Card* card) {
+ExecuteResult CardExplanationCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Execution failed due to null card
+		return ExecuteResult::Error; // Execution failed due to null card
 	}
 	card->SetDescription(explanation_);
-	return 0; // Execution successful
+	return ExecuteResult::Normal; // Execution successful
 }

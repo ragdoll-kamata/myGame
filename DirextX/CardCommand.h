@@ -3,6 +3,14 @@
 #include <string>
 #include <vector>
 
+enum class ExecuteResult {
+	Normal,
+	Standby,
+	Return,
+	Break,
+	Continue,
+	Error,
+};
 class CardCommand {
 public:
 	enum class ParseBoolType {
@@ -29,6 +37,20 @@ public:
 	struct ParseBoolResult {
 		std::vector<ParseBoolGroup> groups;
 	};
+	enum class IntExprNodeType {
+		Num,
+		Add,
+		Subtract,
+		Multiply,
+		Division,
+		None,
+	};
+
+	struct IntExprNode {
+		IntExprNodeType type = IntExprNodeType::None;
+		std::string str;
+		std::unique_ptr<IntExprNode> left, right;
+	};
 	
 
 	
@@ -39,7 +61,7 @@ public:
 	/// </summary>
 	/// <param name="card">カード</param>
 	/// <returns>リザルト</returns>
-	virtual int Execute(Card* card) = 0;
+	virtual ExecuteResult Execute(Card* card) = 0;
 
 	static void SetCardManager(CardManager* cardManager) {
 		cardManager_ = cardManager;
@@ -53,6 +75,14 @@ protected:
 	std::unique_ptr<ParseBoolResult> ParseBool(std::vector<std::string>& boolTokens);
 
 	bool ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult, Card* card);
+
+	bool Parse(std::string str, std::vector<std::string>& token);
+
+	std::unique_ptr<IntExprNode> CreateIntExprNode(std::vector<std::string>& tokens);
+
+private:
+	void IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode> node);
+
 
 protected:
 	static CardManager* cardManager_;

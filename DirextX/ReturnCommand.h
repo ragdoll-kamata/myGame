@@ -2,6 +2,6 @@
 #include "CardCommand.h"
 class ReturnCommand : public CardCommand {
 public:
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 };
 

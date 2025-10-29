@@ -13,21 +13,21 @@ bool WhileCommand::Initialize(CardData* cardData, int nestID, std::vector<std::s
 	return true;
 }
 
-int WhileCommand::Execute(Card* card) {
+ExecuteResult WhileCommand::Execute(Card* card) {
 	bool isBreak = false;
 	while (ExecuteBool(parseBoolResult_, card)) {
 		for (CardCommand* command : commands_) {
-			int result = command->Execute(card);
-			if (result == -4) {
-				return 0;
+			ExecuteResult result = command->Execute(card);
+			if (result == ExecuteResult::Break) {
+				return ExecuteResult::Normal;
 			}
-			if (result == -5) {
+			if (result == ExecuteResult::Continue) {
 				break;
 			}
-			if (result != 0) {
+			if (result != ExecuteResult::Normal) {
 				return result;
 			}
 		}
 	}
-	return 0;
+	return ExecuteResult::Normal;
 }

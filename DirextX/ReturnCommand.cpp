@@ -1,5 +1,5 @@
 #include "ReturnCommand.h"
 
-int ReturnCommand::Execute(Card* card) {
-	return -3;
+ExecuteResult ReturnCommand::Execute(Card* card) {
+	return ExecuteResult::Return;
 }

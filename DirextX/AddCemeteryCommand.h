@@ -5,7 +5,7 @@ class AddCemeteryCommand :
 public:
 	bool Initialize(const std::string& card);
 
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 private:
 	std::string card_;
 };

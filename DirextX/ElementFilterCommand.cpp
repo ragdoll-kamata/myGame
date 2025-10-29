@@ -21,13 +21,13 @@ bool ElementFilterCommand::Initialize(std::string element, std::string card, std
 	return true;
 }
 
-int ElementFilterCommand::Execute(Card* card) {
+ExecuteResult ElementFilterCommand::Execute(Card* card) {
 	std::vector<Card*> cards = card->GetCards(card_);
 	if(isCardValue_) {
 		std::vector<Card*> elementCards = card->GetCards(filterCard_);
 		if (elementCards.size() == 0) {
 			ErrorMessage::GetInstance()->SetMessage(U"属性を取得できないよ");
-			return -1;
+			return ExecuteResult::Error;
 		}
 		element_ = elementCards[0]->GetElement();
 	}
@@ -37,5 +37,5 @@ int ElementFilterCommand::Execute(Card* card) {
 			card->RemoveCard(card_, c);
 		}
 	}
-	return 0;
+	return ExecuteResult::Normal;
 }

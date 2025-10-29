@@ -6,13 +6,14 @@ enum class CalculationType {
 	Multiply,
 	Division,
 	Assign,
+	None,
 };
 class IntVariableControlCommand : public CardCommand {
 public:
 
 	bool Initialize(std::string intVariable, std::vector<std::string> command);
 
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 
 private:
 	std::string intVariable_;

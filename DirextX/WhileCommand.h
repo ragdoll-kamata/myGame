@@ -5,7 +5,7 @@ class WhileCommand : public CardCommand {
 public:
 	bool Initialize(CardData* cardData, int nestID, std::vector<std::string> commandTokens);
 
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 
 private:
 	std::vector<CardCommand*> commands_;

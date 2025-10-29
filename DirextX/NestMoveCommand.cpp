@@ -6,6 +6,6 @@ bool NestMoveCommand::Initialize(int index) {
     return true;
 }
 
-int NestMoveCommand::Execute(Card* card) {
-	return 0;
+ExecuteResult NestMoveCommand::Execute(Card* card) {
+	return ExecuteResult::Normal;
 }

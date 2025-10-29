@@ -14,11 +14,11 @@ bool CardElemetCommand::Initialize(const std::string& element) {
 	return true;
 }
 
-int CardElemetCommand::Execute(Card* card) {
+ExecuteResult CardElemetCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Execution failed due to null card
+		return ExecuteResult::Error; // Execution failed due to null card
 	}
 	card->SetElement(element_);
-	return 0; // Execution successful
+	return ExecuteResult::Normal; // Execution successful
 }

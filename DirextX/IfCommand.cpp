@@ -6,21 +6,21 @@ bool IfCommand::Initialize(CardData* cardData, int nestID, std::vector<std::stri
 	commands_ = cardData->GetCardCommands(nestID);
 	parseBoolResult_ = ParseBool(commandTokens);
 
-	if(!parseBoolResult_ || parseBoolResult_->groups.size() == 0) {
+	if (!parseBoolResult_ || parseBoolResult_->groups.size() == 0) {
 		ErrorMessage::GetInstance()->SetMessage(U"if文成立してないよ");
 		return false;
 	}
 	return true;
 }
 
-int IfCommand::Execute(Card* card) {
-	if(ExecuteBool(parseBoolResult_, card)) {
+ExecuteResult IfCommand::Execute(Card* card) {
+	if (ExecuteBool(parseBoolResult_, card)) {
 		for (CardCommand* command : commands_) {
-			int result = command->Execute(card);
-			if (result != 0) {
+			ExecuteResult result = command->Execute(card);
+			if (result != ExecuteResult::Normal) {
 				return result;
 			}
 		}
 	}
-	return 0;
+	return ExecuteResult::Normal;
 }

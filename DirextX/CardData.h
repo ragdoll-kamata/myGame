@@ -54,6 +54,9 @@ private:
 	bool AdaptationNestStart(int i);
 	bool AdaptationNestEnd(int i);
 	bool AdaptationReturn(int i);
+
+	bool ParseBool(int i, std::vector<std::string>& conditionTokens, std::u32string str);
+
 private:
 	std::unordered_map<TokenGroupType, std::function<bool(int)>> tokenGroupFunctions{
 		{TokenGroupType::Command,   [&](int i) {return AdaptationCommand(i);   }},

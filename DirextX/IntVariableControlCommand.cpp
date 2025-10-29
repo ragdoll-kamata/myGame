@@ -1,33 +1,42 @@
 #include "IntVariableControlCommand.h"
 
 bool IntVariableControlCommand::Initialize(std::string intVariable, std::vector<std::string> command) {
-	intVariable_ = intVariable;
-	if (command[0] == "=") {
+	if (command.size() <= 0) {
+		return false;
+	}
+	if (!Parse(intVariable, commands_)) {
+		return false;
+	}
+	for (const std::string& str : command) {
+		if (!Parse(str, commands_)) {
+			return false;
+		}
+	}
 
-	} else if (command[0] == "+=") {
-
-	} else if (command[0] == "-=") {
-
-	} else if (command[0] == "*=") {
-
-	} else if (command[0] == "/=") {
-
+	intVariable_ = commands_[0];
+	commands_.erase(commands_.begin());
+	if (commands_[0] == "=") {
+		type = CalculationType::Assign;
+	} else if (commands_[0] == "+=") {
+		type = CalculationType::Add;
+	} else if (commands_[0] == "-=") {
+		type = CalculationType::Subtract;
+	} else if (commands_[0] == "*=") {
+		type = CalculationType::Multiply;
+	} else if (commands_[0] == "/=") {
+		type = CalculationType::Division;
 	} else {
 		return false;
 	}
 
+	commands_.erase(commands_.begin());
 
 
 
-	commands_ = command;
 	return true;
 }
 
-int IntVariableControlCommand::Execute(Card* card) {
-	int i = 0;
+ExecuteResult IntVariableControlCommand::Execute(Card* card) {
 
-	for (auto& command : commands_) {
-
-	}
-	return 0;
+	return ExecuteResult::Normal;
 }

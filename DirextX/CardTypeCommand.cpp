@@ -13,11 +13,11 @@ bool CardTypeCommand::Initialize(const std::string& type) {
 	return true;
 }
 
-int CardTypeCommand::Execute(Card* card) {
+ExecuteResult CardTypeCommand::Execute(Card* card) {
 	if (card == nullptr) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
-		return -1; // Execution failed due to null card
+		return ExecuteResult::Error; // Execution failed due to null card
 	}
 	card->SetType(type_);
-	return 0; // Execution successful
+	return ExecuteResult::Normal; // Execution successful
 }

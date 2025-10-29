@@ -5,7 +5,7 @@ class CardElemetCommand :
 public:
 	bool Initialize(const std::string& element);
 
-	int Execute(Card* card) override;
+	ExecuteResult Execute(Card* card) override;
 private:
 	CardElement element_;
 };
