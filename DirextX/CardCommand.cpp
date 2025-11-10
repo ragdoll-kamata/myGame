@@ -1,6 +1,7 @@
 #include "CardCommand.h"
 #include <stdexcept>
 #include "utf8.h"
+#include "CardManager.h"
 
 CardManager* CardCommand::cardManager_ = nullptr;
 
@@ -66,6 +67,23 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 	return -1;
 }
 
+bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card) {
+	if (cardNum.front() == '$') {
+		if (card == nullptr) {
+			return false;
+		}
+		std::vector<Card*> getCards = card->GetCards(cardNum);
+		if (getCards.size() > 0) {
+			cards = getCards;
+			return true;
+		}
+	}
+	if (cardNum == "手札") {
+		cards = cardManager_->GetZoneCards(CardZone::Hand);
+	}
+	return false;
+}
+
 CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 	// 直接属性名が指定されている場合
 	if (element == "光属性") {
@@ -86,7 +104,10 @@ CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 		std::string str = element.substr(pos + 1);
 		if (str == "属性") {
 			std::string key = element.substr(0, pos);
-			std::vector<Card*> cards = card->GetCards(key);
+			std::vector<Card*> cards;
+			if(!ParseCard(key, cards, card)) {
+				return CardElement::Error;
+			}
 			if (cards.size() > 0) {
 				return cards[0]->GetElement();
 			}
@@ -420,7 +441,7 @@ bool CardCommand::Parse(std::string str, std::vector<std::string>& token) {
 				}
 				if (st == "+-" || st == "--" || st == "*-" || st == "/-") {
 					token.push_back(std::string(1, pre));
-					token.push_back(std::string(1, c));
+					s += c;
 					continue;
 				}
 				return false;
