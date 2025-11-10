@@ -80,9 +80,11 @@ protected:
 
 	std::unique_ptr<IntExprNode> CreateIntExprNode(std::vector<std::string>& tokens);
 
+	int CalculationIntExprNode(std::unique_ptr<IntExprNode>& root, Card* card);
 private:
-	void IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode> node);
-
+	void IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode>& node);
+	
+	
 
 protected:
 	static CardManager* cardManager_;

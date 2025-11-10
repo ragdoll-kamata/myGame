@@ -14,6 +14,8 @@
 
 #include "ElementFilterCommand.h"
 
+#include "IntVariableControlCommand.h"
+
 #include "IfCommand.h"
 #include "ReturnCommand.h"
 
@@ -56,7 +58,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 
 	//　変数操作
 	if (key.front() == '#') {
-
+		return CreateIntVariableControlCommand(key, commandTokens);
 	}
 	if (key.front() == '$') {
 
@@ -150,6 +152,17 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 	return nullptr;
 }
 
+// 変数操作系コマンドの生成
+std::unique_ptr<CardCommand> CardCommandFactory::CreateIntVariableControlCommand(std::string& intVariable, std::vector<std::string>& command) {
+	std::unique_ptr<IntVariableControlCommand> cmd = std::make_unique<IntVariableControlCommand>();
+	if (cmd->Initialize(intVariable, command)) {
+		return cmd;
+	}
+
+	return nullptr;
+}
+
+// コマンド系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateIfCommand(CardData* cardData, int nestID, std::vector<std::string> commandTokens) {
 	std::unique_ptr<IfCommand> cmd = std::make_unique<IfCommand>();
 	if (cmd->Initialize(cardData, nestID, commandTokens)) {

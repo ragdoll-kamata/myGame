@@ -414,6 +414,10 @@ bool CardCommand::Parse(std::string str, std::vector<std::string>& token) {
 					token.push_back(st);
 					continue;
 				}
+				if(st == "+=" || st == "-=" || st == "*=" || st == "/=") {
+					token.push_back(st);
+					continue;
+				}
 				if (st == "+-" || st == "--" || st == "*-" || st == "/-") {
 					token.push_back(std::string(1, pre));
 					token.push_back(std::string(1, c));
@@ -444,8 +448,8 @@ bool CardCommand::Parse(std::string str, std::vector<std::string>& token) {
 std::unique_ptr<CardCommand::IntExprNode> CardCommand::CreateIntExprNode(std::vector<std::string>& tokens) {
 	std::unique_ptr<IntExprNode> numNode;
 	std::unique_ptr<IntExprNode> node;
-	std::unique_ptr<IntExprNode> result;
-
+	std::unique_ptr<IntExprNode> result = std::make_unique<IntExprNode>();
+	bool is = false;
 	for (const std::string& token : tokens) {
 		node = std::make_unique<IntExprNode>();
 		if (token == "+" || token == "-") {
@@ -456,17 +460,9 @@ std::unique_ptr<CardCommand::IntExprNode> CardCommand::CreateIntExprNode(std::ve
 			}
 			node->left = std::move(result);
 			result = std::move(node);
-			IntExprNode* no = result.get();
-			while (numNode != nullptr) {
-				if (no->left->type != IntExprNodeType::None && no->left->type != IntExprNodeType::Num) {
-					no = no->left.get();
-					continue;
-				}
-				if (no->left->type != IntExprNodeType::Num) {
-					no->left = std::move(numNode);
-				}
-				break;
-			}
+
+			IntExprNodeSet(result, numNode);
+			is = true;
 			continue;
 		}
 		if (token == "*" || token == "/") {
@@ -475,22 +471,84 @@ std::unique_ptr<CardCommand::IntExprNode> CardCommand::CreateIntExprNode(std::ve
 			} else {
 				node->type = IntExprNodeType::Division;
 			}
+			node->left = std::move(numNode);
+			IntExprNodeSet(result, node);
+			is = true;
 			continue;
 		}
-
+		numNode = std::make_unique<IntExprNode>();
 		numNode->type = IntExprNodeType::Num;
 		numNode->str = token;
 	}
-	return std::unique_ptr<IntExprNode>();
+	if (!is) {
+		if (numNode) {
+			result = std::move(numNode);
+		}
+	} else {
+		IntExprNodeSet(result, numNode);
+	}
+
+	return std::move(result);
 }
 
-void CardCommand::IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode> node) {
-
-
-	if (root->left->type != IntExprNodeType::Num) {
-
+int CardCommand::CalculationIntExprNode(std::unique_ptr<IntExprNode>& root, Card* card) {
+	int left = 0;
+	int right = 0;
+	if (root->left != nullptr) {
+		if (root->left->type != IntExprNodeType::Num) {
+			left = CalculationIntExprNode(root->left, card);
+		} else {
+			left = ParseInt(root->left->str, card);
+		}
 	}
-	if (root->right->type != IntExprNodeType::Num) {
+	if (root->right != nullptr) {
+		if (root->right->type != IntExprNodeType::Num) {
+			right = CalculationIntExprNode(root->right, card);
+		} else {
+			right = ParseInt(root->right->str, card);
+		}
+	}
+	if (root->type == IntExprNodeType::Add) {
+		return left + right;
+	}
+	if (root->type == IntExprNodeType::Subtract) {
+		return left - right;
+	}
+	if (root->type == IntExprNodeType::Multiply) {
+		return left * right;
+	}
+	if (root->type == IntExprNodeType::Division) {
+		return left / right;
+	}
+	if (root->type == IntExprNodeType::Num) {
+		return ParseInt(root->str, card);
+	}
 
+
+	return 0;
+}
+
+void CardCommand::IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode>& node) {
+	if(root->type == IntExprNodeType::None) {
+		root = std::move(node);
+		return;
+	}
+	if (root->left == nullptr || root->left->type == IntExprNodeType::None) {
+		root->left = std::move(node);
+		return;
+	}
+	if (root->left->type != IntExprNodeType::Num) {
+		IntExprNodeSet(root->left, node);
+		if(node ==nullptr) {
+			return;
+		}
+	}
+	if (root->right == nullptr || root->right->type == IntExprNodeType::None) {
+		root->right = std::move(node);
+		return;
+	}
+	
+	if (root->right->type != IntExprNodeType::Num) {
+		IntExprNodeSet(root->right, node);
 	}
 }

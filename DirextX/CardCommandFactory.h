@@ -29,4 +29,7 @@ namespace CardCommandFactory
 	std::unique_ptr<CardCommand> CreateReturnCommand();
 
 	std::unique_ptr<CardCommand> CreateNestMoveCommand(int index);
+
+
+	std::unique_ptr<CardCommand> CreateIntVariableControlCommand(std::string& intVariable, std::vector<std::string>& command);
 }
