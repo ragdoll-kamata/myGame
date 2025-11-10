@@ -202,6 +202,9 @@ public:
 		cards[key].push_back(card);
 	}
 	void RemoveCard(const std::string& key, Card* card) {
+		if(!cards.contains(key)) {
+			return;
+		}
 		auto& cardList = cards[key];
 		cardList.erase(std::remove(cardList.begin(), cardList.end(), card), cardList.end());
 	}

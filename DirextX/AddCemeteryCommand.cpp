@@ -17,7 +17,11 @@ ExecuteResult AddCemeteryCommand::Execute(Card* card) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
 		return ExecuteResult::Error; // Error: card is null
 	}
-	std::vector<Card*> car = card->GetCards(card_);
+	std::vector<Card*> car;
+	if(!ParseCard(card_, car, card)) {
+		ErrorMessage::GetInstance()->SetMessage(U"カード取得できないよ");
+		return ExecuteResult::Error;
+	}
 	std::vector<std::unique_ptr<CardMove>> moves;
 	for (Card* c : car) {
 		Vector2 pos = cardManager_->GetCardPos(CardZone::Cemetery, 0);

@@ -68,6 +68,7 @@ public:
 	}
 protected:
 	int ParseInt(std::string num, Card* card);
+	bool ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card);
 	CardElement ParseCardElement(std::string element, Card* card);
 	CardType ParseCardType(std::string type, Card* card);
 	std::u32string Utf8ToU32(const std::string& str);

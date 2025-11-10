@@ -38,15 +38,16 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 
 		}
 		// カード変数の場合
-		if (num.front() == '$') {
+		std::vector<Card*> cards;
+		size_t pos = num.find('.');
+		std::string key = num.substr(0, pos);
+
+		if (ParseCard(key, cards, card)) {
 			if (card == nullptr) {
 				return -1;
 			}
-			size_t pos = num.find('.');
 			std::string str = num.substr(pos + 1);
 			if (str == "枚数") {
-				std::string key = num.substr(0, pos);
-				std::vector<Card*> cards = card->GetCards(key);
 				return static_cast<int>(cards.size());
 			}
 
@@ -80,6 +81,7 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 	}
 	if (cardNum == "手札") {
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
+		return true;
 	}
 	return false;
 }

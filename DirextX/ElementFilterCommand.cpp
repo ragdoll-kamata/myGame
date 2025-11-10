@@ -11,7 +11,7 @@ bool ElementFilterCommand::Initialize(std::string element, std::string card, std
 			return false;
 		}
 	}
-	if (filterCard.front() != '$' || card.front() != '$') {
+	if (filterCard.front() != '$') {
 		ErrorMessage::GetInstance()->SetMessage(U"カード変数になってないよ");
 		return false; // Error: card does not start with '$'
 	}
@@ -22,7 +22,11 @@ bool ElementFilterCommand::Initialize(std::string element, std::string card, std
 }
 
 ExecuteResult ElementFilterCommand::Execute(Card* card) {
-	std::vector<Card*> cards = card->GetCards(card_);
+	std::vector<Card*> cards;
+	if(!ParseCard(card_, cards, card)) {
+		ErrorMessage::GetInstance()->SetMessage(U"カード取得できないよ");
+		return ExecuteResult::Error;
+	}
 	if(isCardValue_) {
 		std::vector<Card*> elementCards = card->GetCards(filterCard_);
 		if (elementCards.size() == 0) {
