@@ -14,13 +14,28 @@ bool IfCommand::Initialize(CardData* cardData, int nestID, std::vector<std::stri
 }
 
 ExecuteResult IfCommand::Execute(Card* card) {
-	if (ExecuteBool(parseBoolResult_, card)) {
+	if (isExecuted_ || ExecuteBool(parseBoolResult_, card)) {
+		isExecuted_ = true;
+		int line = 1;
 		for (CardCommand* command : commands_) {
+			
+			if (line < line_) {
+				line++;
+				continue;
+			}
 			ExecuteResult result = command->Execute(card);
-			if (result != ExecuteResult::Normal) {
+			if(result == ExecuteResult::Standby) {
+				line_ = line;
 				return result;
 			}
+			if (result != ExecuteResult::Normal) {
+				line_ = 0;
+				return result;
+			}
+			line++;
 		}
 	}
+	isExecuted_ = false;
+	line_ = 0;
 	return ExecuteResult::Normal;
 }

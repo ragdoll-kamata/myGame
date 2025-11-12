@@ -92,6 +92,8 @@ private:
 	const Vector2 textZure = {0.0f, -80.0f};
 	bool isMove = false;
 	bool isCommandMove_ = false;
+
+	int functionLine = 0;
 public:
 
 	void SetPos(Vector2& pos);

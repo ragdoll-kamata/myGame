@@ -14,8 +14,12 @@ bool Card::InitializeCard(CardData* loadCard) {
 	name_->SetAnchorPoint({0.5f, 1.0f});
 	name_->SetTextFormat(Text::TextFormat::Centor);
 	description_->Initialize(U"説明", {0.0f, 20.0f}, 120.0f);
-	if (!cardData_->CardFunctionLoad(this, "初期設定")) {
+	int dummyLine = 0;
+	if (!cardData_->CardFunctionLoad(this, "初期設定", dummyLine)) {
 		return false;
+	}
+	if(dummyLine != 0) {
+		// エラー処理
 	}
 	name_->Update();
 	name_->CalcFitSize(120.0f);
@@ -71,8 +75,11 @@ bool Card::IsOnCollision(Vector2 pos) {
 }
 
 bool Card::Effect() {
-	if(!cardData_->CardFunctionLoad(this, "効果")) {
+	if(!cardData_->CardFunctionLoad(this, "効果", functionLine)) {
 		// エラー処理
+	}
+	if (functionLine != 0) {
+		return false;
 	}
 	return true;
 }

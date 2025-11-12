@@ -12,6 +12,9 @@
 #include "SpriteCommon.h"
 
 #include "HandCardMove.h"
+#include "CardShuffleMove.h"
+
+#include "Audio.h"
 
 namespace fs = std::filesystem;
 
@@ -33,6 +36,7 @@ void CardManager::Initialize() {
 	cardExecutionField = std::make_unique<Button>();
 	cardExecutionField->Initialize({1150.0f, 400.0f}, {120.0f * 1.2f, 160.0f * 1.2f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
 	cardExecutionField->SetIsDraw(true);
+	shuffleSE = Audio::GetInstance()->LoadSound("cardShuffle.mp3");
 }
 
 bool CardManager::StartCardSet() {
@@ -359,6 +363,12 @@ void CardManager::ReShuffleDeck() {
 	}
 	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
 
+	std::unique_ptr<CardShuffleMove> shuffleMove = std::make_unique<CardShuffleMove>();
+	shuffleMove->Initialize(this, cemeteryCards, shuffleSE, 1.0f);
+	std::vector<std::unique_ptr<CardMove>> moves;
+	moves.push_back(std::move(shuffleMove));
+	AddCardMove(std::move(moves));
+
 }
 
 void CardManager::ExecutionCard() {
@@ -440,6 +450,8 @@ Vector2 CardManager::GetCardPos(CardZone zone, int index) {
 		return OpenCardPos(index);
 	} else if (zone == CardZone::Cemetery) {
 		return CemeteryCardPos();
+	}else if(zone == CardZone::Deck){
+		return Vector2(640.0f, -160.0f);
 	}
 
 	return Vector2();
@@ -462,5 +474,5 @@ Vector2 CardManager::OpenCardPos(int index) {
 }
 
 Vector2 CardManager::CemeteryCardPos() {
-	return Vector2(-100.0f, 80.0f);
+	return Vector2(-150.0f, 80.0f);
 }

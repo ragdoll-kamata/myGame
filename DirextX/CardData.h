@@ -29,12 +29,12 @@ class CardData {
 public:
 	void LoadCardFile(std::string filename);
 
-	bool CardFunctionLoad(Card* card, std::string functionName);
+	bool CardFunctionLoad(Card* card, std::string functionName, int& functionLine);
 
 	std::vector<CardCommand*> GetCardCommands(int functionID);
 
 private:
-	bool FunctionLoad(Card* card, int functionID);
+	bool FunctionLoad(Card* card, int functionID, int& functionLine);
 
 	std::vector<std::string> ParseLine(std::string& text);
 

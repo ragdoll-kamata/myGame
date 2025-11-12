@@ -1,6 +1,6 @@
 #pragma once
 #include "CardCommand.h"
-enum class CalculationType {
+enum class VariableCalculationType {
 	Add,
 	Subtract,
 	Multiply,
@@ -8,17 +8,14 @@ enum class CalculationType {
 	Assign,
 	None,
 };
-class IntVariableControlCommand : public CardCommand {
+class CardVariableControlCommand : public CardCommand {
 public:
-
-	bool Initialize(std::string& intVariable, std::vector<std::string>& command);
-
+	bool Initialize(std::string& cardVariable, std::vector<std::string>& command);
 	ExecuteResult Execute(Card* card) override;
-
 private:
-	std::string intVariable_;
+	std::string cardVariable_;
 	std::vector<std::string> commands_;
-	CalculationType type;
+	VariableCalculationType type;
 	std::unique_ptr<ExprNode> exprNode_;
 };
 

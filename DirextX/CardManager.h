@@ -116,5 +116,8 @@ private:
 	// 手札調整用
 	bool isHoldCard = false;
 	int holdCardIndex = -1;
+
+	// サウンド
+	int shuffleSE = -1;
 };
 

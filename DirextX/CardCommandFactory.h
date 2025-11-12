@@ -32,4 +32,5 @@ namespace CardCommandFactory
 
 
 	std::unique_ptr<CardCommand> CreateIntVariableControlCommand(std::string& intVariable, std::vector<std::string>& command);
+	std::unique_ptr<CardCommand> CreateCardVariableControlCommand(std::string& cardVariable, std::vector<std::string>& command);
 }

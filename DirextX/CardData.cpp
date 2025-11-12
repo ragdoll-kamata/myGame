@@ -37,9 +37,9 @@ void CardData::LoadCardFile(std::string filename) {
 	}
 }
 
-bool CardData::CardFunctionLoad(Card* card, std::string functionName) {
+bool CardData::CardFunctionLoad(Card* card, std::string functionName, int& functionLine) {
 	if (functionMap.contains(functionName)) {
-		if (FunctionLoad(card, functionMap[functionName])) {
+		if (FunctionLoad(card, functionMap[functionName], functionLine)) {
 			return true;
 		}
 	}
@@ -56,18 +56,31 @@ std::vector<CardCommand*> CardData::GetCardCommands(int functionID) {
 	return commands;
 }
 
-bool CardData::FunctionLoad(Card* card, int functionID) {
+bool CardData::FunctionLoad(Card* card, int functionID, int& functionLine) {
+	int line = 1;
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
+			if(line < functionLine) {
+				line++;
+				continue;
+			}
+			
 			ExecuteResult i = command->Execute(card);
+
 			if (i == ExecuteResult::Return) {
 				break;
+			}
+			if (i == ExecuteResult::Standby) {
+				functionLine = line;
+				return true;
 			}
 			if (i == ExecuteResult::Error) {
 				return false;
 			}
+			line++;
 		}
 	}
+	functionLine = 0;
 	return true;
 }
 

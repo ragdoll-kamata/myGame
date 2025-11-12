@@ -19,6 +19,8 @@ void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw) 
 }
 
 void CardMove::Update() {
+	card_->SetIsMove(false);
+	card_->SetIsDraw(true);
 	if (isEnd_) {
 		return;
 	}

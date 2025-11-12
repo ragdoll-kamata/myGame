@@ -246,6 +246,8 @@
     <ClCompile Include="ReturnCommand.cpp" />
     <ClCompile Include="WhileCommand.cpp" />
     <ClCompile Include="IntVariableControlCommand.cpp" />
+    <ClCompile Include="CardVariableControlCommand.cpp" />
+    <ClCompile Include="CardShuffleMove.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -538,6 +540,8 @@
     <ClInclude Include="ReturnCommand.h" />
     <ClInclude Include="WhileCommand.h" />
     <ClInclude Include="IntVariableControlCommand.h" />
+    <ClInclude Include="CardVariableControlCommand.h" />
+    <ClInclude Include="CardShuffleMove.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

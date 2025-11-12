@@ -26,7 +26,7 @@ ExecuteResult AddCemeteryCommand::Execute(Card* card) {
 	for (Card* c : car) {
 		Vector2 pos = cardManager_->GetCardPos(CardZone::Cemetery, 0);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
-		move->Initialize(c, pos, 0.5f, true);
+		move->Initialize(c, pos, 0.5f, false);
 		moves.push_back(std::move(move));
 		cardManager_->MoveCard(c, CardZone::Cemetery);
 	}

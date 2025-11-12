@@ -23,7 +23,9 @@
     <ClCompile Include="CardManager.cpp" />
     <ClCompile Include="CardMove.cpp" />
     <ClCompile Include="CardNameCommand.cpp" />
+    <ClCompile Include="CardShuffleMove.cpp" />
     <ClCompile Include="CardTypeCommand.cpp" />
+    <ClCompile Include="CardVariableControlCommand.cpp" />
     <ClCompile Include="ElementFilterCommand.cpp" />
     <ClCompile Include="engine\3d\Animation.cpp" />
     <ClCompile Include="engine\3d\Particle\Shape\AABBShape.cpp" />
@@ -102,7 +104,9 @@
     <ClInclude Include="CardManager.h" />
     <ClInclude Include="CardMove.h" />
     <ClInclude Include="CardNameCommand.h" />
+    <ClInclude Include="CardShuffleMove.h" />
     <ClInclude Include="CardTypeCommand.h" />
+    <ClInclude Include="CardVariableControlCommand.h" />
     <ClInclude Include="ElementFilterCommand.h" />
     <ClInclude Include="engine\3d\Animation.h" />
     <ClInclude Include="engine\3d\Particle\Shape\AABBShape.h" />

@@ -46,10 +46,10 @@ public:
 		None,
 	};
 
-	struct IntExprNode {
+	struct ExprNode {
 		IntExprNodeType type = IntExprNodeType::None;
 		std::string str;
-		std::unique_ptr<IntExprNode> left, right;
+		std::unique_ptr<ExprNode> left, right;
 	};
 	
 
@@ -57,7 +57,7 @@ public:
 
 
 	/// <summary>
-	/// リザルト0なら正常、-1はエラー、-2は待機、-3はreturn、-4はbreak、-5はcontinue
+	/// カードコマンド実行
 	/// </summary>
 	/// <param name="card">カード</param>
 	/// <returns>リザルト</returns>
@@ -79,11 +79,15 @@ protected:
 
 	bool Parse(std::string str, std::vector<std::string>& token);
 
-	std::unique_ptr<IntExprNode> CreateIntExprNode(std::vector<std::string>& tokens);
+	std::unique_ptr<ExprNode> CreateIntExprNode(std::vector<std::string>& tokens);
 
-	int CalculationIntExprNode(std::unique_ptr<IntExprNode>& root, Card* card);
+	int CalculationIntExprNode(std::unique_ptr<ExprNode>& root, Card* card);
+
+	std::unique_ptr<ExprNode> CreateCardExprNode(std::vector<std::string>& tokens);
+
+	bool CalculationCardExprNode(std::unique_ptr<ExprNode>& root, std::vector<Card*>& cards, Card* card);
 private:
-	void IntExprNodeSet(std::unique_ptr<IntExprNode>& root, std::unique_ptr<IntExprNode>& node);
+	void ExprNodeSet(std::unique_ptr<ExprNode>& root, std::unique_ptr<ExprNode>& node);
 	
 	
 
