@@ -351,6 +351,7 @@
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)externals\freetype-demos\bin\freetype.dll" "$(TargetDir)freetype.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -366,7 +367,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir);$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\math;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
       <Optimization>MinSpace</Optimization>
     </ClCompile>
     <Link>
@@ -379,7 +380,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)externals\freetype-demos\bin\freetype.dll" "$(TargetDir)freetype.dll"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
