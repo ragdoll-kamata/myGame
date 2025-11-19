@@ -37,16 +37,21 @@ void CardData::LoadCardFile(std::string filename) {
 	}
 }
 
-bool CardData::CardFunctionLoad(Card* card, std::string functionName, int& functionLine) {
+FunctionResult CardData::CardFunctionLoad(Card* card, std::string functionName, int& functionLine) {
 	if (functionMap.contains(functionName)) {
-		if (FunctionLoad(card, functionMap[functionName], functionLine)) {
-			return true;
-		}
+		return FunctionLoad(card, functionMap[functionName], functionLine);
 	}
-	return false;
+	return FunctionResult::Error;
 }
 
-std::vector<CardCommand*> CardData::GetCardCommands(int functionID) {
+std::vector<CardCommand*> CardData::GetCardCommandsByFunctionName(std::string functionName) {
+	if (functionMap.contains(functionName)) {
+		return GetCardCommandsByFunctionID(functionMap[functionName]);
+	}
+	return {};
+}
+
+std::vector<CardCommand*> CardData::GetCardCommandsByFunctionID(int functionID) {
 	std::vector<CardCommand*> commands;
 	if (cardCommands.contains(functionID)) {
 		for (const auto& command : cardCommands[functionID]) {
@@ -56,7 +61,7 @@ std::vector<CardCommand*> CardData::GetCardCommands(int functionID) {
 	return commands;
 }
 
-bool CardData::FunctionLoad(Card* card, int functionID, int& functionLine) {
+FunctionResult CardData::FunctionLoad(Card* card, int functionID, int& functionLine) {
 	int line = 1;
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
@@ -72,16 +77,16 @@ bool CardData::FunctionLoad(Card* card, int functionID, int& functionLine) {
 			}
 			if (i == ExecuteResult::Standby) {
 				functionLine = line;
-				return true;
+				return FunctionResult::Standby;
 			}
 			if (i == ExecuteResult::Error) {
-				return false;
+				return FunctionResult::Error;
 			}
 			line++;
 		}
 	}
 	functionLine = 0;
-	return true;
+	return FunctionResult::Normal;
 }
 
 std::vector<std::string> CardData::ParseLine(std::string& text) {
@@ -170,13 +175,14 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
 				return;
 			}
-			tokenGroups.push_back({{token}, TokenGroupType::Return});
+			commandTokens.type = TokenGroupType::Return;
+			commandTokens.tokens.push_back(token);
 			continue;
 		}
 		// コマンドの引数
-		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
-			commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
-			commandTokens.type == TokenGroupType::For) {
+		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If    ||
+			commandTokens.type == TokenGroupType::ElseIf  || commandTokens.type == TokenGroupType::While ||
+			commandTokens.type == TokenGroupType::For     || commandTokens.type == TokenGroupType::Return) {
 			if (token == ",") continue; // コマンドの引数はカンマで区切る
 			commandTokens.tokens.push_back(token);
 			continue;
@@ -383,7 +389,7 @@ bool CardData::AdaptationReturn(int i) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネストに入ってないよ");
 		return false;
 	}
-	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateReturnCommand();
+	std::unique_ptr<CardCommand> command = CardCommandFactory::CreateReturnCommand(tokenGroups[i].tokens);
 	cardCommands[nestStack.top()].push_back(std::move(command));
 	return true;
 }

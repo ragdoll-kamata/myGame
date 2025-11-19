@@ -83,6 +83,19 @@ void Text::CalcFitSize(float width) {
 	size_.y = scale;
 }
 
+void Text::CalcFitSizeHeight(float height) {
+	float scale = height / textHeight_;
+	size_.x = scale;
+	size_.y = scale;
+}
+
+void Text::CalcFitSizeOneHeight(float height) {
+	float fontHeight = TextCommon::GetInstance()->GetFontLoader()->GetHeight();
+	float scale = height / fontHeight;
+	size_.x = scale;
+	size_.y = scale;
+}
+
 std::u32string Text::GetIntToString(int num, int count) {
 	int numcopy = num;
 	std::vector<int> digits;
@@ -160,7 +173,7 @@ void Text::FullLayout() {
 
 
 		// 最大横幅を超えた場合
-		if (lineWidth + info->width > maxWidth_) {
+		if (lineWidth * size_.x + info->width * size_.x > maxWidth_) {
 			lines.push_back(currentLine);
 			maxLineWidth = std::max<float>(maxLineWidth, lineWidth);
 			currentLine.clear();

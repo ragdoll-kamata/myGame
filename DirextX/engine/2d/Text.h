@@ -87,9 +87,11 @@ public:
 		size_ = size;
 	}
 	void CalcFitSize(float width);
+	void CalcFitSizeHeight(float height);
 	Vector2 GetSize()const {
 		return size_;
 	}
+	void CalcFitSizeOneHeight(float height);
 	/// <summary>
 	/// 文字間隔設定
 	/// </summary>

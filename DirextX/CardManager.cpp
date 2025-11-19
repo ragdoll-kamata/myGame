@@ -13,6 +13,7 @@
 
 #include "HandCardMove.h"
 #include "CardShuffleMove.h"
+#include "OpenDeckAlignmentMove.h"
 
 #include "Audio.h"
 
@@ -37,6 +38,28 @@ void CardManager::Initialize() {
 	cardExecutionField->Initialize({1150.0f, 400.0f}, {120.0f * 1.2f, 160.0f * 1.2f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
 	cardExecutionField->SetIsDraw(true);
 	shuffleSE = Audio::GetInstance()->LoadSound("cardShuffle.mp3");
+
+	costBackSprite = std::make_unique<Sprite>();
+	costBackSprite->Initialize("white.png");
+	costBackSprite->SetSize({60.0f, 40.0f});
+	costBackSprite->SetPosition({0.0f, 0.0f});
+	costBackSprite->SetColor({0.9f, 0.9f, 0.5f, 1.0f});
+
+	costBackSprite2 = std::make_unique<Sprite>();
+	costBackSprite2->Initialize("white.png");
+	costBackSprite2->SetSize({60.0f, 40.0f});
+	costBackSprite2->SetPosition({60.0f, 0.0f});
+	costBackSprite2->SetColor({0.5f, 0.0f, 0.5f, 1.0f});
+
+	lightCostText = std::make_unique<Text>();
+	lightCostText->Initialize(U"00", {10.0f, 0.0f}, 20000.0f);
+	lightCostText->Update();
+	lightCostText->CalcFitSize(40.0f);
+
+	darknessCostText = std::make_unique<Text>();
+	darknessCostText->Initialize(U"00", {70.0f, 0.0f}, 2000.0f);
+	darknessCostText->Update();
+	darknessCostText->CalcFitSize(40.0f);
 }
 
 bool CardManager::StartCardSet() {
@@ -49,10 +72,30 @@ bool CardManager::StartCardSet() {
 	std::string line;
 	int lineNumber = 0;
 	while (std::getline(file, line)) {
-		if (CardDataMap.contains(line)) {
-			for (int i = 0; i < 5; i++) {
+		std::string name;
+		std::string num;
+		bool is = false;
+		for (char c : line) {
+			if (c == ' ') {
+				continue;
+			}
+			if (c == ',') {
+				is = true;
+				continue;
+			}
+			if (!is) {
+				name += c;
+			} else {
+				num += c;
+			}
+
+		}
+		
+		if (CardDataMap.contains(name)) {
+			int number = std::stoi(num);
+			for (int i = 0; i < number; i++) {
 				std::unique_ptr<Card> card(new Card());
-				card->InitializeCard(CardDataMap[line].get());
+				card->InitializeCard(CardDataMap[name].get());
 				zoneMap[CardZone::Deck].push_back(card.get());
 				card->SetZone(CardZone::Deck);
 				allCards.push_back(std::move(card));
@@ -104,6 +147,10 @@ void CardManager::Update(TrunState& trunState) {
 	startOpenButton->Update();
 	startOpenEndButton->Update();
 	cardExecutionField->Update();
+	lightCostText->Update();
+	darknessCostText->Update();
+	costBackSprite->Updata();
+	costBackSprite2->Updata();
 }
 
 void CardManager::Draw() {
@@ -114,6 +161,17 @@ void CardManager::Draw() {
 	startOpenEndButton->Draw();
 	endTurnButton->Draw();
 	cardExecutionField->Draw();
+	costBackSprite->Draw();
+	costBackSprite2->Draw();
+	TextCommon::GetInstance()->PreDraw();
+
+	lightCostText->Draw();
+	darknessCostText->Draw();
+	if (effectTextCard_) {
+		effectTextCard_->EffectTextDraw();
+	}
+
+	TextCommon::GetInstance()->PostDraw();
 	for (const auto& card : allCards) {
 		SpriteCommon::GetInstance()->PreDraw();
 		card->Draw();
@@ -169,6 +227,9 @@ void CardManager::StartTrun(TrunState& trunState) {
 				break;
 			}
 		}
+		if (cardMoves.size() > 0) {
+			is = true;
+		}
 		if (!is) {
 			isEndStartTrun = false;
 			isStartOpen = true;
@@ -223,19 +284,23 @@ void CardManager::EndTrun(TrunState& trunState) {
 void CardManager::PlayerInput() {
 	Input* input = Input::GetInstance();
 	Vector2 mousePos = input->GetMousePos();
+	
 	if (!isHoldCard) {
-		if (input->TriggerMouseButton(0)) {
-			int index = 0;
-			for (const auto& card : zoneMap[CardZone::Hand]) {
-				if (card->IsDraw() && card->IsOnCollision(mousePos)) {
+		effectTextCard_ = nullptr;
+		int index = 0;
+		for (const auto& card : zoneMap[CardZone::Hand]) {
+			if (card->IsDraw() && card->IsOnCollision(mousePos)) {
+				effectTextCard_ = card;
+				if (input->TriggerMouseButton(0)) {
 					card->SetIsMove(false);
 					isHoldCard = true;
 					holdCardIndex = index;
 					break;
 				}
-				index++;
 			}
+			index++;
 		}
+		
 	} else {
 
 		if (input->PressMouseButton(0)) {
@@ -243,8 +308,37 @@ void CardManager::PlayerInput() {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetIsMove(false);
 		} else if (input->ReleaseMouseButton(0)) {
 			if (cardExecutionField->IsOnCollision(mousePos)) {
-				zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
-				MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+				bool is = false;
+				int cost = zoneMap[CardZone::Hand][holdCardIndex]->GetCost();
+				if (zoneMap[CardZone::Hand][holdCardIndex]->GetElementCost() == CardElement::Light) {
+					if (cost <= lightCost) {
+						lightCost -= cost;
+						is = true;
+					}
+				} else if (zoneMap[CardZone::Hand][holdCardIndex]->GetElementCost() == CardElement::Darkness) {
+					if (cost <= darknessCost) {
+						darknessCost -= cost;
+						is = true;
+					}
+				} else {
+					if (cost <= darknessCost || cost <= lightCost) {
+						lightCost -= cost;
+						darknessCost -= cost;
+						if (lightCost < 0) {
+							lightCost = 0;
+						}
+						if (darknessCost < 0) {
+							darknessCost = 0;
+						}
+						is = true;
+					}
+				}
+				if (is) {
+					lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
+					darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
+					zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
+					MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+				}
 			}
 			isHoldCard = false;
 			HandAdjustment();
@@ -391,17 +485,21 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 		zoneMap[CardZone::Deck].front()->SetPos(pos);
 		zoneMap[CardZone::Deck].front()->SetIsDraw(true);
 		result.push_back(zoneMap[CardZone::Deck].front());
+		if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Light) {
+			lightCost++;
+			lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
+		} else if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Darkness) {
+			darknessCost++;
+			darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
+		}
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
 	if (!isCommand) {
-		int i = 0;
-		int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
-		for (const auto& card : zoneMap[CardZone::Open]) {
-			pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
-			pos.y = 240.0f;
-			card->SetNewPos(pos);
-			i++;
-		}
+		std::unique_ptr<OpenDeckAlignmentMove> openMove = std::make_unique<OpenDeckAlignmentMove>();
+		openMove->Initialize(this);
+		std::vector<std::unique_ptr<CardMove>> moves;
+		moves.push_back(std::move(openMove));
+		AddCardMove(std::move(moves));
 	}
 	return result;
 }
@@ -450,7 +548,7 @@ Vector2 CardManager::GetCardPos(CardZone zone, int index) {
 		return OpenCardPos(index);
 	} else if (zone == CardZone::Cemetery) {
 		return CemeteryCardPos();
-	}else if(zone == CardZone::Deck){
+	} else if (zone == CardZone::Deck) {
 		return Vector2(640.0f, -160.0f);
 	}
 

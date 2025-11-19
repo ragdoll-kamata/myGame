@@ -198,12 +198,6 @@
     <ClCompile Include="TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CardData.cpp" />
-    <ClCompile Include="Card.cpp" />
-    <ClCompile Include="CardManager.cpp" />
-    <ClCompile Include="ErrorMessage.cpp" />
-    <ClCompile Include="CardMove.cpp" />
-    <ClCompile Include="Button.cpp" />
     <ClCompile Include="AddCemeteryCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Cemetery</Filter>
     </ClCompile>
@@ -240,14 +234,46 @@
     <ClCompile Include="CardTypeCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="HandCardMove.cpp" />
-    <ClCompile Include="NestMoveCommand.cpp" />
-    <ClCompile Include="IfCommand.cpp" />
-    <ClCompile Include="ReturnCommand.cpp" />
-    <ClCompile Include="WhileCommand.cpp" />
-    <ClCompile Include="IntVariableControlCommand.cpp" />
-    <ClCompile Include="CardVariableControlCommand.cpp" />
-    <ClCompile Include="CardShuffleMove.cpp" />
+    <ClCompile Include="WhileCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ReturnCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="IfCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>ソース ファイル\Card</Filter>
+    </ClCompile>
+    <ClCompile Include="CardData.cpp">
+      <Filter>ソース ファイル\Card</Filter>
+    </ClCompile>
+    <ClCompile Include="CardManager.cpp">
+      <Filter>ソース ファイル\Card</Filter>
+    </ClCompile>
+    <ClCompile Include="CardMove.cpp">
+      <Filter>ソース ファイル\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="CardShuffleMove.cpp">
+      <Filter>ソース ファイル\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="HandCardMove.cpp">
+      <Filter>ソース ファイル\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="CardVariableControlCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Variable</Filter>
+    </ClCompile>
+    <ClCompile Include="IntVariableControlCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Variable</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorMessage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenDeckAlignmentMove.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -475,11 +501,6 @@
     <ClInclude Include="TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CardData.h" />
-    <ClInclude Include="Card.h" />
-    <ClInclude Include="CardManager.h" />
-    <ClInclude Include="ErrorMessage.h" />
-    <ClInclude Include="utf8.h" />
     <ClInclude Include="utf8\checked.h">
       <Filter>utf8</Filter>
     </ClInclude>
@@ -498,9 +519,6 @@
     <ClInclude Include="utf8\unchecked.h">
       <Filter>utf8</Filter>
     </ClInclude>
-    <ClInclude Include="CardMove.h" />
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="TrunState.h" />
     <ClInclude Include="CardCommand.h">
       <Filter>ヘッダー ファイル\CardCommand</Filter>
     </ClInclude>
@@ -534,14 +552,52 @@
     <ClInclude Include="CardTypeCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="HandCardMove.h" />
-    <ClInclude Include="NestMoveCommand.h" />
-    <ClInclude Include="IfCommand.h" />
-    <ClInclude Include="ReturnCommand.h" />
-    <ClInclude Include="WhileCommand.h" />
-    <ClInclude Include="IntVariableControlCommand.h" />
-    <ClInclude Include="CardVariableControlCommand.h" />
-    <ClInclude Include="CardShuffleMove.h" />
+    <ClInclude Include="WhileCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="IfCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="CardVariableControlCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Variable</Filter>
+    </ClInclude>
+    <ClInclude Include="IntVariableControlCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Variable</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>ヘッダー ファイル\Card</Filter>
+    </ClInclude>
+    <ClInclude Include="CardData.h">
+      <Filter>ヘッダー ファイル\Card</Filter>
+    </ClInclude>
+    <ClInclude Include="CardManager.h">
+      <Filter>ヘッダー ファイル\Card</Filter>
+    </ClInclude>
+    <ClInclude Include="HandCardMove.h">
+      <Filter>ヘッダー ファイル\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="CardShuffleMove.h">
+      <Filter>ヘッダー ファイル\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="CardMove.h">
+      <Filter>ヘッダー ファイル\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorMessage.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TrunState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="utf8.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenDeckAlignmentMove.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
@@ -683,6 +739,30 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\CardCommand\Initialize">
       <UniqueIdentifier>{0090a755-4442-4e4d-8626-f8dc72a64862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Control">
+      <UniqueIdentifier>{b8d268f0-c14d-4d71-943d-12992d3a6837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Card">
+      <UniqueIdentifier>{c7bb0b98-1d3e-4499-a495-9319483ce96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Move">
+      <UniqueIdentifier>{644bdac6-a79c-4b17-9310-7bb63dd6b0ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Variable">
+      <UniqueIdentifier>{0d5e7c12-b3e2-4d50-a16d-cca4bc1ce035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Variable">
+      <UniqueIdentifier>{95e3d894-2a30-4825-93db-937dc6c9250d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Control">
+      <UniqueIdentifier>{b3699eaf-59bb-454c-b531-c25c7bee6396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Card">
+      <UniqueIdentifier>{d6e7caf9-2a09-4bd4-89b3-bf7633283a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Move">
+      <UniqueIdentifier>{d37ed9af-e3b7-4c58-b347-0babe142fbf1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

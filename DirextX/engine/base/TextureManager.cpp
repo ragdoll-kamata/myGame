@@ -43,7 +43,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 
 uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
 {
-
+	LoadTexture(filePath);
 	if (textureDatas.contains(filePath)) {
 		return textureDatas[filePath].srvIndex;
 	}

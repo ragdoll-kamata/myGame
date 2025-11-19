@@ -181,9 +181,12 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateIfCommand(CardData* cardD
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreateReturnCommand() {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateReturnCommand(std::vector<std::string>& commandTokens) {
 	std::unique_ptr<ReturnCommand> cmd = std::make_unique<ReturnCommand>();
-	return cmd;
+	if(cmd->Initialize(commandTokens)) {
+		return cmd;
+	}
+	return nullptr;
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateNestMoveCommand(int index) {

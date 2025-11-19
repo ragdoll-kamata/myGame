@@ -1,29 +1,31 @@
 #include "SrvManager.h"
 #include <cassert>
 
-void SrvManager::Initialize(DirectXCommon* directXCommon)
-{
+void SrvManager::Initialize(DirectXCommon* directXCommon) {
 	directXCommon_ = directXCommon;
 	descriptorSize = directXCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorHeap = directXCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 }
 
-void SrvManager::PreDraw()
-{
-	ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap.Get() };
+void SrvManager::PreDraw() {
+	ID3D12DescriptorHeap* descriptorHeaps[] = {descriptorHeap.Get()};
 	directXCommon_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
-uint32_t SrvManager::Allocate()
-{
+uint32_t SrvManager::Allocate() {
+	if (freeIndices.size() > 0) {
+		uint32_t index = freeIndices.front();
+		freeIndices.pop_front();
+		return index;
+	}
+
 	assert(useIndex < kMaxSRVCount);
 	int index = useIndex;
 	useIndex++;
 	return index;
 }
 
-void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResourece, DXGI_FORMAT Format, UINT MipLevels)
-{
+void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResourece, DXGI_FORMAT Format, UINT MipLevels) {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -50,8 +52,7 @@ void SrvManager::CreateSRVforTexture2DArray(uint32_t srvIndex, ID3D12Resource* p
 }
 
 
-void SrvManager::CreateSRVforStructureBuffer(uint32_t srvIndex, ID3D12Resource* pResourece, UINT numElements, UINT structureBvteStride)
-{
+void SrvManager::CreateSRVforStructureBuffer(uint32_t srvIndex, ID3D12Resource* pResourece, UINT numElements, UINT structureBvteStride) {
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
 	instancingSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
 	instancingSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -64,25 +65,26 @@ void SrvManager::CreateSRVforStructureBuffer(uint32_t srvIndex, ID3D12Resource* 
 	directXCommon_->GetDevice()->CreateShaderResourceView(pResourece, &instancingSrvDesc, GetCPUdescriptorHandle(srvIndex));
 }
 
-bool SrvManager::IsMaxSrvNotOver() const
-{
+bool SrvManager::IsMaxSrvNotOver() const {
 	if (useIndex < kMaxSRVCount) {
 		return true;
 	}
 	return false;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE SrvManager::GetCPUdescriptorHandle(uint32_t index)
-{
+D3D12_CPU_DESCRIPTOR_HANDLE SrvManager::GetCPUdescriptorHandle(uint32_t index) {
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	handleCPU.ptr += (descriptorSize * index);
 	return handleCPU;
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE SrvManager::GetGPUdescriptorHandle(uint32_t index)
-{
+D3D12_GPU_DESCRIPTOR_HANDLE SrvManager::GetGPUdescriptorHandle(uint32_t index) {
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
+}
+
+void SrvManager::Free(uint32_t index) {
+	freeIndices.push_back(index);
 }
 

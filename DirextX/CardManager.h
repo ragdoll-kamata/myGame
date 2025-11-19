@@ -99,6 +99,18 @@ private:
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
 
 	std::unique_ptr<Button> cardExecutionField = nullptr;
+
+	std::unique_ptr<Sprite> costBackSprite = nullptr;
+	std::unique_ptr<Sprite> costBackSprite2 = nullptr;
+
+	std::unique_ptr<Text> lightCostText = nullptr;
+	std::unique_ptr<Text> darknessCostText = nullptr;
+
+	Card* effectTextCard_ = nullptr; // 効果テキスト用のカード参照
+	int lightCost = 0;
+	int darknessCost = 0;
+
+
 	// ターン管理
 	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
 		{TrunState::Start, [&](TrunState& i) {return StartTrun(i); }},

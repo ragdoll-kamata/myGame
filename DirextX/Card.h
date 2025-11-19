@@ -42,6 +42,8 @@ public:
 	void Draw();
 	void TextDraw();
 
+	void EffectTextDraw();
+
 	bool IsOnCollision(Vector2 pos);
 
 	bool Effect();
@@ -87,6 +89,9 @@ private:
 
 	bool isDraw_ = false;
 	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
+	std::unique_ptr<Sprite> costSprite_ = nullptr; // スプライト（カードの画像）
+	std::unique_ptr<Sprite> costSprite2_ = nullptr; // スプライト（カードの画像）
+	std::unique_ptr<Text> costText_ = nullptr; // コストテキスト
 	Vector2 halfSize = {60.0f, 80.0f};
 	Vector2 pos = {-100.0f, -100.0f};
 	const Vector2 textZure = {0.0f, -80.0f};
@@ -158,6 +163,7 @@ private:
 // 参照変数
 	std::unordered_map<std::string, std::vector<Card*>> cards;
 	std::unordered_map<std::string, int> ints;
+	std::string returnValue;
 public:
 	// 変数
 	void SetInt(const std::string& key, int value) {
@@ -211,9 +217,20 @@ public:
 		cardList.erase(std::remove(cardList.begin(), cardList.end(), card), cardList.end());
 	}
 
+	std::string GetReturnValue() const {
+		return returnValue;
+	}
+	void SetReturnValue(const std::string& value) {
+		returnValue = value;
+	}
+	void ResetReturnValue() {
+		returnValue.clear();
+	}
+
 	void RessetVariable() {
 		cards.clear();
 		ints.clear();
+		returnValue.clear();
 	}
 
 };

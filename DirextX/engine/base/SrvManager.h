@@ -21,6 +21,8 @@ public:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUdescriptorHandle(uint32_t index);
 
+	void Free(uint32_t index);
+
 	ID3D12DescriptorHeap* GetDescriptorHeap() const { return descriptorHeap.Get(); }
 
 	static const uint32_t kMaxSRVCount = 512;
@@ -29,5 +31,6 @@ private:
 	uint32_t descriptorSize;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	uint32_t useIndex = 0;
+	std::list<uint32_t> freeIndices;
 };
 

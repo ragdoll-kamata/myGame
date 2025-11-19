@@ -25,17 +25,25 @@ struct TokenGroup {
 	TokenGroupType type = TokenGroupType::None;
 	int lineNumber = 0;
 };
+enum class FunctionResult {
+	Normal,
+	Return,
+	Standby,
+	Error,
+};
 class CardData {
 public:
 	void LoadCardFile(std::string filename);
 
-	bool CardFunctionLoad(Card* card, std::string functionName, int& functionLine);
+	FunctionResult CardFunctionLoad(Card* card, std::string functionName, int& functionLine);
 
-	std::vector<CardCommand*> GetCardCommands(int functionID);
+	std::vector<CardCommand*> GetCardCommandsByFunctionName(std::string functionName);
 
+	std::vector<CardCommand*> GetCardCommandsByFunctionID(int functionID);
+
+
+	FunctionResult FunctionLoad(Card* card, int functionID, int& functionLine);
 private:
-	bool FunctionLoad(Card* card, int functionID, int& functionLine);
-
 	std::vector<std::string> ParseLine(std::string& text);
 
 	void CreateTokenGroup(std::vector<std::string>& tokens, int leneNum);

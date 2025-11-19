@@ -7,6 +7,22 @@ bool CardExplanationCommand::Initialize(const std::string& explanation) {
 		return false;
 	}
 	explanation_ = Utf8ToU32(explanation);
+	bool is = false;
+	std::u32string str = explanation_;
+	for(auto & c : str){
+		if(c == U'\\'){
+			is = true;
+			continue;
+		}
+		if(is){
+			if(c == U'n'){
+				explanation_.replace(explanation_.find(U"\\n"), 2, U"\n");
+			}
+			is = false;
+		} else {
+			is = false;
+		}
+	}
 	return true;
 }
 

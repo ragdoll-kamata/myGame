@@ -3,7 +3,7 @@
 #include "ErrorMessage.h"
 
 bool IfCommand::Initialize(CardData* cardData, int nestID, std::vector<std::string> commandTokens) {
-	commands_ = cardData->GetCardCommands(nestID);
+	commands_ = cardData->GetCardCommandsByFunctionID(nestID);
 	parseBoolResult_ = ParseBool(commandTokens);
 
 	if (!parseBoolResult_ || parseBoolResult_->groups.size() == 0) {

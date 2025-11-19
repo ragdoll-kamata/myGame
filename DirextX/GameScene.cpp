@@ -3,6 +3,8 @@
 #include "SpriteCommon.h"
 #include "TextCommon.h"
 #include "CardCommand.h"
+#include "SceneManager.h"
+#include "Input.h"
 
 #include "MathUtility.h"
 using namespace MathUtility;
@@ -17,6 +19,9 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	cardManager_->Update(trunState_);
+	if (Input::GetInstance()->TriggerKey(DIK_F1)) {
+		SceneManager::GetInstance()->SetNextScene("GameScene");
+	}
 }
 
 void GameScene::Draw() {

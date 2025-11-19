@@ -81,7 +81,7 @@
     <ClCompile Include="engine\3d\Particle\Shape\SphereShape.cpp" />
     <ClCompile Include="engine\base\Skeleton.cpp" />
     <ClCompile Include="engine\base\SkinCluster.cpp" />
-    <ClCompile Include="NestMoveCommand.cpp" />
+    <ClCompile Include="OpenDeckAlignmentMove.cpp" />
     <ClCompile Include="OpenDeckCommand.cpp" />
     <ClCompile Include="ReturnCommand.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
@@ -181,7 +181,7 @@
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />
-    <ClInclude Include="NestMoveCommand.h" />
+    <ClInclude Include="OpenDeckAlignmentMove.h" />
     <ClInclude Include="OpenDeckCommand.h" />
     <ClInclude Include="ReturnCommand.h" />
     <ClInclude Include="SceneFactory.h" />
