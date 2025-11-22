@@ -25,6 +25,10 @@ uint32_t SrvManager::Allocate() {
 	return index;
 }
 
+void SrvManager::ReturnIndex(uint32_t index) {
+	freeIndices.push_back(index);
+}
+
 void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResourece, DXGI_FORMAT Format, UINT MipLevels) {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = Format;

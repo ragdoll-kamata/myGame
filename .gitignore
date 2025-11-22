@@ -19,6 +19,7 @@
 generated/
 DirextX/externals/freetype-2.13.3/objs/
 DirextX/externals/freetype-demos/
+DirextX/x64/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

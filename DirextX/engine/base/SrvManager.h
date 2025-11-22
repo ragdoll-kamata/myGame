@@ -9,6 +9,8 @@ public:
 
 	uint32_t Allocate();
 
+	void ReturnIndex(uint32_t index);
+
 	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResourece, DXGI_FORMAT Format, UINT MipLevels);
 
 	void CreateSRVforTexture2DArray(uint32_t srvIndex, ID3D12Resource* pResourece, DXGI_FORMAT Format, UINT MipLevels, UINT arraySize);

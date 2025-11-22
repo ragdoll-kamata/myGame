@@ -1,12 +1,12 @@
 #pragma once
 #include "BaseScene.h"
-#include "SceneFactory.h"
+#include "AbstractSceneFactory.h"
 #include <string>
 
 
 class SceneManager {
 public:
-	void Initialize();
+	void Initialize(std::unique_ptr<AbstractSceneFactory> sceneFactory);
 
 	// <summary>
 	/// 毎フレーム処理
@@ -29,7 +29,7 @@ private:
 	std::unique_ptr<BaseScene> activeScene = nullptr;
 	std::unique_ptr<BaseScene> nextScene = nullptr;
 
-	std::unique_ptr<AbstractSceneFactory> sceneFactory = nullptr;
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
 	SceneManager() = default;
 	~SceneManager() = default;

@@ -55,6 +55,8 @@ public:
 		bool isTime = false; // タイムタグが適用されているか
 	};
 
+	~Text();
+
 	void Initialize(std::u32string text, const Vector2& pos, float maxWidth);
 
 	void Update();

@@ -1,8 +1,8 @@
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance = nullptr;
-void SceneManager::Initialize() { 
-	sceneFactory = std::make_unique<SceneFactory>();
+void SceneManager::Initialize(std::unique_ptr<AbstractSceneFactory> sceneFactory) {
+	sceneFactory_ = std::move(sceneFactory);
 }
 
 void SceneManager::Update() {
@@ -23,7 +23,7 @@ void SceneManager::Draw() {
 }
 
 void SceneManager::SetNextScene(std::string sceneName) {
-	nextScene = sceneFactory->CreateScene(sceneName);
+	nextScene = sceneFactory_->CreateScene(sceneName);
 }
 
 SceneManager* SceneManager::GetInstance() {

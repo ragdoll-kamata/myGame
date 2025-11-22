@@ -189,91 +189,93 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="MyGame.cpp">
+    <ClCompile Include="Class\MyGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SceneFactory.cpp">
+    <ClCompile Include="Class\Scene\SceneFactory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TitleScene.cpp">
+    <ClCompile Include="Class\Scene\TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AddCemeteryCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Cemetery\AddCemeteryCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Cemetery</Filter>
     </ClCompile>
-    <ClCompile Include="AddHandCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Hand\AddHandCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Hand</Filter>
     </ClCompile>
-    <ClCompile Include="OpenDeckCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Deck\OpenDeckCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Deck</Filter>
     </ClCompile>
-    <ClCompile Include="CardCommand.cpp">
+    <ClCompile Include="Class\CardCommand\CardCommand.cpp">
       <Filter>ソース ファイル\CardCommand</Filter>
     </ClCompile>
-    <ClCompile Include="CardCommandFactory.cpp">
+    <ClCompile Include="Class\CardCommand\CardCommandFactory.cpp">
       <Filter>ソース ファイル\CardCommand</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
+    <ClCompile Include="Class\Scene\GameScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ElementFilterCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Filter\ElementFilterCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Filter</Filter>
     </ClCompile>
-    <ClCompile Include="CardExplanationCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Initialize\CardExplanationCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="CardElemetCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Initialize\CardElemetCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="CardCostCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Initialize\CardCostCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="CardNameCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Initialize\CardNameCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="CardTypeCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Initialize\CardTypeCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="WhileCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Control\WhileCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Control</Filter>
     </ClCompile>
-    <ClCompile Include="ReturnCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Control\ReturnCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Control</Filter>
     </ClCompile>
-    <ClCompile Include="IfCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Control\IfCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Card.cpp">
+    <ClCompile Include="Class\Card\Card.cpp">
       <Filter>ソース ファイル\Card</Filter>
     </ClCompile>
-    <ClCompile Include="CardData.cpp">
+    <ClCompile Include="Class\Card\CardData.cpp">
       <Filter>ソース ファイル\Card</Filter>
     </ClCompile>
-    <ClCompile Include="CardManager.cpp">
+    <ClCompile Include="Class\Card\CardManager.cpp">
       <Filter>ソース ファイル\Card</Filter>
     </ClCompile>
-    <ClCompile Include="CardMove.cpp">
+    <ClCompile Include="Class\Move\CardMove.cpp">
       <Filter>ソース ファイル\Move</Filter>
     </ClCompile>
-    <ClCompile Include="CardShuffleMove.cpp">
+    <ClCompile Include="Class\Move\CardShuffleMove.cpp">
       <Filter>ソース ファイル\Move</Filter>
     </ClCompile>
-    <ClCompile Include="HandCardMove.cpp">
+    <ClCompile Include="Class\Move\HandCardMove.cpp">
       <Filter>ソース ファイル\Move</Filter>
     </ClCompile>
-    <ClCompile Include="CardVariableControlCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Variable\CardVariableControlCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Variable</Filter>
     </ClCompile>
-    <ClCompile Include="IntVariableControlCommand.cpp">
+    <ClCompile Include="Class\CardCommand\Variable\IntVariableControlCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Variable</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
+    <ClCompile Include="Class\Button.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ErrorMessage.cpp">
+    <ClCompile Include="Class\ErrorMessage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="OpenDeckAlignmentMove.cpp" />
+    <ClCompile Include="Class\Move\OpenDeckAlignmentMove.cpp">
+      <Filter>ソース ファイル\Move</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -489,16 +491,16 @@
     <ClInclude Include="engine\2d\TextCommon.h">
       <Filter>ヘッダー ファイル\Engine\2d</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h">
+    <ClInclude Include="Class\Scene\GameScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="MyGame.h">
+    <ClInclude Include="Class\MyGame.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="SceneFactory.h">
+    <ClInclude Include="Class\Scene\SceneFactory.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="TitleScene.h">
+    <ClInclude Include="Class\Scene\TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="utf8\checked.h">
@@ -519,85 +521,87 @@
     <ClInclude Include="utf8\unchecked.h">
       <Filter>utf8</Filter>
     </ClInclude>
-    <ClInclude Include="CardCommand.h">
+    <ClInclude Include="Class\CardCommand\CardCommand.h">
       <Filter>ヘッダー ファイル\CardCommand</Filter>
     </ClInclude>
-    <ClInclude Include="CardCommandFactory.h">
+    <ClInclude Include="Class\CardCommand\CardCommandFactory.h">
       <Filter>ヘッダー ファイル\CardCommand</Filter>
     </ClInclude>
-    <ClInclude Include="OpenDeckCommand.h">
+    <ClInclude Include="Class\CardCommand\Deck\OpenDeckCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Deck</Filter>
     </ClInclude>
-    <ClInclude Include="AddHandCommand.h">
+    <ClInclude Include="Class\CardCommand\Hand\AddHandCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Hand</Filter>
     </ClInclude>
-    <ClInclude Include="AddCemeteryCommand.h">
+    <ClInclude Include="Class\CardCommand\Cemetery\AddCemeteryCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Cemetery</Filter>
     </ClInclude>
-    <ClInclude Include="ElementFilterCommand.h">
+    <ClInclude Include="Class\CardCommand\Filter\ElementFilterCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Filter</Filter>
     </ClInclude>
-    <ClInclude Include="CardCostCommand.h">
+    <ClInclude Include="Class\CardCommand\Initialize\CardCostCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="CardElemetCommand.h">
+    <ClInclude Include="Class\CardCommand\Initialize\CardElemetCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="CardExplanationCommand.h">
+    <ClInclude Include="Class\CardCommand\Initialize\CardExplanationCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="CardNameCommand.h">
+    <ClInclude Include="Class\CardCommand\Initialize\CardNameCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="CardTypeCommand.h">
+    <ClInclude Include="Class\CardCommand\Initialize\CardTypeCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="WhileCommand.h">
+    <ClInclude Include="Class\CardCommand\Control\WhileCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
     </ClInclude>
-    <ClInclude Include="IfCommand.h">
+    <ClInclude Include="Class\CardCommand\Control\IfCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
     </ClInclude>
-    <ClInclude Include="ReturnCommand.h">
+    <ClInclude Include="Class\CardCommand\Control\ReturnCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Control</Filter>
     </ClInclude>
-    <ClInclude Include="CardVariableControlCommand.h">
+    <ClInclude Include="Class\CardCommand\Variable\CardVariableControlCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Variable</Filter>
     </ClInclude>
-    <ClInclude Include="IntVariableControlCommand.h">
+    <ClInclude Include="Class\CardCommand\Variable\IntVariableControlCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Variable</Filter>
     </ClInclude>
-    <ClInclude Include="Card.h">
+    <ClInclude Include="Class\Card\Card.h">
       <Filter>ヘッダー ファイル\Card</Filter>
     </ClInclude>
-    <ClInclude Include="CardData.h">
+    <ClInclude Include="Class\Card\CardData.h">
       <Filter>ヘッダー ファイル\Card</Filter>
     </ClInclude>
-    <ClInclude Include="CardManager.h">
+    <ClInclude Include="Class\Card\CardManager.h">
       <Filter>ヘッダー ファイル\Card</Filter>
     </ClInclude>
-    <ClInclude Include="HandCardMove.h">
+    <ClInclude Include="Class\Move\HandCardMove.h">
       <Filter>ヘッダー ファイル\Move</Filter>
     </ClInclude>
-    <ClInclude Include="CardShuffleMove.h">
+    <ClInclude Include="Class\Move\CardShuffleMove.h">
       <Filter>ヘッダー ファイル\Move</Filter>
     </ClInclude>
-    <ClInclude Include="CardMove.h">
+    <ClInclude Include="Class\Move\CardMove.h">
       <Filter>ヘッダー ファイル\Move</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
+    <ClInclude Include="Class\Button.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ErrorMessage.h">
+    <ClInclude Include="Class\ErrorMessage.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="TrunState.h">
+    <ClInclude Include="Class\TrunState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="utf8.h">
+    <ClInclude Include="utf8\utf8.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="OpenDeckAlignmentMove.h" />
+    <ClInclude Include="Class\Move\OpenDeckAlignmentMove.h">
+      <Filter>ヘッダー ファイル\Move</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

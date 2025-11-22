@@ -11,22 +11,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AddCemeteryCommand.cpp" />
-    <ClCompile Include="AddHandCommand.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Card.cpp" />
-    <ClCompile Include="CardCommand.cpp" />
-    <ClCompile Include="CardCommandFactory.cpp" />
-    <ClCompile Include="CardCostCommand.cpp" />
-    <ClCompile Include="CardElemetCommand.cpp" />
-    <ClCompile Include="CardExplanationCommand.cpp" />
-    <ClCompile Include="CardManager.cpp" />
-    <ClCompile Include="CardMove.cpp" />
-    <ClCompile Include="CardNameCommand.cpp" />
-    <ClCompile Include="CardShuffleMove.cpp" />
-    <ClCompile Include="CardTypeCommand.cpp" />
-    <ClCompile Include="CardVariableControlCommand.cpp" />
-    <ClCompile Include="ElementFilterCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Cemetery\AddCemeteryCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Hand\AddHandCommand.cpp" />
+    <ClCompile Include="Class\Button.cpp" />
+    <ClCompile Include="Class\Card\Card.cpp" />
+    <ClCompile Include="Class\CardCommand\CardCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\CardCommandFactory.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardCostCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardElemetCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardExplanationCommand.cpp" />
+    <ClCompile Include="Class\Card\CardManager.cpp" />
+    <ClCompile Include="Class\Move\CardMove.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardNameCommand.cpp" />
+    <ClCompile Include="Class\Move\CardShuffleMove.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardTypeCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Variable\CardVariableControlCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Filter\ElementFilterCommand.cpp" />
     <ClCompile Include="engine\3d\Animation.cpp" />
     <ClCompile Include="engine\3d\Particle\Shape\AABBShape.cpp" />
     <ClCompile Include="engine\Audio\Audio.cpp" />
@@ -49,14 +49,14 @@
     <ClCompile Include="engine\Font\FontAtlasManager.cpp" />
     <ClCompile Include="engine\Font\FontLoader.cpp" />
     <ClCompile Include="engine\Scene\Framework.cpp" />
-    <ClCompile Include="ErrorMessage.cpp" />
-    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Class\ErrorMessage.cpp" />
+    <ClCompile Include="Class\Scene\GameScene.cpp" />
     <ClCompile Include="engine\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="engine\base\IndexBuffer.cpp" />
-    <ClCompile Include="CardData.cpp" />
-    <ClCompile Include="HandCardMove.cpp" />
-    <ClCompile Include="IfCommand.cpp" />
-    <ClCompile Include="IntVariableControlCommand.cpp" />
+    <ClCompile Include="Class\Card\CardData.cpp" />
+    <ClCompile Include="Class\Move\HandCardMove.cpp" />
+    <ClCompile Include="Class\CardCommand\Control\IfCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Variable\IntVariableControlCommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MathUtility.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -70,7 +70,7 @@
     <ClCompile Include="engine\base\TextureManager.cpp" />
     <ClCompile Include="engine\base\WinApp.cpp" />
     <ClCompile Include="engine\base\SrvManager.cpp" />
-    <ClCompile Include="MyGame.cpp" />
+    <ClCompile Include="Class\MyGame.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleEmitterManager.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
@@ -81,33 +81,33 @@
     <ClCompile Include="engine\3d\Particle\Shape\SphereShape.cpp" />
     <ClCompile Include="engine\base\Skeleton.cpp" />
     <ClCompile Include="engine\base\SkinCluster.cpp" />
-    <ClCompile Include="OpenDeckAlignmentMove.cpp" />
-    <ClCompile Include="OpenDeckCommand.cpp" />
-    <ClCompile Include="ReturnCommand.cpp" />
-    <ClCompile Include="SceneFactory.cpp" />
+    <ClCompile Include="Class\Move\OpenDeckAlignmentMove.cpp" />
+    <ClCompile Include="Class\CardCommand\Deck\OpenDeckCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Control\ReturnCommand.cpp" />
+    <ClCompile Include="Class\Scene\SceneFactory.cpp" />
     <ClCompile Include="engine\Scene\SceneManager.cpp" />
     <ClCompile Include="engine\2d\Text.cpp" />
     <ClCompile Include="engine\2d\TextCommon.cpp" />
-    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="Class\Scene\TitleScene.cpp" />
     <ClCompile Include="engine\3d\Particle\Field\WindField.cpp" />
-    <ClCompile Include="WhileCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Control\WhileCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AddCemeteryCommand.h" />
-    <ClInclude Include="AddHandCommand.h" />
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="Card.h" />
-    <ClInclude Include="CardCommand.h" />
-    <ClInclude Include="CardCostCommand.h" />
-    <ClInclude Include="CardElemetCommand.h" />
-    <ClInclude Include="CardExplanationCommand.h" />
-    <ClInclude Include="CardManager.h" />
-    <ClInclude Include="CardMove.h" />
-    <ClInclude Include="CardNameCommand.h" />
-    <ClInclude Include="CardShuffleMove.h" />
-    <ClInclude Include="CardTypeCommand.h" />
-    <ClInclude Include="CardVariableControlCommand.h" />
-    <ClInclude Include="ElementFilterCommand.h" />
+    <ClInclude Include="Class\CardCommand\Cemetery\AddCemeteryCommand.h" />
+    <ClInclude Include="Class\CardCommand\Hand\AddHandCommand.h" />
+    <ClInclude Include="Class\Button.h" />
+    <ClInclude Include="Class\Card\Card.h" />
+    <ClInclude Include="Class\CardCommand\CardCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardCostCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardElemetCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardExplanationCommand.h" />
+    <ClInclude Include="Class\Card\CardManager.h" />
+    <ClInclude Include="Class\Move\CardMove.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardNameCommand.h" />
+    <ClInclude Include="Class\Move\CardShuffleMove.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardTypeCommand.h" />
+    <ClInclude Include="Class\CardCommand\Variable\CardVariableControlCommand.h" />
+    <ClInclude Include="Class\CardCommand\Filter\ElementFilterCommand.h" />
     <ClInclude Include="engine\3d\Animation.h" />
     <ClInclude Include="engine\3d\Particle\Shape\AABBShape.h" />
     <ClInclude Include="engine\3d\Particle\Primitive\Cylinder.h" />
@@ -168,39 +168,39 @@
     <ClInclude Include="engine\Font\FontAtlasManager.h" />
     <ClInclude Include="engine\Font\FontLoader.h" />
     <ClInclude Include="engine\Scene\Framework.h" />
-    <ClInclude Include="ErrorMessage.h" />
-    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Class\ErrorMessage.h" />
+    <ClInclude Include="Class\Scene\GameScene.h" />
     <ClInclude Include="engine\Font\GlyphBitmap.h" />
     <ClInclude Include="engine\Font\GlyphInfo.h" />
     <ClInclude Include="engine\ImGui\ImGuiManager.h" />
     <ClInclude Include="engine\base\IndexBuffer.h" />
-    <ClInclude Include="CardData.h" />
-    <ClInclude Include="HandCardMove.h" />
-    <ClInclude Include="IfCommand.h" />
-    <ClInclude Include="IntVariableControlCommand.h" />
-    <ClInclude Include="MyGame.h" />
+    <ClInclude Include="Class\Card\CardData.h" />
+    <ClInclude Include="Class\Move\HandCardMove.h" />
+    <ClInclude Include="Class\CardCommand\Control\IfCommand.h" />
+    <ClInclude Include="Class\CardCommand\Variable\IntVariableControlCommand.h" />
+    <ClInclude Include="Class\MyGame.h" />
     <ClInclude Include="engine\math\Sphere.h" />
     <ClInclude Include="engine\Scene\BaseScene.h" />
-    <ClInclude Include="OpenDeckAlignmentMove.h" />
-    <ClInclude Include="OpenDeckCommand.h" />
-    <ClInclude Include="ReturnCommand.h" />
-    <ClInclude Include="SceneFactory.h" />
+    <ClInclude Include="Class\Move\OpenDeckAlignmentMove.h" />
+    <ClInclude Include="Class\CardCommand\Deck\OpenDeckCommand.h" />
+    <ClInclude Include="Class\CardCommand\Control\ReturnCommand.h" />
+    <ClInclude Include="Class\Scene\SceneFactory.h" />
     <ClInclude Include="engine\Scene\SceneManager.h" />
     <ClInclude Include="engine\2d\Text.h" />
     <ClInclude Include="engine\2d\TextCommon.h" />
-    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="Class\Scene\TitleScene.h" />
     <ClInclude Include="engine\3d\Particle\Field\WindField.h" />
     <ClInclude Include="engine\base\VertexBuffer.h" />
-    <ClInclude Include="CardCommandFactory.h" />
-    <ClInclude Include="utf8.h" />
+    <ClInclude Include="Class\CardCommand\CardCommandFactory.h" />
+    <ClInclude Include="utf8\utf8.h" />
     <ClInclude Include="utf8\checked.h" />
     <ClInclude Include="utf8\core.h" />
     <ClInclude Include="utf8\cpp11.h" />
     <ClInclude Include="utf8\cpp17.h" />
     <ClInclude Include="utf8\cpp20.h" />
     <ClInclude Include="utf8\unchecked.h" />
-    <ClInclude Include="TrunState.h" />
-    <ClInclude Include="WhileCommand.h" />
+    <ClInclude Include="Class\TrunState.h" />
+    <ClInclude Include="Class\CardCommand\Control\WhileCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -338,7 +338,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include;$(ProjectDir)Class;$(ProjectDir)Class/CardCommand;$(ProjectDir)Class/Move;$(ProjectDir)Class/Card</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -367,7 +367,7 @@ copy "$(ProjectDir)externals\freetype-demos\bin\freetype.dll" "$(TargetDir)freet
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui;$(SolutionDir)DirectXTex;$(IncludePath);$(ProjectDir)/externals/freetype-2.13.3/include;$(ProjectDir)\engine\2d;$(ProjectDir)\engine\3d;$(ProjectDir)\engine\base;$(ProjectDir)\engine\Scene;$(ProjectDir)\engine\Audio;$(ProjectDir)\engine\Font;$(ProjectDir)\engine\input;$(ProjectDir)\engine\math;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine/3d/Particle/Primitive;$(ProjectDir)engine/3d/Particle/Shape;$(ProjectDir)\engine\ImGui;$(ProjectDir);$(ProjectDir)\externals;$(ProjectDir)externals/assimp/include;$(ProjectDir)Class;$(ProjectDir)Class/CardCommand;$(ProjectDir)Class/Move;$(ProjectDir)Class/Card</AdditionalIncludeDirectories>
       <Optimization>MinSpace</Optimization>
     </ClCompile>
     <Link>

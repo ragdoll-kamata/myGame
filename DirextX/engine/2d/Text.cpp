@@ -9,6 +9,10 @@
 
 using namespace MathUtility;
 
+Text::~Text() {
+	TextCommon::GetInstance()->GetSrvManager()->ReturnIndex(instancingSrvIndex);
+}
+
 void Text::Initialize(std::u32string text, const Vector2& pos, float maxWidth) {
 	CreateVertex();
 	CreateTextData();
