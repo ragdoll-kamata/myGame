@@ -60,6 +60,15 @@ void CardManager::Initialize() {
 	darknessCostText->Initialize(U"00", {70.0f, 0.0f}, 2000.0f);
 	darknessCostText->Update();
 	darknessCostText->CalcFitSize(40.0f);
+
+	selectCardBackSprite = std::make_unique<Sprite>();
+	selectCardBackSprite->Initialize("white.png");
+	selectCardBackSprite->SetSize({1280.0f, 720.0f});
+	selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, 0.0f});
+
+	endSelectButton = std::make_unique<Button>();
+	endSelectButton->Initialize({640.0f, 650.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 1.0f, 1.0f});
+	endSelectButton->SetIsDraw(false);
 }
 
 bool CardManager::StartCardSet() {
@@ -90,7 +99,7 @@ bool CardManager::StartCardSet() {
 			}
 
 		}
-		
+
 		if (CardDataMap.contains(name)) {
 			int number = std::stoi(num);
 			for (int i = 0; i < number; i++) {
@@ -110,21 +119,21 @@ bool CardManager::StartCardSet() {
 void CardManager::Update(TrunState& trunState) {
 	trunMap[trunState](trunState);
 
-	for (const auto& card : allCards) {
-		card->Update();
+	if (!isMove) {
+		ExecutionCard();
 	}
 
-	bool isMove = false;
+	isMove = false;
 	if (cardMoves.size() > 0) {
 		isMove = true;
-		bool isEnd = false;
+		bool isEnd = true;
 		for (const auto& card : cardMoves[0]) {
 			card->Update();
 			if (!card->IsEnd()) {
-				isEnd = true;
+				isEnd = false;
 			}
 		}
-		if (!isEnd) {
+		if (isEnd) {
 			for (const auto& card : cardMoves[0]) {
 				card->End();
 			}
@@ -137,11 +146,12 @@ void CardManager::Update(TrunState& trunState) {
 			}
 		}
 	}
-	if (!isMove) {
-		ExecutionCard();
+	
+
+
+	for (const auto& card : allCards) {
+		card->Update();
 	}
-
-
 
 	endTurnButton->Update();
 	startOpenButton->Update();
@@ -151,6 +161,23 @@ void CardManager::Update(TrunState& trunState) {
 	darknessCostText->Update();
 	costBackSprite->Updata();
 	costBackSprite2->Updata();
+
+	if (isSelectCard) {
+		selectCardBackSpriteAlpha += 0.05f;
+		if (selectCardBackSpriteAlpha > selectCardBackSpriteMaxAlpha) {
+			selectCardBackSpriteAlpha = selectCardBackSpriteMaxAlpha;
+		}
+		selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, selectCardBackSpriteAlpha});
+	} else {
+		selectCardBackSpriteAlpha -= 0.05f;
+		if (selectCardBackSpriteAlpha < 0.0f) {
+			selectCardBackSpriteAlpha = 0.0f;
+		}
+		selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, selectCardBackSpriteAlpha});
+
+	}
+	selectCardBackSprite->Updata();
+	endSelectButton->Update();
 }
 
 void CardManager::Draw() {
@@ -175,12 +202,44 @@ void CardManager::Draw() {
 	for (const auto& card : allCards) {
 		SpriteCommon::GetInstance()->PreDraw();
 		card->Draw();
+
 		TextCommon::GetInstance()->PreDraw();
-
 		card->TextDraw();
-
 		TextCommon::GetInstance()->PostDraw();
+	}
 
+	for (auto* card : zoneMap[CardZone::Hand]) {
+		SpriteCommon::GetInstance()->PreDraw();
+		card->Draw();
+
+		TextCommon::GetInstance()->PreDraw();
+		card->TextDraw();
+		TextCommon::GetInstance()->PostDraw();
+	}
+	if (isHoldCard) {
+		Card* card = zoneMap[CardZone::Hand][holdCardIndex];
+		SpriteCommon::GetInstance()->PreDraw();
+		card->Draw();
+
+		TextCommon::GetInstance()->PreDraw();
+		card->TextDraw();
+		TextCommon::GetInstance()->PostDraw();
+	}
+
+	if (isSelectCard) {
+		SpriteCommon::GetInstance()->PreDraw();
+
+		selectCardBackSprite->Draw();
+		endSelectButton->Draw();
+
+		for (const auto& card : selectCards) {
+			SpriteCommon::GetInstance()->PreDraw();
+			card->Draw();
+
+			TextCommon::GetInstance()->PreDraw();
+			card->TextDraw();
+			TextCommon::GetInstance()->PostDraw();
+		}
 	}
 }
 
@@ -282,9 +341,12 @@ void CardManager::EndTrun(TrunState& trunState) {
 }
 
 void CardManager::PlayerInput() {
+	if (isSelectCard) {
+		return;
+	}
 	Input* input = Input::GetInstance();
 	Vector2 mousePos = input->GetMousePos();
-	
+
 	if (!isHoldCard) {
 		effectTextCard_ = nullptr;
 		int index = 0;
@@ -300,7 +362,7 @@ void CardManager::PlayerInput() {
 			}
 			index++;
 		}
-		
+
 	} else {
 
 		if (input->PressMouseButton(0)) {
@@ -487,10 +549,10 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 		result.push_back(zoneMap[CardZone::Deck].front());
 		if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Light) {
 			lightCost++;
-			lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
+			lightCostText->SetText(Text::GetIntToString(lightCost, 2));
 		} else if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Darkness) {
 			darknessCost++;
-			darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
+			darknessCostText->SetText(Text::GetIntToString(darknessCost, 2));
 		}
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
@@ -502,6 +564,26 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 		AddCardMove(std::move(moves));
 	}
 	return result;
+}
+
+void CardManager::SetIsSelectCard(bool isSelect) {
+	isSelectCard = isSelect;
+	endSelectButton->SetIsDraw(isSelect);
+	if (!isSelect) {
+		selectCards.clear();
+	}
+}
+
+void CardManager::SetEndSelectButtonColorV(float v) {
+	endSelectButton->SetColor({endSelectButtonColor.x * v, endSelectButtonColor.y * v, endSelectButtonColor.z * v, 1.0f});
+}
+
+bool CardManager::IsEndSelectButton() const {
+	return endSelectButton->IsOnCollision(Input::GetInstance()->GetMousePos());
+}
+
+void CardManager::ShufleCards(std::vector<Card*>& cards) {
+	std::shuffle(cards.begin(), cards.end(), g);
 }
 
 void CardManager::MoveCard(Card* card, CardZone cardZone) {
@@ -558,7 +640,7 @@ Vector2 CardManager::GetCardPos(CardZone zone, int index) {
 Vector2 CardManager::HandCardPos(int index) {
 	Vector2 pos;
 	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
-	pos.x = 640.0f - (size / 2.0f - index) * 122.0f;
+	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + handCardPading);
 	pos.y = 720.0f - 80.0f;
 	return pos;
 }
@@ -566,7 +648,7 @@ Vector2 CardManager::HandCardPos(int index) {
 Vector2 CardManager::OpenCardPos(int index) {
 	Vector2 pos;
 	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
-	pos.x = 640.0f - (size / 2.0f - index) * 126.0f;
+	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + openCardPading);
 	pos.y = 240.0f;
 	return pos;
 }

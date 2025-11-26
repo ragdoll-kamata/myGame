@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Class\CardCommand\Deck\AddDeckBottomCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Cemetery\AddCemeteryCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Hand\AddHandCommand.cpp" />
     <ClCompile Include="Class\Button.cpp" />
@@ -91,8 +92,10 @@
     <ClCompile Include="Class\Scene\TitleScene.cpp" />
     <ClCompile Include="engine\3d\Particle\Field\WindField.cpp" />
     <ClCompile Include="Class\CardCommand\Control\WhileCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Deck\SelectOpenDeckCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\CardCommand\Deck\AddDeckBottomCommand.h" />
     <ClInclude Include="Class\CardCommand\Cemetery\AddCemeteryCommand.h" />
     <ClInclude Include="Class\CardCommand\Hand\AddHandCommand.h" />
     <ClInclude Include="Class\Button.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="engine\3d\Particle\Field\WindField.h" />
     <ClInclude Include="engine\base\VertexBuffer.h" />
     <ClInclude Include="Class\CardCommand\CardCommandFactory.h" />
+    <ClInclude Include="Class\CardCommand\Deck\SelectOpenDeckCommand.h" />
     <ClInclude Include="utf8\utf8.h" />
     <ClInclude Include="utf8\checked.h" />
     <ClInclude Include="utf8\core.h" />
@@ -201,6 +205,7 @@
     <ClInclude Include="utf8\unchecked.h" />
     <ClInclude Include="Class\TrunState.h" />
     <ClInclude Include="Class\CardCommand\Control\WhileCommand.h" />
+    <ClInclude Include="Class\CardCommand\VoidCardCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

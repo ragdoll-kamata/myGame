@@ -11,6 +11,11 @@ enum class ExecuteResult {
 	Continue,
 	Error,
 };
+enum class CommandType {
+	Void,
+	None,
+};
+
 class CardCommand {
 public:
 	enum class ParseBoolType {
@@ -62,6 +67,10 @@ public:
 	/// <param name="card">カード</param>
 	/// <returns>リザルト</returns>
 	virtual ExecuteResult Execute(Card* card) = 0;
+
+	virtual CommandType GetCommandType() {
+		return CommandType::None;
+	}
 
 	static void SetCardManager(CardManager* cardManager) {
 		cardManager_ = cardManager;

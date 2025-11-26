@@ -12,7 +12,7 @@ void OpenDeckAlignmentMove::Update() {
 	Vector2 pos{};
 	pos.y = 240.0f;
 	for (const auto& card : cards) {
-		pos.x = 640.0f - (size / 2.0f - i) * 122.0f;
+		pos = cardManager_->GetCardPos(CardZone::Open, i);
 		card->SetNewPos(pos);
 		i++;
 	}

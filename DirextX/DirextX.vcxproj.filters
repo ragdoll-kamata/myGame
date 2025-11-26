@@ -276,6 +276,8 @@
     <ClCompile Include="Class\Move\OpenDeckAlignmentMove.cpp">
       <Filter>ソース ファイル\Move</Filter>
     </ClCompile>
+    <ClCompile Include="Class\CardCommand\Deck\SelectOpenDeckCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Deck\AddDeckBottomCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -601,6 +603,11 @@
     </ClInclude>
     <ClInclude Include="Class\Move\OpenDeckAlignmentMove.h">
       <Filter>ヘッダー ファイル\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Class\CardCommand\Deck\SelectOpenDeckCommand.h" />
+    <ClInclude Include="Class\CardCommand\Deck\AddDeckBottomCommand.h" />
+    <ClInclude Include="Class\CardCommand\VoidCardCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

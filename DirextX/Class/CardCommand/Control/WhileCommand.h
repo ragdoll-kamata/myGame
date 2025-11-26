@@ -1,7 +1,7 @@
 #pragma once
-#include "CardCommand.h"
+#include "VoidCardCommand.h"
 class CardData;
-class WhileCommand : public CardCommand {
+class WhileCommand : public VoidCardCommand {
 public:
 	bool Initialize(CardData* cardData, int nestID, std::vector<std::string> commandTokens);
 

@@ -7,6 +7,8 @@
 #include "Initialize/CardCostCommand.h"
 
 #include "Deck/OpenDeckCommand.h"
+#include "Deck/SelectOpenDeckCommand.h"
+#include "Deck/AddDeckBottomCommand.h"
 
 #include "Hand/AddHandCommand.h"
 
@@ -42,6 +44,10 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	// 山札系
 	if (key == "表向きにする") {
 		return CreateOpenDeckCommand(commandTokens[0], commandTokens[1]);
+	} else if (key == "表向き選択") {
+		return CreateSelectOpenDeckCommand(commandTokens[0], commandTokens[1], commandTokens[2], commandTokens[3], commandTokens[4]);
+	} else if (key == "山札下送り") {
+		return CreateAddDeckBottomCommand(commandTokens[0]);
 	}
 	// 手札系
 	if (key == "手札に加える") {
@@ -119,7 +125,22 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateOpenDeckCommand(std::stri
 	if (cmd->Initialize(num, card)) {
 		return cmd;
 	}
+	return nullptr;
+}
 
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSelectOpenDeckCommand(std::string num, std::string minSelect, std::string maxSelect, std::string selectCard, std::string notSelectCard) {
+	std::unique_ptr<SelectOpenDeckCommand> cmd = std::make_unique<SelectOpenDeckCommand>();
+	if (cmd->Initialize(num, minSelect, maxSelect, selectCard, notSelectCard)) {
+		return cmd;
+	}
+	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateAddDeckBottomCommand(std::string card) {
+	std::unique_ptr<AddDeckBottomCommand> cmd = std::make_unique<AddDeckBottomCommand>();
+	if (cmd->Initialize(card)) {
+		return cmd;
+	}
 	return nullptr;
 }
 
@@ -129,7 +150,6 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateAddHandCommand(std::strin
 	if (cmd->Initialize(card)) {
 		return cmd;
 	}
-
 	return nullptr;
 }
 
@@ -188,8 +208,3 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateReturnCommand(std::vector
 	}
 	return nullptr;
 }
-
-std::unique_ptr<CardCommand> CardCommandFactory::CreateNestMoveCommand(int index) {
-	return std::unique_ptr<CardCommand>();
-}
-

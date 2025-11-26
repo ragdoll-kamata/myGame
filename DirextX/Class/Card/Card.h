@@ -71,6 +71,12 @@ public:
 	bool IsCommandMove() const {
 		return isCommandMove_;
 	}
+	void SetWaku(bool isWaku) {
+		isWaku_ = isWaku;
+	}
+	bool IsWaku() const {
+		return isWaku_;
+	}
 private:
 	std::unique_ptr<Text> name_ = nullptr;
 	std::unique_ptr<Text> description_ = nullptr;
@@ -81,7 +87,6 @@ private:
 	CardData* cardData_ = nullptr;
 
 	std::string fileName = "white.png";
-	//std::vector<CardCommand*> effectCommands; // 効果コマンドのリスト
 private:
 	CardZone zone_ = CardZone::None;
 
@@ -89,6 +94,7 @@ private:
 
 	bool isDraw_ = false;
 	std::unique_ptr<Sprite> sprite_ = nullptr; // スプライト（カードの画像）
+	std::unique_ptr<Sprite> spritewaku_ = nullptr;
 	std::unique_ptr<Sprite> costSprite_ = nullptr; // スプライト（カードの画像）
 	std::unique_ptr<Sprite> costSprite2_ = nullptr; // スプライト（カードの画像）
 	std::unique_ptr<Text> costText_ = nullptr; // コストテキスト
@@ -97,6 +103,11 @@ private:
 	const Vector2 textZure = {0.0f, -80.0f};
 	bool isMove = false;
 	bool isCommandMove_ = false;
+
+	bool isWaku_ = false;
+
+	// コマンド実行形式の判別用
+	bool isVoid_ = false;
 
 	int functionLine = 0;
 public:
@@ -111,6 +122,10 @@ public:
 	}
 	bool IsMove() const {
 		return isMove;
+	}
+
+	bool IsVoid() const {
+		return isVoid_;
 	}
 
 public:

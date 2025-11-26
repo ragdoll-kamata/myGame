@@ -1,7 +1,6 @@
 #pragma once
-#include "CardCommand.h"
-class CardElemetCommand :
-    public CardCommand {
+#include "VoidCardCommand.h"
+class CardElemetCommand : public VoidCardCommand {
 public:
 	bool Initialize(const std::string& element);
 

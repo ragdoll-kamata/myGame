@@ -65,7 +65,24 @@ public:
 
 	std::vector<Card*> OpenDeck(int num, bool isCommand = false);
 
+	void AddSelectCard(Card* card) {
+		selectCards.push_back(card);
+	}
+
+	void SetIsSelectCard(bool isSelect);
+
+	void SetEndSelectButtonColorV(float v);
+
+	bool IsEndSelectButton() const;
+
+
+	void ShufleCards(std::vector<Card*>& cards);
+
 	void MoveCard(Card* card, CardZone cardZone);
+
+	bool IsMoveCard() const {
+		return !cardMoves.empty();
+	}
 public:
 	void AllCardLoad(const std::string& file);
 
@@ -93,6 +110,7 @@ private:
 private:
 	std::vector<std::vector<std::unique_ptr<CardMove>>> cardMoves;
 
+	// ボタン
 	std::unique_ptr<Button> endTurnButton = nullptr;
 
 	std::unique_ptr<Button> startOpenButton = nullptr;
@@ -100,16 +118,35 @@ private:
 
 	std::unique_ptr<Button> cardExecutionField = nullptr;
 
+	std::unique_ptr<Button> endSelectButton = nullptr;
+	const Vector4 endSelectButtonColor = {0.0f, 0.5f, 1.0f, 1.0f};
+
+	// コスト表示用背景スプライト
 	std::unique_ptr<Sprite> costBackSprite = nullptr;
 	std::unique_ptr<Sprite> costBackSprite2 = nullptr;
 
+	// コスト表示用テキスト
 	std::unique_ptr<Text> lightCostText = nullptr;
 	std::unique_ptr<Text> darknessCostText = nullptr;
 
-	Card* effectTextCard_ = nullptr; // 効果テキスト用のカード参照
+	// エネルギーコスト
 	int lightCost = 0;
 	int darknessCost = 0;
 
+	// 効果テキスト用のカード参照
+	Card* effectTextCard_ = nullptr; 
+
+	// カード選択中かどうか
+	bool isSelectCard = false;
+	std::unique_ptr<Sprite> selectCardBackSprite = nullptr;
+
+	std::vector<Card*> selectCards;
+
+	float selectCardBackSpriteAlpha = 0.0f;
+
+	const float selectCardBackSpriteMaxAlpha = 0.5f;
+
+	bool isMove = false;
 
 	// ターン管理
 	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
@@ -119,6 +156,12 @@ private:
 	};
 	bool isStartOpen = true;
 	bool isEndStartTrun = false;
+
+	float cardSizeW = 120.0f;
+
+	const float openCardPading = 10.0f;
+
+	const float handCardPading = 5.0f;
 
 	// 開始時のオープンカードの最大枚数
 	const int startMaxOpenCard = 5;

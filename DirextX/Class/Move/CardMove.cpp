@@ -7,10 +7,11 @@ using namespace MathUtility;
 CardMove::~CardMove() {
 }
 
-void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw) {
+void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw, float startTime) {
 	card_ = card;
 	pos_ = pos;
 	time_ = time;
+	startTime_ = startTime;
 	isEndDraw_ = isEndDraw;
 	nowTime_ = 0.0f;
 	isEnd_ = false;
@@ -19,6 +20,12 @@ void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw) 
 }
 
 void CardMove::Update() {
+	if(startTime_ > 0.0f){
+		startTime_ -= DeltaTime::GetInstance()->GetDeltaTime();
+		card_->SetIsMove(false);
+		card_->SetIsDraw(true);
+		return;
+	}
 	card_->SetIsMove(false);
 	card_->SetIsDraw(true);
 	if (isEnd_) {

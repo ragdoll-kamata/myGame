@@ -1,6 +1,6 @@
 #pragma once
-#include "CardCommand.h"
-class ElementFilterCommand : public CardCommand {
+#include "VoidCardCommand.h"
+class ElementFilterCommand : public VoidCardCommand {
 public:
 	bool Initialize(std::string enement,std::string card, std::string FilterCard);
 	ExecuteResult Execute(Card* card) override;

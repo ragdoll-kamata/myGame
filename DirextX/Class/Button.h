@@ -22,6 +22,13 @@ public:
 		this->isDraw_ = isDraw;
 	}
 
+	void SetColor(Vector4 color) {
+		sprite->SetColor(color);
+	}
+	Vector4 GetColor() const {
+		return sprite->GetColor();
+	}
+
 protected:
 	std::unique_ptr<Sprite> sprite;
 	bool isDraw_ = false;

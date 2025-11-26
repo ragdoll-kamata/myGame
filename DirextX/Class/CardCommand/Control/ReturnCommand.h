@@ -1,6 +1,6 @@
 #pragma once
-#include "CardCommand.h"
-class ReturnCommand : public CardCommand {
+#include "VoidCardCommand.h"
+class ReturnCommand : public VoidCardCommand {
 public:
 	bool Initialize(const std::vector<std::string>& commandTokens);
 	ExecuteResult Execute(Card* card) override;

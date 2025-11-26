@@ -161,7 +161,7 @@ private:
 	float textWidth_ = 0.0f;
 	float textHeight_ = 0.0f;
 
-	const uint32_t kMaxInstance = 200;
+	const uint32_t kMaxInstance = 300;
 
 	Buffer<TextData> textData;
 	uint32_t instancingSrvIndex = 0;

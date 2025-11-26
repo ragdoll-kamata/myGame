@@ -18,13 +18,16 @@ ExecuteResult IfCommand::Execute(Card* card) {
 		isExecuted_ = true;
 		int line = 1;
 		for (CardCommand* command : commands_) {
-			
+
 			if (line < line_) {
 				line++;
 				continue;
 			}
-			ExecuteResult result = command->Execute(card);
-			if(result == ExecuteResult::Standby) {
+			ExecuteResult result = ExecuteResult::Normal;
+			if (!card->IsVoid() || command->GetCommandType() == CommandType::Void) {
+				result = command->Execute(card);
+			}
+			if (result == ExecuteResult::Standby) {
 				line_ = line;
 				return result;
 			}

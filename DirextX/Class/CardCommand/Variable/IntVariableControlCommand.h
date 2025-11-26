@@ -1,5 +1,5 @@
 #pragma once
-#include "CardCommand.h"
+#include "VoidCardCommand.h"
 enum class CalculationType {
 	Add,
 	Subtract,
@@ -8,7 +8,7 @@ enum class CalculationType {
 	Assign,
 	None,
 };
-class IntVariableControlCommand : public CardCommand {
+class IntVariableControlCommand : public VoidCardCommand {
 public:
 
 	bool Initialize(std::string& intVariable, std::vector<std::string>& command);

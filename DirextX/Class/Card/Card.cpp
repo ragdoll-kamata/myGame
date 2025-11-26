@@ -13,9 +13,10 @@ bool Card::InitializeCard(CardData* loadCard) {
 	name_->Initialize(U"名前", {0.0f, 0.0f}, 9999.0f);
 	name_->SetAnchorPoint({0.5f, 1.0f});
 	name_->SetTextFormat(Text::TextFormat::Centor);
-	description_->Initialize(U"説明", {5.0f, 45.0f}, 400.0f);
-	description_->CalcFitSizeOneHeight(20.0f);
+	description_->Initialize(U"説明", {5.0f, 45.0f}, 500.0f);
+	description_->CalcFitSizeOneHeight(25.0f);
 	int dummyLine = 0;
+	isVoid_ = true;
 	FunctionResult result = cardData_->CardFunctionLoad(this, "初期設定", dummyLine);
 	if (result != FunctionResult::Normal) {
 		return false;
@@ -66,6 +67,12 @@ bool Card::InitializeCard(CardData* loadCard) {
 	costText_->Update();
 	costText_->CalcFitSize(10.0f);
 
+	spritewaku_ = std::make_unique<Sprite>();
+	spritewaku_->Initialize("cardWaku.png");
+	spritewaku_->SetAnchorPoint({0.5f, 0.5f});
+	spritewaku_->SetSize(halfSize * 2.0f);
+	spritewaku_->SetColor({0.5f, 0.5f, 1.0f, 1.0f});
+
 	return true;
 }
 
@@ -73,6 +80,7 @@ void Card::Update() {
 	if (isMove && !isCommandMove_) {
 		sprite_->SetPosition(MathUtility::Lerp(sprite_->GetPosition(), pos, 0.15f));
 		name_->SetPosition(MathUtility::Lerp(name_->GetPosition(), pos - textZure, 0.15f));
+		spritewaku_->SetPosition(sprite_->GetPosition());
 		costSprite_->SetPosition({sprite_->GetPosition().x - halfSize.x + 15.0f, sprite_->GetPosition().y - halfSize.y + 15.0f});
 		costSprite2_->SetPosition({sprite_->GetPosition().x - halfSize.x + 15.0f, sprite_->GetPosition().y - halfSize.y + 15.0f});
 		costText_->SetPosition({sprite_->GetPosition().x - halfSize.x + 15.0f, sprite_->GetPosition().y - halfSize.y + 15.0f});
@@ -88,6 +96,7 @@ void Card::Update() {
 	costSprite2_->Updata();
 	costText_->Update();
 	description_->Update();
+	spritewaku_->Updata();
 }
 
 void Card::Draw() {
@@ -95,6 +104,9 @@ void Card::Draw() {
 		sprite_->Draw();
 		costSprite2_->Draw();
 		costSprite_->Draw();
+		if (isWaku_) {
+			spritewaku_->Draw();
+		}
 	}
 }
 
@@ -128,6 +140,7 @@ bool Card::IsOnCollision(Vector2 pos) {
 }
 
 bool Card::Effect() {
+	isVoid_ = false;
 	FunctionResult result = cardData_->CardFunctionLoad(this, "効果", functionLine);
 	if(result == FunctionResult::Error) {
 		// エラー処理
@@ -144,4 +157,5 @@ void Card::SetPos(Vector2& pos) {
 	costSprite_->SetPosition({pos.x - halfSize.x + 15.0f, pos.y - halfSize.y + 15.0f});
 	costSprite2_->SetPosition({pos.x - halfSize.x + 15.0f, pos.y - halfSize.y + 15.0f});
 	costText_->SetPosition({pos.x - halfSize.x + 15.0f, pos.y - halfSize.y + 15.0f});
+	spritewaku_->SetPosition(pos);
 }

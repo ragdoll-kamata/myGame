@@ -65,12 +65,14 @@ FunctionResult CardData::FunctionLoad(Card* card, int functionID, int& functionL
 	int line = 1;
 	if (cardCommands.contains(functionID)) {
 		for (std::unique_ptr<CardCommand>& command : cardCommands[functionID]) {
-			if(line < functionLine) {
+			if (line < functionLine) {
 				line++;
 				continue;
 			}
-			
-			ExecuteResult i = command->Execute(card);
+			ExecuteResult i = ExecuteResult::Normal;
+			if (!card->IsVoid() || command->GetCommandType() == CommandType::Void) {
+				i = command->Execute(card);
+			}
 
 			if (i == ExecuteResult::Return) {
 				break;
@@ -170,7 +172,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			continue;
 		}
 		if (token == "return") {
-			if(!commandTokens.tokens.empty()) {
+			if (!commandTokens.tokens.empty()) {
 				ErrorMessage::GetInstance()->SetMessage(U"returnの前に何か書いてあるのはおかしいよ");
 				ErrorMessage::GetInstance()->SetErrorLine(leneNum);
 				return;
@@ -180,9 +182,9 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			continue;
 		}
 		// コマンドの引数
-		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If    ||
-			commandTokens.type == TokenGroupType::ElseIf  || commandTokens.type == TokenGroupType::While ||
-			commandTokens.type == TokenGroupType::For     || commandTokens.type == TokenGroupType::Return) {
+		if (commandTokens.type == TokenGroupType::Command || commandTokens.type == TokenGroupType::If ||
+			commandTokens.type == TokenGroupType::ElseIf || commandTokens.type == TokenGroupType::While ||
+			commandTokens.type == TokenGroupType::For || commandTokens.type == TokenGroupType::Return) {
 			if (token == ",") continue; // コマンドの引数はカンマで区切る
 			commandTokens.tokens.push_back(token);
 			continue;
@@ -234,7 +236,7 @@ void CardData::CreateTokenGroup(std::vector<std::string>& tokens, int leneNum) {
 			commandTokens.tokens.push_back(token);
 			commandTokens.type = TokenGroupType::Command;
 		}
-		if(token.front() == '#' || token.front() == '$') {
+		if (token.front() == '#' || token.front() == '$') {
 			if (commandTokens.type == TokenGroupType::None) {
 				// コマンドがまだ決まっていない場合、コマンド名として扱う
 				commandTokens.tokens.push_back(token);
@@ -318,7 +320,7 @@ bool CardData::AdaptationIf(int i) {
 		}
 		cardCommands[nestIndex][commandIndex] = std::move(ifCommand);
 		return true;
-	});
+		});
 	return true;
 }
 
@@ -345,7 +347,7 @@ bool CardData::AdaptationFunction(int i) {
 		return false;
 	}
 	// ネストの中で関数定義はできない
-	if(!nestStack.empty()) {
+	if (!nestStack.empty()) {
 		ErrorMessage::GetInstance()->SetMessage(U"ネスト内で関数定義はできないよ");
 		return false;
 	}
