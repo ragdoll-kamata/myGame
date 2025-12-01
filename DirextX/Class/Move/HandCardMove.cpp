@@ -4,9 +4,8 @@
 #include "DeltaTime.h"
 
 
-void HandCardMove::Initialize(CardManager* cardManager, Card* card, std::vector<Card*> cards, float time) {
+void HandCardMove::Initialize(CardManager* cardManager, std::vector<Card*> cards, float time) {
 	cardManager_ = cardManager;
-	card_ = card;
 	cards_ = cards;
 	time_ = time;
 	for(const auto& card : cards_){

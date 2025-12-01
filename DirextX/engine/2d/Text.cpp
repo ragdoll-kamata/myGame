@@ -389,6 +389,10 @@ Text::ParsedText Text::ParseTaggedText(const std::u32string& input) {
 
 		// 通常の文字
 		result.visibleText.push_back(input[i]);
+		if (input[i] == U'\n') {
+			++i;
+			continue;
+		}
 		++i;
 		++visibleIndex;
 	}
@@ -482,7 +486,7 @@ Vector4 Text::ParseColor(const std::u32string& hex) {
 
 		// RGBAそれぞれを0-1に正規化（RGBは255基準、Aはそのまま）
 		if (rgba.size() >= 4) {
-			return Vector4(rgba[0] / 255.0f, rgba[1] / 255.0f, rgba[2] / 255.0f, rgba[3]);
+			return Vector4(rgba[0], rgba[1], rgba[2], rgba[3]);
 		}
 	}
 	if (hex.starts_with(U"hsv(")) {

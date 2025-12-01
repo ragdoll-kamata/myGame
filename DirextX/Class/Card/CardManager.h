@@ -91,6 +91,7 @@ private:
 	Vector2 HandCardPos(int index);
 	Vector2 OpenCardPos(int index);
 	Vector2 CemeteryCardPos();
+	Vector2 FieldCardPos(int index);
 private:
 	// 乱数生成器
 	std::mt19937 g;
@@ -159,9 +160,10 @@ private:
 
 	float cardSizeW = 120.0f;
 
+	// カード間のパディング
 	const float openCardPading = 10.0f;
-
 	const float handCardPading = 5.0f;
+	const float fieldCardPading = 20.0f;
 
 	// 開始時のオープンカードの最大枚数
 	const int startMaxOpenCard = 5;
@@ -174,5 +176,7 @@ private:
 
 	// サウンド
 	int shuffleSE = -1;
+
+	bool isEndStart = false;
 };
 

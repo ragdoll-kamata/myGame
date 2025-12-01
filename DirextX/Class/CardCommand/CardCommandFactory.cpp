@@ -5,6 +5,7 @@
 #include "Initialize/CardElemetCommand.h"
 #include "Initialize/CardExplanationCommand.h"
 #include "Initialize/CardCostCommand.h"
+#include "Initialize/SetCardCharacteristicsCommand.h"
 
 #include "Deck/OpenDeckCommand.h"
 #include "Deck/SelectOpenDeckCommand.h"
@@ -39,6 +40,8 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 		return CreareCardCostCommand(commandTokens[0], commandTokens[1]);
 	} else if (key == "画像") {
 		//return CreareCardNameCommand(commandTokens[0]);
+	}else if (key == "カード特性") {
+		return CreareSetCardCharacteristicsCommand(commandTokens);
 	}
 	///// 効果設定コマンド
 	// 山札系
@@ -73,15 +76,16 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 
 	// keyの名前のコマンドが存在しない場合
 	ErrorMessage::GetInstance()->SetMessage(U"そんなコマンドキーは存在しないよ");
-	return std::unique_ptr<CardCommand>();
+	return nullptr;
 }
 
+// 初期設定コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreareCardNameCommand(std::string cardName) {
 	std::unique_ptr<CardNameCommand> cmd = std::make_unique<CardNameCommand>();
 	if (cmd->Initialize(cardName)) {
 		return cmd;
 	}
-	return std::unique_ptr<CardCommand>();
+	return nullptr;
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreareCardTypeCommand(std::string cardType) {
@@ -89,7 +93,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardTypeCommand(std::stri
 	if (cmd->Initialize(cardType)) {
 		return cmd;
 	}
-	return std::unique_ptr<CardCommand>();
+	return nullptr;
 }
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreareCardElementCommand(std::string cardElement) {
@@ -112,9 +116,16 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardCostCommand(std::stri
 	if (cmd->Initialize(costElement, costNum)) {
 		return cmd;
 	}
-	return std::unique_ptr<CardCommand>();
+	return nullptr;
 }
 
+std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardCharacteristicsCommand(std::vector<std::string> characteristics) {
+	std::unique_ptr<SetCardCharacteristicsCommand> cmd = std::make_unique<SetCardCharacteristicsCommand>();
+	if (cmd->Initialize(characteristics)) {
+		return cmd;
+	}
+	return nullptr;
+}
 
 //////////////////////////////
 

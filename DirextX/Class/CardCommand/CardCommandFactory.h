@@ -13,6 +13,7 @@ namespace CardCommandFactory
 	std::unique_ptr<CardCommand> CreareCardElementCommand(std::string cardElement);
 	std::unique_ptr<CardCommand> CreareCardExplanationCommand(std::string cardExplanation);
 	std::unique_ptr<CardCommand> CreareCardCostCommand(std::string costElement,std::string costNum);
+	std::unique_ptr<CardCommand> CreareSetCardCharacteristicsCommand(std::vector<std::string> characteristics);
 
 	// 山札系コマンドの生成
 	std::unique_ptr<CardCommand> CreateOpenDeckCommand(std::string num, std::string card);

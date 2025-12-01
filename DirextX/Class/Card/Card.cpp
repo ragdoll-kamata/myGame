@@ -151,6 +151,33 @@ bool Card::Effect() {
 	return true;
 }
 
+void Card::UpdateDesription() {
+	std::u32string str = descriptionstr_;
+	std::u32string str2;
+	
+	if (isEraser_) {
+		str2 += U"\n消滅";
+	}
+	if (isCollapse_) {
+		str2 += U"\n崩壊";
+	}
+	if (isTemporary_) {
+		str2 += U"\n臨時";
+	}
+	if (isProtection_) {
+		str2 += U"\n保護";
+	}
+	if (isTemporaryProtection_) {
+		str2 += U"\n一時保護";
+	}
+	if(str2 != U"") {
+		str += U"\n----------------<color=rgba(0.9f,0.5f,0.0f,1.0f)>";
+		str += str2;
+	}
+	description_->SetText(str);
+
+}
+
 void Card::SetPos(Vector2& pos) {
 	sprite_->SetPosition(pos);
 	name_->SetPosition(pos - textZure);
@@ -158,4 +185,51 @@ void Card::SetPos(Vector2& pos) {
 	costSprite2_->SetPosition({pos.x - halfSize.x + 15.0f, pos.y - halfSize.y + 15.0f});
 	costText_->SetPosition({pos.x - halfSize.x + 15.0f, pos.y - halfSize.y + 15.0f});
 	spritewaku_->SetPosition(pos);
+}
+
+void Card::SetIsCardCharacteristics(CardCharacteristics characteristics, bool isSet) {
+	if (characteristics == CardCharacteristics::Eraser) {
+		isEraser_ = isSet;
+		UpdateDesription();
+		return;
+	}
+	if (characteristics == CardCharacteristics::Collapse) {
+		isCollapse_ = isSet;
+		UpdateDesription();
+		return;
+	}
+	if (characteristics == CardCharacteristics::Temporary) {
+		isTemporary_ = isSet;
+		UpdateDesription();
+		return;
+	}
+	if (characteristics == CardCharacteristics::Protection) {
+		isProtection_ = isSet;
+		UpdateDesription();
+		return;
+	}
+	if (characteristics == CardCharacteristics::TemporaryProtection) {
+		isTemporaryProtection_ = isSet;
+		UpdateDesription();
+		return;
+	}
+}
+
+bool Card::GetIsCardCharacteristics(CardCharacteristics characteristics) const {
+	if (characteristics == CardCharacteristics::Eraser) {
+		return isEraser_;
+	}
+	if (characteristics == CardCharacteristics::Collapse) {
+		return isCollapse_;
+	}
+	if (characteristics == CardCharacteristics::Temporary) {
+		return isTemporary_;
+	}
+	if (characteristics == CardCharacteristics::Protection) {
+		return isProtection_;
+	}
+	if (characteristics == CardCharacteristics::TemporaryProtection) {
+		return isTemporaryProtection_;
+	}
+	return false;
 }

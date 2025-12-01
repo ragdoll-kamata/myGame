@@ -139,6 +139,25 @@ CardType CardCommand::ParseCardType(std::string type, Card* card) {
 	return CardType::Error;
 }
 
+CardCharacteristics CardCommand::ParseCardCharacteristics(std::string characteristics, Card* card) {
+	if (characteristics == "消滅") {
+		return CardCharacteristics::Eraser;
+	}
+	if (characteristics == "崩壊") {
+		return CardCharacteristics::Collapse;
+	}
+	if (characteristics == "臨時") {
+		return CardCharacteristics::Temporary;
+	}
+	if (characteristics == "保護") {
+		return CardCharacteristics::Protection;
+	}
+	if (characteristics == "一時保護") {
+		return CardCharacteristics::TemporaryProtection;
+	}
+	return CardCharacteristics::Error;
+}
+
 std::u32string CardCommand::Utf8ToU32(const std::string& str) {
 	std::u32string u32_str;
 	utf8::utf8to32(str.begin(), str.end(), std::back_inserter(u32_str));

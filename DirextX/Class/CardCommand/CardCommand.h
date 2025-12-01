@@ -80,6 +80,7 @@ protected:
 	bool ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card);
 	CardElement ParseCardElement(std::string element, Card* card);
 	CardType ParseCardType(std::string type, Card* card);
+	CardCharacteristics ParseCardCharacteristics(std::string characteristics, Card* card);
 	std::u32string Utf8ToU32(const std::string& str);
 
 	std::unique_ptr<ParseBoolResult> ParseBool(std::vector<std::string>& boolTokens);

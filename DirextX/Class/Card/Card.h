@@ -32,6 +32,31 @@ enum class CardType {
 	Error, // エラー用の要素
 };
 
+enum class CardCharacteristics {
+	Eraser,          // 消滅
+	Collapse,        // 崩壊
+	Temporary,      // 臨時
+	Protection,     // 保護
+	TemporaryProtection, // 一時保護
+	Error,          // エラー用の要素
+};
+
+enum class BuildingDurabilityDecreasenTiming {
+	None,
+	Effect,
+	EndTurn,
+	Error,
+};
+
+enum class BuildingActivationTiming {
+	None,
+	StartTurn,
+	EndTurn,
+	Manual,
+	Separated,
+	Break,
+	Error,
+};
 
 class Card {
 public:
@@ -78,7 +103,11 @@ public:
 		return isWaku_;
 	}
 private:
+	void UpdateDesription();
+	
+private:
 	std::unique_ptr<Text> name_ = nullptr;
+	std::u32string descriptionstr_;
 	std::unique_ptr<Text> description_ = nullptr;
 	CardElement element_ = CardElement::None;
 	CardType type_ = CardType::Error; // カードの種類（儀式、建物など）
@@ -87,6 +116,23 @@ private:
 	CardData* cardData_ = nullptr;
 
 	std::string fileName = "white.png";
+	// カード特性OnOff
+	//　消滅
+	bool isEraser_ = false;
+	// 崩壊
+	bool isCollapse_ = false;
+	// 臨時
+	bool isTemporary_ = false;
+	// 保護
+	bool isProtection_ = false;
+	// 一時保護
+	bool isTemporaryProtection_ = false;
+
+	BuildingDurabilityDecreasenTiming buildingDurabilityDecreasenTiming_ = BuildingDurabilityDecreasenTiming::None;
+
+	BuildingActivationTiming buildingActivationTiming_ = BuildingActivationTiming::None;
+
+	int durability_ = 0; // 耐久値
 private:
 	CardZone zone_ = CardZone::None;
 
@@ -131,16 +177,10 @@ public:
 public:
 	// 
 	void SetName(const std::u32string& name) {
-		if (!name_) {
-			name_ = std::make_unique<Text>();
-		}
 		name_->SetText(name);
 	}
 	void SetDescription(const std::u32string& description) {
-		if (!description_) {
-			description_ = std::make_unique<Text>();
-			description_->Initialize(description, {}, 120.0f);
-		}
+		descriptionstr_ = description;
 		description_->SetText(description);
 	}
 	CardElement GetElement() const {
@@ -172,6 +212,30 @@ public:
 	}
 	std::string GetFileName() {
 		return fileName;
+	}
+	void SetIsCardCharacteristics(CardCharacteristics characteristics, bool isSet);
+
+	bool GetIsCardCharacteristics(CardCharacteristics characteristics) const;
+
+	void SetBuildingDurabilityDecreasenTiming(BuildingDurabilityDecreasenTiming timing) {
+		buildingDurabilityDecreasenTiming_ = timing;
+	}
+	BuildingDurabilityDecreasenTiming GetBuildingDurabilityDecreasenTiming() const {
+		return buildingDurabilityDecreasenTiming_;
+	}
+
+	void SetBuildingActivationTiming(BuildingActivationTiming timing) {
+		buildingActivationTiming_ = timing;
+	}
+	BuildingActivationTiming GetBuildingActivationTiming() const {
+		return buildingActivationTiming_;
+	}
+
+	void SetDurability(int durability) {
+		durability_ = durability;
+	}
+	int GetDurability() const {
+		return durability_;
 	}
 
 private:

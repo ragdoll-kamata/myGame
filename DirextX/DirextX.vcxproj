@@ -93,6 +93,7 @@
     <ClCompile Include="engine\3d\Particle\Field\WindField.cpp" />
     <ClCompile Include="Class\CardCommand\Control\WhileCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Deck\SelectOpenDeckCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\CardCommand\Deck\AddDeckBottomCommand.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="engine\base\VertexBuffer.h" />
     <ClInclude Include="Class\CardCommand\CardCommandFactory.h" />
     <ClInclude Include="Class\CardCommand\Deck\SelectOpenDeckCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.h" />
     <ClInclude Include="utf8\utf8.h" />
     <ClInclude Include="utf8\checked.h" />
     <ClInclude Include="utf8\core.h" />

@@ -124,7 +124,7 @@ void CardManager::Update(TrunState& trunState) {
 	}
 
 	isMove = false;
-	if (cardMoves.size() > 0) {
+	if (IsMoveCard()) {
 		isMove = true;
 		bool isEnd = true;
 		for (const auto& card : cardMoves[0]) {
@@ -139,14 +139,14 @@ void CardManager::Update(TrunState& trunState) {
 			}
 			cardMoves.front().clear();
 			cardMoves.erase(cardMoves.begin());
-			if (cardMoves.size() > 0) {
+			if (IsMoveCard()) {
 				for (const auto& card : cardMoves[0]) {
 					card->SetStart();
 				}
 			}
 		}
 	}
-	
+
 
 
 	for (const auto& card : allCards) {
@@ -286,7 +286,7 @@ void CardManager::StartTrun(TrunState& trunState) {
 				break;
 			}
 		}
-		if (cardMoves.size() > 0) {
+		if (IsMoveCard()) {
 			is = true;
 		}
 		if (!is) {
@@ -321,23 +321,38 @@ void CardManager::EndTrun(TrunState& trunState) {
 	if (!zoneMap[CardZone::Execution].empty()) {
 		return;
 	}
-	std::vector<Card*> handCards = zoneMap[CardZone::Hand];
-	std::vector<std::unique_ptr<CardMove>> moves;
-	for (auto& card : handCards) {
-		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
-		move->Initialize(card, CemeteryCardPos(), 0.5f, false);
-		moves.push_back(std::move(move));
-		MoveCard(card, CardZone::Cemetery);
+	if (!isEndStart) {
+		std::vector<Card*> handCards = zoneMap[CardZone::Hand];
+		std::vector<std::unique_ptr<CardMove>> moves;
+		for (auto& card : handCards) {
+			if (card->GetIsCardCharacteristics(CardCharacteristics::Protection)) {
+				continue;
+			}
+			if (card->GetIsCardCharacteristics(CardCharacteristics::TemporaryProtection)) {
+				card->SetIsCardCharacteristics(CardCharacteristics::TemporaryProtection, false);
+				continue;
+			}
+			std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
+			move->Initialize(card, CemeteryCardPos(), 0.5f, false);
+			moves.push_back(std::move(move));
+			MoveCard(card, CardZone::Cemetery);
+		}
+		if (!moves.empty()) {
+			AddCardMove(std::move(moves));
+		}
+		isEndStart = true;
 	}
-	if (!moves.empty()) {
-		AddCardMove(std::move(moves));
-	}
-	if (!cardMoves.empty()) {
+	if (IsMoveCard()) {
 		return;
 	}
+	std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
+	move->Initialize(this, zoneMap[CardZone::Hand], 0.5f);
+	std::vector<std::unique_ptr<CardMove>> moveVec;
+	moveVec.push_back(std::move(move));
+	AddCardMove(std::move(moveVec));
 
+	isEndStart = false;
 	trunState = TrunState::Start;
-
 }
 
 void CardManager::PlayerInput() {
@@ -473,7 +488,7 @@ void CardManager::OpenDeckAdjustment() {
 	for (const auto& card : addCards) {
 		handCards.push_back(card);
 	}
-	handMove->Initialize(this, handCards[0], handCards, 0.3f);
+	handMove->Initialize(this, handCards, 0.3f);
 	moves.push_back(std::move(handMove));
 	AddCardMove(std::move(moves));
 
@@ -528,9 +543,18 @@ void CardManager::ReShuffleDeck() {
 }
 
 void CardManager::ExecutionCard() {
-	if (!zoneMap[CardZone::Execution].empty()) {
-		if (zoneMap[CardZone::Execution].front()->Effect()) {
-			MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+	if (!IsMoveCard()) {
+		if (!zoneMap[CardZone::Execution].empty()) {
+			if (zoneMap[CardZone::Execution].front()->GetType() == CardType::Building) {
+				Vector2 pos = FieldCardPos(static_cast<int>(zoneMap[CardZone::Field].size()));
+				zoneMap[CardZone::Execution].front()->SetNewPos(pos);
+				zoneMap[CardZone::Execution].front()->SetIsDraw(true);
+				MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Field);
+				return;
+			}
+			if (zoneMap[CardZone::Execution].front()->Effect()) {
+				MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+			}
 		}
 	}
 }
@@ -638,7 +662,7 @@ Vector2 CardManager::GetCardPos(CardZone zone, int index) {
 }
 
 Vector2 CardManager::HandCardPos(int index) {
-	Vector2 pos;
+	Vector2 pos = {};
 	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
 	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + handCardPading);
 	pos.y = 720.0f - 80.0f;
@@ -646,7 +670,7 @@ Vector2 CardManager::HandCardPos(int index) {
 }
 
 Vector2 CardManager::OpenCardPos(int index) {
-	Vector2 pos;
+	Vector2 pos = {};
 	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
 	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + openCardPading);
 	pos.y = 240.0f;
@@ -655,4 +679,11 @@ Vector2 CardManager::OpenCardPos(int index) {
 
 Vector2 CardManager::CemeteryCardPos() {
 	return Vector2(-150.0f, 80.0f);
+}
+
+Vector2 CardManager::FieldCardPos(int index) {
+	Vector2 pos = {};
+	pos.x = 640.0f + (index - 2) * (cardSizeW + fieldCardPading);
+	pos.y = 360.0f;
+	return Vector2();
 }
