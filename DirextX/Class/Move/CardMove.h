@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2.h"
 class Card;
+class CardManager;
 class CardMove {
 public:
 	~CardMove();
@@ -15,6 +16,10 @@ public:
 		return isEnd_;
 	}
 
+	static void SetCatdManager(CardManager* cardManager) {
+		cardManager_ = cardManager;
+	}
+
 protected:
 	Vector2 pos_;
 	Vector2 startPos_;
@@ -24,5 +29,7 @@ protected:
 	float nowTime_ = 0.0f;
 	bool isEnd_ = false;
 	bool isEndDraw_ = false;
+	bool isStart_ = true;
 
+	static CardManager* cardManager_;
 };

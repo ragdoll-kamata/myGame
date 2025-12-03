@@ -69,6 +69,15 @@ void CardManager::Initialize() {
 	endSelectButton = std::make_unique<Button>();
 	endSelectButton->Initialize({640.0f, 650.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 1.0f, 1.0f});
 	endSelectButton->SetIsDraw(false);
+
+	for (int i = 0; i < maxFieldCard; i++) {
+		FieldCard fi;
+		fi.field = std::make_unique<Button>();
+		fi.field->Initialize(FieldCardPos(i), {120.0f * 1.1f, 160.0f * 1.1f}, "white.png", {0.4f, 0.9f, 0.4f, 0.9f});
+		fi.field->SetIsDraw(true);
+		fieldCardField.push_back(std::move(fi));
+	}
+
 }
 
 bool CardManager::StartCardSet() {
@@ -123,31 +132,7 @@ void CardManager::Update(TrunState& trunState) {
 		ExecutionCard();
 	}
 
-	isMove = false;
-	if (IsMoveCard()) {
-		isMove = true;
-		bool isEnd = true;
-		for (const auto& card : cardMoves[0]) {
-			card->Update();
-			if (!card->IsEnd()) {
-				isEnd = false;
-			}
-		}
-		if (isEnd) {
-			for (const auto& card : cardMoves[0]) {
-				card->End();
-			}
-			cardMoves.front().clear();
-			cardMoves.erase(cardMoves.begin());
-			if (IsMoveCard()) {
-				for (const auto& card : cardMoves[0]) {
-					card->SetStart();
-				}
-			}
-		}
-	}
-
-
+	CardMoveUpdate();
 
 	for (const auto& card : allCards) {
 		card->Update();
@@ -156,7 +141,12 @@ void CardManager::Update(TrunState& trunState) {
 	endTurnButton->Update();
 	startOpenButton->Update();
 	startOpenEndButton->Update();
+
 	cardExecutionField->Update();
+	for (const auto& fi : fieldCardField) {
+		fi.field->Update();
+	}
+
 	lightCostText->Update();
 	darknessCostText->Update();
 	costBackSprite->Updata();
@@ -187,7 +177,12 @@ void CardManager::Draw() {
 	startOpenButton->Draw();
 	startOpenEndButton->Draw();
 	endTurnButton->Draw();
+
 	cardExecutionField->Draw();
+	for (const auto& fi : fieldCardField) {
+		//fi.field->Draw();
+	}
+
 	costBackSprite->Draw();
 	costBackSprite2->Draw();
 	TextCommon::GetInstance()->PreDraw();
@@ -310,6 +305,7 @@ void CardManager::MainTrun(TrunState& trunState) {
 	PlayerInput();
 	if (input->TriggerMouseButton(0)) {
 		if (endTurnButton->IsOnCollision(mousePos)) {
+			FieldCardEffectCheck(BuildingActivationTiming::EndTurn);
 			endTurnButton->SetIsDraw(false);
 			trunState = TrunState::End;
 		}
@@ -345,11 +341,13 @@ void CardManager::EndTrun(TrunState& trunState) {
 	if (IsMoveCard()) {
 		return;
 	}
-	std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
-	move->Initialize(this, zoneMap[CardZone::Hand], 0.5f);
-	std::vector<std::unique_ptr<CardMove>> moveVec;
-	moveVec.push_back(std::move(move));
-	AddCardMove(std::move(moveVec));
+	if (!zoneMap[CardZone::Hand].empty()) {
+		std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
+		move->Initialize(zoneMap[CardZone::Hand], 0.5f);
+		std::vector<std::unique_ptr<CardMove>> moveVec;
+		moveVec.push_back(std::move(move));
+		AddCardMove(std::move(moveVec));
+	}
 
 	isEndStart = false;
 	trunState = TrunState::Start;
@@ -385,36 +383,29 @@ void CardManager::PlayerInput() {
 			zoneMap[CardZone::Hand][holdCardIndex]->SetIsMove(false);
 		} else if (input->ReleaseMouseButton(0)) {
 			if (cardExecutionField->IsOnCollision(mousePos)) {
-				bool is = false;
-				int cost = zoneMap[CardZone::Hand][holdCardIndex]->GetCost();
-				if (zoneMap[CardZone::Hand][holdCardIndex]->GetElementCost() == CardElement::Light) {
-					if (cost <= lightCost) {
-						lightCost -= cost;
-						is = true;
-					}
-				} else if (zoneMap[CardZone::Hand][holdCardIndex]->GetElementCost() == CardElement::Darkness) {
-					if (cost <= darknessCost) {
-						darknessCost -= cost;
-						is = true;
-					}
-				} else {
-					if (cost <= darknessCost || cost <= lightCost) {
-						lightCost -= cost;
-						darknessCost -= cost;
-						if (lightCost < 0) {
-							lightCost = 0;
-						}
-						if (darknessCost < 0) {
-							darknessCost = 0;
-						}
-						is = true;
+				if (zoneMap[CardZone::Hand][holdCardIndex]->GetType() == CardType::Ritual) {
+					if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
+						CostTextUpdate();
+						zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
+						effectStandby_.push(zoneMap[CardZone::Hand][holdCardIndex]);
+						MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
 					}
 				}
-				if (is) {
-					lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
-					darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
-					zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
-					MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+			} else {
+				int i = 0;
+				for (auto& fi : fieldCardField) {
+					if (fi.field->IsOnCollision(mousePos)) {
+						if (!fi.isOn) {
+							if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
+								Vector2 pos = FieldCardPos(i);
+								fi.isOn = true;
+								fi.card = zoneMap[CardZone::Hand][holdCardIndex];
+								zoneMap[CardZone::Hand][holdCardIndex]->SetNewPos(pos);
+								MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+							}
+						}
+					}
+					i++;
 				}
 			}
 			isHoldCard = false;
@@ -422,6 +413,40 @@ void CardManager::PlayerInput() {
 		}
 	}
 
+}
+
+void CardManager::CardMoveUpdate() {
+	isMove = false;
+	if (IsMoveCard()) {
+		isMove = true;
+		bool isEnd = true;
+		for (const auto& card : cardMoves[0]) {
+			card->Update();
+			if (!card->IsEnd()) {
+				isEnd = false;
+			}
+		}
+		if (isEnd) {
+			for (const auto& card : cardMoves[0]) {
+				card->End();
+			}
+			cardMoves.front().clear();
+			cardMoves.erase(cardMoves.begin());
+			if (IsMoveCard()) {
+				for (const auto& card : cardMoves[0]) {
+					card->SetStart();
+				}
+			}
+		}
+	}
+}
+
+void CardManager::FieldCardEffectCheck(BuildingActivationTiming buildingActivationTiming) {
+	for (const auto& card : zoneMap[CardZone::Field]) {
+		if (card->GetBuildingActivationTiming() == buildingActivationTiming) {
+			effectStandby_.push(card);
+		}
+	}
 }
 
 void CardManager::OpenDeckAdjustment() {
@@ -488,7 +513,7 @@ void CardManager::OpenDeckAdjustment() {
 	for (const auto& card : addCards) {
 		handCards.push_back(card);
 	}
-	handMove->Initialize(this, handCards, 0.3f);
+	handMove->Initialize(handCards, 0.3f);
 	moves.push_back(std::move(handMove));
 	AddCardMove(std::move(moves));
 
@@ -535,7 +560,7 @@ void CardManager::ReShuffleDeck() {
 	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
 
 	std::unique_ptr<CardShuffleMove> shuffleMove = std::make_unique<CardShuffleMove>();
-	shuffleMove->Initialize(this, cemeteryCards, shuffleSE, 1.0f);
+	shuffleMove->Initialize(cemeteryCards, shuffleSE, 1.0f);
 	std::vector<std::unique_ptr<CardMove>> moves;
 	moves.push_back(std::move(shuffleMove));
 	AddCardMove(std::move(moves));
@@ -544,16 +569,23 @@ void CardManager::ReShuffleDeck() {
 
 void CardManager::ExecutionCard() {
 	if (!IsMoveCard()) {
-		if (!zoneMap[CardZone::Execution].empty()) {
-			if (zoneMap[CardZone::Execution].front()->GetType() == CardType::Building) {
-				Vector2 pos = FieldCardPos(static_cast<int>(zoneMap[CardZone::Field].size()));
-				zoneMap[CardZone::Execution].front()->SetNewPos(pos);
-				zoneMap[CardZone::Execution].front()->SetIsDraw(true);
-				MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Field);
-				return;
+		if (!effectStandby_.empty()) {
+			if (effectStandby_.front()->GetType() == CardType::Building) {
+				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
+					Vector2 pos = FieldCardPos(static_cast<int>(zoneMap[CardZone::Field].size()));
+					zoneMap[CardZone::Execution].front()->SetNewPos(pos);
+					zoneMap[CardZone::Execution].front()->SetIsDraw(true);
+					MoveCard(effectStandby_.front(), CardZone::Field);
+					effectStandby_.pop();
+					return;
+				}
 			}
-			if (zoneMap[CardZone::Execution].front()->Effect()) {
-				MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+
+			if (effectStandby_.front()->Effect()) {
+				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
+					MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+				}
+				effectStandby_.pop();
 			}
 		}
 	}
@@ -573,17 +605,14 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 		result.push_back(zoneMap[CardZone::Deck].front());
 		if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Light) {
 			lightCost++;
-			lightCostText->SetText(Text::GetIntToString(lightCost, 2));
 		} else if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Darkness) {
 			darknessCost++;
-			darknessCostText->SetText(Text::GetIntToString(darknessCost, 2));
 		}
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
 	if (!isCommand) {
-		std::unique_ptr<OpenDeckAlignmentMove> openMove = std::make_unique<OpenDeckAlignmentMove>();
-		openMove->Initialize(this);
-		std::vector<std::unique_ptr<CardMove>> moves;
+		std::unique_ptr<OpenDeckAlignmentMove> openMove = std::make_unique<OpenDeckAlignmentMove>(); \
+			std::vector<std::unique_ptr<CardMove>> moves;
 		moves.push_back(std::move(openMove));
 		AddCardMove(std::move(moves));
 	}
@@ -623,6 +652,11 @@ void CardManager::MoveCard(Card* card, CardZone cardZone) {
 }
 
 /////////////////////////////////////////////////////////////////
+
+void CardManager::CostTextUpdate() {
+	lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
+	darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
+}
 
 void CardManager::AllCardLoad(const std::string& file) {
 	std::string basePath = file;
@@ -673,7 +707,7 @@ Vector2 CardManager::OpenCardPos(int index) {
 	Vector2 pos = {};
 	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
 	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + openCardPading);
-	pos.y = 240.0f;
+	pos.y = 140.0f;
 	return pos;
 }
 
@@ -683,7 +717,8 @@ Vector2 CardManager::CemeteryCardPos() {
 
 Vector2 CardManager::FieldCardPos(int index) {
 	Vector2 pos = {};
-	pos.x = 640.0f + (index - 2) * (cardSizeW + fieldCardPading);
+	int si = maxFieldCard / 2;
+	pos.x = 640.0f + (index - si) * (cardSizeW + fieldCardPading);
 	pos.y = 360.0f;
-	return Vector2();
+	return pos;
 }

@@ -238,6 +238,8 @@ public:
 		return durability_;
 	}
 
+	bool IsCostSufficient(int& light, int& darkness);
+
 private:
 // 参照変数
 	std::unordered_map<std::string, std::vector<Card*>> cards;

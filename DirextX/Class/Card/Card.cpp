@@ -21,7 +21,7 @@ bool Card::InitializeCard(CardData* loadCard) {
 	if (result != FunctionResult::Normal) {
 		return false;
 	}
-	if(dummyLine != 0) {
+	if (dummyLine != 0) {
 		// エラー処理
 	}
 	name_->Update();
@@ -142,7 +142,7 @@ bool Card::IsOnCollision(Vector2 pos) {
 bool Card::Effect() {
 	isVoid_ = false;
 	FunctionResult result = cardData_->CardFunctionLoad(this, "効果", functionLine);
-	if(result == FunctionResult::Error) {
+	if (result == FunctionResult::Error) {
 		// エラー処理
 	}
 	if (result == FunctionResult::Standby) {
@@ -154,7 +154,7 @@ bool Card::Effect() {
 void Card::UpdateDesription() {
 	std::u32string str = descriptionstr_;
 	std::u32string str2;
-	
+
 	if (isEraser_) {
 		str2 += U"\n消滅";
 	}
@@ -170,7 +170,7 @@ void Card::UpdateDesription() {
 	if (isTemporaryProtection_) {
 		str2 += U"\n一時保護";
 	}
-	if(str2 != U"") {
+	if (str2 != U"") {
 		str += U"\n----------------<color=rgba(0.9f,0.5f,0.0f,1.0f)>";
 		str += str2;
 	}
@@ -231,5 +231,35 @@ bool Card::GetIsCardCharacteristics(CardCharacteristics characteristics) const {
 	if (characteristics == CardCharacteristics::TemporaryProtection) {
 		return isTemporaryProtection_;
 	}
+	return false;
+}
+
+bool Card::IsCostSufficient(int& light, int& darkness) {
+
+	if (elementCost_ == CardElement::Light) {
+		if (cost_ <= light) {
+			light -= cost_;
+			return true;
+		}
+	} else if (elementCost_ == CardElement::Darkness) {
+		if (cost_ <= darkness) {
+			darkness -= cost_;
+			return true;
+		}
+	} else if (elementCost_ == CardElement::None) {
+		if (cost_ <= darkness || cost_ <= light) {
+			darkness -= cost_;
+			light -= cost_;
+			if (darkness < 0) {
+				darkness = 0;
+			}
+			if (light < 0) {
+				light = 0;
+			}
+			return true;
+		}
+	}
+
+
 	return false;
 }

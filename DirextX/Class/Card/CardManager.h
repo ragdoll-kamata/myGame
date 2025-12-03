@@ -23,6 +23,11 @@ struct CardMoveData {
 	Card* card;
 	Vector2 pos;
 };
+struct FieldCard {
+	Card* card = nullptr;
+	std::unique_ptr<Button> field;
+	bool isOn = false;
+};
 
 class CardManager {
 public:
@@ -47,7 +52,9 @@ private:
 
 	void PlayerInput();
 
-	
+	void CardMoveUpdate();
+
+	void FieldCardEffectCheck(BuildingActivationTiming buildingActivationTiming);
 
 	void OpenDeckAdjustment();
 
@@ -83,6 +90,8 @@ public:
 	bool IsMoveCard() const {
 		return !cardMoves.empty();
 	}
+
+	void CostTextUpdate();
 public:
 	void AllCardLoad(const std::string& file);
 
@@ -106,8 +115,12 @@ private:
 		{CardZone::Open, {}}
 	};
 
+	std::queue<Card*> effectStandby_;
+
 	// カードデータ
 	std::unordered_map<std::string, std::unique_ptr<CardData>> CardDataMap;
+
+	const int maxFieldCard = 5;
 private:
 	std::vector<std::vector<std::unique_ptr<CardMove>>> cardMoves;
 
@@ -117,10 +130,13 @@ private:
 	std::unique_ptr<Button> startOpenButton = nullptr;
 	std::unique_ptr<Button> startOpenEndButton = nullptr;
 
-	std::unique_ptr<Button> cardExecutionField = nullptr;
-
 	std::unique_ptr<Button> endSelectButton = nullptr;
 	const Vector4 endSelectButtonColor = {0.0f, 0.5f, 1.0f, 1.0f};
+
+	//
+	std::unique_ptr<Button> cardExecutionField = nullptr;
+	std::vector<FieldCard> fieldCardField;
+
 
 	// コスト表示用背景スプライト
 	std::unique_ptr<Sprite> costBackSprite = nullptr;

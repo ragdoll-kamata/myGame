@@ -3,8 +3,7 @@
 #include "DeltaTime.h"
 #include "Audio.h"
 
-void CardShuffleMove::Initialize(CardManager* cardManager, std::vector<Card*> shuffleCards, int SH, float time) {
-	cardManager_ = cardManager;
+void CardShuffleMove::Initialize(std::vector<Card*> shuffleCards, int SH, float time) {
 	time_ = time;
 	shuffleCards_ = shuffleCards;
 	SH_ = SH;

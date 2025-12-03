@@ -2,7 +2,11 @@
 #include "Card.h"
 #include "DeltaTime.h"
 
+#include "CardManager.h"
+
 using namespace MathUtility;
+
+CardManager* CardMove::cardManager_ = nullptr;
 
 CardMove::~CardMove() {
 }
@@ -20,14 +24,18 @@ void CardMove::Initialize(Card* card, Vector2 pos, float time, float isEndDraw, 
 }
 
 void CardMove::Update() {
-	if(startTime_ > 0.0f){
+	if (startTime_ > 0.0f) {
 		startTime_ -= DeltaTime::GetInstance()->GetDeltaTime();
 		card_->SetIsMove(false);
 		card_->SetIsDraw(true);
 		return;
 	}
-	card_->SetIsMove(false);
-	card_->SetIsDraw(true);
+	if (isStart_) {
+		isStart_ = false;
+		card_->SetIsMove(false);
+		card_->SetIsDraw(true);
+		cardManager_->CostTextUpdate();
+	}
 	if (isEnd_) {
 		return;
 	}
@@ -46,7 +54,7 @@ void CardMove::Update() {
 }
 
 void CardMove::SetStart() {
-	if(card_ == nullptr){
+	if (card_ == nullptr) {
 		return;
 	}
 	startPos_ = card_->GetPos();
