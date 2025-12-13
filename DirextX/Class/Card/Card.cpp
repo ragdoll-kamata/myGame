@@ -166,8 +166,7 @@ void Card::UpdateDesription() {
 	}
 	if (isProtection_) {
 		str2 += U"\n保護";
-	}
-	if (isTemporaryProtection_) {
+	} else if (isTemporaryProtection_) {
 		str2 += U"\n一時保護";
 	}
 	if (str2 != U"") {

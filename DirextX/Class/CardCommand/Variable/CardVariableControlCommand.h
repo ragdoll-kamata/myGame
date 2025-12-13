@@ -10,7 +10,7 @@ enum class VariableCalculationType {
 };
 class CardVariableControlCommand : public VoidCardCommand {
 public:
-	bool Initialize(std::string& cardVariable, std::vector<std::string>& command);
+	bool Initialize(const std::string& cardVariable, const std::vector<std::string>& command);
 	ExecuteResult Execute(Card* card) override;
 private:
 	std::string cardVariable_;

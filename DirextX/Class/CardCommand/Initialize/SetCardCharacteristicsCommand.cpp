@@ -4,7 +4,7 @@
 
 bool SetCardCharacteristicsCommand::Initialize(const std::vector<std::string>& characteristics) {
     for(std::string characteristicStr : characteristics) {
-        CardCharacteristics characteristic = ParseCardCharacteristics(characteristicStr, nullptr);
+        CardCharacteristics characteristic = ParseCardCharacteristics(characteristicStr);
         if (characteristic == CardCharacteristics::Error) {
             ErrorMessage::GetInstance()->SetMessage(U"そんな特性ないよ");
             return false;

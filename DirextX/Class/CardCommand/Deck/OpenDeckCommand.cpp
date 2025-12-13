@@ -3,7 +3,7 @@
 #include "ErrorMessage.h"
 #include "CardMove.h"
 
-bool OpenDeckCommand::Initialize(std::string num, std::string card) {
+bool OpenDeckCommand::Initialize(const std::string& num, const std::string& card) {
 	if (card.front() != '$') {
 		ErrorMessage::GetInstance()->SetMessage(U"カード変数になってないよ");
 		return false; // Error: card does not start with '$'

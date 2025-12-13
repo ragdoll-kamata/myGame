@@ -180,7 +180,7 @@ void CardManager::Draw() {
 
 	cardExecutionField->Draw();
 	for (const auto& fi : fieldCardField) {
-		//fi.field->Draw();
+		fi.field->Draw();
 	}
 
 	costBackSprite->Draw();
@@ -572,9 +572,9 @@ void CardManager::ExecutionCard() {
 		if (!effectStandby_.empty()) {
 			if (effectStandby_.front()->GetType() == CardType::Building) {
 				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
-					Vector2 pos = FieldCardPos(static_cast<int>(zoneMap[CardZone::Field].size()));
-					zoneMap[CardZone::Execution].front()->SetNewPos(pos);
-					zoneMap[CardZone::Execution].front()->SetIsDraw(true);
+					Vector2 pos = FieldCardPos(-1);
+					effectStandby_.front()->SetNewPos(pos);
+					effectStandby_.front()->SetIsDraw(true);
 					MoveCard(effectStandby_.front(), CardZone::Field);
 					effectStandby_.pop();
 					return;
@@ -583,7 +583,7 @@ void CardManager::ExecutionCard() {
 
 			if (effectStandby_.front()->Effect()) {
 				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
-					MoveCard(zoneMap[CardZone::Execution].front(), CardZone::Cemetery);
+					MoveCard(effectStandby_.front(), CardZone::Cemetery);
 				}
 				effectStandby_.pop();
 			}
@@ -629,6 +629,14 @@ void CardManager::SetIsSelectCard(bool isSelect) {
 
 void CardManager::SetEndSelectButtonColorV(float v) {
 	endSelectButton->SetColor({endSelectButtonColor.x * v, endSelectButtonColor.y * v, endSelectButtonColor.z * v, 1.0f});
+}
+
+void CardManager::SetEndSelectButtonNormalVector() {
+	endSelectButton->SetPosition({640.0f, 650.0f});
+}
+
+void CardManager::SetEndSelectButtonHandVector() {
+	endSelectButton->SetPosition({640.0f, 360.0f});
 }
 
 bool CardManager::IsEndSelectButton() const {
@@ -715,10 +723,19 @@ Vector2 CardManager::CemeteryCardPos() {
 	return Vector2(-150.0f, 80.0f);
 }
 
-Vector2 CardManager::FieldCardPos(int index) {
+Vector2 CardManager::FieldCardPos(int i) {
+	if (i > -1) {
+		return {200.0f + i * (cardSizeW * 1.1f + fieldCardPading), 360.0f};
+	}
+	int index = 0;
 	Vector2 pos = {};
-	int si = maxFieldCard / 2;
-	pos.x = 640.0f + (index - si) * (cardSizeW + fieldCardPading);
 	pos.y = 360.0f;
-	return pos;
+	for (const auto& card : fieldCardField) {
+		if (card.isOn) {
+			pos.x = 200.0f + index * (cardSizeW * 1.1f + fieldCardPading);
+			return pos;
+		}
+		index++;
+	}
+	return Vector2(-200.0f, -200.0f);
 }

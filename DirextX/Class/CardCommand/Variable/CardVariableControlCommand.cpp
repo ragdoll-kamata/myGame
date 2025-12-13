@@ -1,6 +1,6 @@
 #include "CardVariableControlCommand.h"
 
-bool CardVariableControlCommand::Initialize(std::string& cardVariable, std::vector<std::string>& command) {
+bool CardVariableControlCommand::Initialize(const std::string& cardVariable, const std::vector<std::string>& command) {
 	if (!Parse(cardVariable, commands_)) {
 		return false;
 	}

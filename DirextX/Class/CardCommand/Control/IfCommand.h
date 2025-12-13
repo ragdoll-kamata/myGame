@@ -3,7 +3,7 @@
 class CardData;
 class IfCommand : public CardCommand {
 public:
-	bool Initialize(CardData* cardData, int nestID, std::vector<std::string> commandTokens);
+	bool Initialize(CardData* cardData, int nestID, const std::vector<std::string>& commandTokens);
 
 	ExecuteResult Execute(Card* card) override;
 

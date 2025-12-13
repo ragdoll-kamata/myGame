@@ -139,7 +139,7 @@ CardType CardCommand::ParseCardType(std::string type, Card* card) {
 	return CardType::Error;
 }
 
-CardCharacteristics CardCommand::ParseCardCharacteristics(std::string characteristics, Card* card) {
+CardCharacteristics CardCommand::ParseCardCharacteristics(std::string characteristics) {
 	if (characteristics == "消滅") {
 		return CardCharacteristics::Eraser;
 	}
@@ -158,13 +158,46 @@ CardCharacteristics CardCommand::ParseCardCharacteristics(std::string characteri
 	return CardCharacteristics::Error;
 }
 
+BuildingDurabilityDecreasenTiming CardCommand::ParseBuildingDurabilityDecreasenTiming(std::string timing) {
+	if (timing == "効果発動時") {
+		return BuildingDurabilityDecreasenTiming::Effect;
+	}
+	if (timing == "ターン終了時") {
+		return BuildingDurabilityDecreasenTiming::EndTurn;
+	}
+	if (timing == "なし") {
+		return BuildingDurabilityDecreasenTiming::None;
+	}
+	return BuildingDurabilityDecreasenTiming::Error;
+}
+
+BuildingActivationTiming CardCommand::ParseBuildingActivationTiming(std::string timing) {
+	if (timing == "ターン開始時") {
+		return BuildingActivationTiming::StartTurn;
+	}
+	if (timing == "ターン終了時") {
+		return BuildingActivationTiming::EndTurn;
+	}
+	if (timing == "手動発動") {
+		return BuildingActivationTiming::Manual;
+	}
+	if (timing == "場から離れた時") {
+		return BuildingActivationTiming::Separated;
+	}
+	if (timing == "破壊時") {
+		return BuildingActivationTiming::Break;
+	}
+
+	return BuildingActivationTiming::Error;
+}
+
 std::u32string CardCommand::Utf8ToU32(const std::string& str) {
 	std::u32string u32_str;
 	utf8::utf8to32(str.begin(), str.end(), std::back_inserter(u32_str));
 	return u32_str;
 }
 
-std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(std::vector<std::string>& boolTokens) {
+std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::vector<std::string>& boolTokens) {
 	std::unique_ptr<ParseBoolResult> parseBoolResult = std::make_unique<ParseBoolResult>();
 	int index = 0;
 	parseBoolResult->groups.push_back(ParseBoolGroup());

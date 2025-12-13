@@ -2,7 +2,7 @@
 #include "CardData.h"
 #include "ErrorMessage.h"
 
-bool IfCommand::Initialize(CardData* cardData, int nestID, std::vector<std::string> commandTokens) {
+bool IfCommand::Initialize(CardData* cardData, int nestID, const std::vector<std::string>& commandTokens) {
 	commands_ = cardData->GetCardCommandsByFunctionID(nestID);
 	parseBoolResult_ = ParseBool(commandTokens);
 

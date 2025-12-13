@@ -285,6 +285,11 @@
     <ClCompile Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Hand\SelectHandCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -623,6 +628,11 @@
     <ClInclude Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.h" />
+    <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
+    <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

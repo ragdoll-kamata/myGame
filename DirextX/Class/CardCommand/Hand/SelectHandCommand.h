@@ -1,14 +1,10 @@
 #pragma once
 #include "CardCommand.h"
-class SelectOpenDeckCommand : public CardCommand {
+class SelectHandCommand : public CardCommand {
 public:
-
-	bool Initialize(const std::string& num, const std::string& minSelect, const std::string& maxSelect, const std::string& selectCard, const std::string& notSelectCard);
-
-	// CardCommand を介して継承されました
+	bool Initialize(const std::string& minSelect, const std::string& maxSelect, const std::string& selectCard, const std::string& notSelectCard);
 	ExecuteResult Execute(Card* card) override;
 private:
-	std::string num_;
 	std::string selectCard_;
 	std::string notSelectCard_;
 	std::string minSelect_;

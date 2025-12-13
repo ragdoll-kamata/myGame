@@ -80,6 +80,11 @@ public:
 
 	void SetEndSelectButtonColorV(float v);
 
+	void SetEndSelectButtonNormalVector();
+
+	void SetEndSelectButtonHandVector();
+
+
 	bool IsEndSelectButton() const;
 
 
@@ -100,7 +105,7 @@ private:
 	Vector2 HandCardPos(int index);
 	Vector2 OpenCardPos(int index);
 	Vector2 CemeteryCardPos();
-	Vector2 FieldCardPos(int index);
+	Vector2 FieldCardPos(int i);
 private:
 	// 乱数生成器
 	std::mt19937 g;

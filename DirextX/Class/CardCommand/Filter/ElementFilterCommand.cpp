@@ -1,7 +1,7 @@
 #include "ElementFilterCommand.h"
 #include "ErrorMessage.h"
 
-bool ElementFilterCommand::Initialize(std::string element, std::string card, std::string filterCard) {
+bool ElementFilterCommand::Initialize(const std::string& element, const std::string& card, const std::string& filterCard) {
 	if (element.front() == '$') {
 		isCardValue_ = true;
 	} else {

@@ -2,7 +2,7 @@
 #include "CardManager.h"
 #include "ErrorMessage.h"
 
-bool AddDeckBottomCommand::Initialize(std::string card) {
+bool AddDeckBottomCommand::Initialize(const std::string& card) {
 	if (card.front() != '$') {
 		ErrorMessage::GetInstance()->SetMessage(U"カード変数になってないよ");
 		return false; // Error: card does not start with '$'

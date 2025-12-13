@@ -2,7 +2,7 @@
 #include "VoidCardCommand.h"
 class ElementFilterCommand : public VoidCardCommand {
 public:
-	bool Initialize(std::string enement,std::string card, std::string FilterCard);
+	bool Initialize(const std::string& enement, const std::string& card, const std::string& FilterCard);
 	ExecuteResult Execute(Card* card) override;
 private:
 	std::string filterCard_;
