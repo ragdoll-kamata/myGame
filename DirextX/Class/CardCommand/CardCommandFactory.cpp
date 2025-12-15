@@ -32,70 +32,80 @@
 #include "ErrorMessage.h"
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, std::vector<std::string>& commandTokens) {
-	
+	int tokenSize = static_cast<int>(commandTokens.size());
 	// 初期設定コマンド
 	if (key == "カード名") {
-		return CreareCardNameCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardNameCommand(commandTokens[0]); });
 	} else if (key == "カードタイプ") {
-		return CreareCardTypeCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardTypeCommand(commandTokens[0]); });
 	} else if (key == "属性") {
-		return CreareCardElementCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardElementCommand(commandTokens[0]); });
 	} else if (key == "カード説明") {
-		return CreareCardExplanationCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardExplanationCommand(commandTokens[0]); });
 	} else if (key == "エネルギーコスト") {
-		return CreareCardCostCommand(commandTokens[0], commandTokens[1]);
+		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreareCardCostCommand(commandTokens[0], commandTokens[1]); });
 	} else if (key == "画像") {
-		//return CreareCardNameCommand(commandTokens[0]);
+		//return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardNameCommand(commandTokens[0]); });
 	} else if (key == "カード特性") {
-		return CreareSetCardCharacteristicsCommand(commandTokens);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardCharacteristicsCommand(commandTokens); });
 	} else if (key == "耐久値") {
-		return CreareSetCardDurabilityCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardDurabilityCommand(commandTokens[0]); });
 	} else if (key == "耐久値減少条件") {
-		return CreareSetCardDurabilityDecreaseConditionCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardDurabilityDecreaseConditionCommand(commandTokens[0]); });
 	} else if (key == "発動タイミング") {
-		return CreareSetCardActivationTimingCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardActivationTimingCommand(commandTokens[0]); });
 	}
 
 	///// 効果設定コマンド
 	// 山札系
 	if (key == "表向きにする") {
-		return CreateOpenDeckCommand(commandTokens[0], commandTokens[1]);
+		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreateOpenDeckCommand(commandTokens[0], commandTokens[1]); });
 	} else if (key == "表向き選択") {
-		return CreateSelectOpenDeckCommand(commandTokens[0], commandTokens[1], commandTokens[2], commandTokens[3], commandTokens[4]);
+		return CreateCommandIfArgsValid(tokenSize, 5, [&]() { return CreateSelectOpenDeckCommand(commandTokens[0], commandTokens[1], commandTokens[2], commandTokens[3], commandTokens[4]); });
 	} else if (key == "山札下送り") {
-		return CreateAddDeckBottomCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateAddDeckBottomCommand(commandTokens[0]); });
 	}
 
 	// 手札系
 	if (key == "手札に加える") {
-		return CreateAddHandCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateAddHandCommand(commandTokens[0]); });
+	}else if(key == "手札選択") {
+		return CreateCommandIfArgsValid(tokenSize, 4, [&]() { return  CreateSelectHandCommand(commandTokens[0], commandTokens[1], commandTokens[2], commandTokens[3]); });
 	}
 
 	// 墓地系
 	if (key == "墓地送り") {
-		return CreateAddCemeteryCommand(commandTokens[0]);
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateAddCemeteryCommand(commandTokens[0]); });
 	}
 
 	// カードフィルター系
 	if (key == "属性フィルター") {
-		return CreateElementFilterCommand(commandTokens[0], commandTokens[1], commandTokens[2]);
+		return CreateCommandIfArgsValid(tokenSize, 3, [&]() { return CreateElementFilterCommand(commandTokens[0], commandTokens[1], commandTokens[2]); });
 	}
 
 	// 特性
 	if (key == "特性付与") {
-
+		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return  CreateAddCardCharacteristicsCommand(commandTokens[0], commandTokens[1]); });
 	}
 
 	//　変数操作
 	if (key.front() == '#') {
-		return CreateIntVariableControlCommand(key, commandTokens);
+		return CreateCommandIfArgsValid(tokenSize, 0, [&]() { return CreateIntVariableControlCommand(key, commandTokens); });
 	}else if (key.front() == '$') {
-		return CreateCardVariableControlCommand(key, commandTokens);
+		return CreateCommandIfArgsValid(tokenSize, 0, [&]() { return CreateCardVariableControlCommand(key, commandTokens); });
 	}
 
 	// keyの名前のコマンドが存在しない場合
 	ErrorMessage::GetInstance()->SetMessage(U"そんなコマンドキーは存在しないよ");
 	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCommandIfArgsValid(int size, int index, std::function<std::unique_ptr<CardCommand>()> func) {
+	if (size < index) {
+		ErrorMessage::GetInstance()->SetMessage(U"コマンドの引数が足りないよ");
+		return nullptr;
+	}
+	return func();
 }
 
 // 初期設定コマンドの生成
@@ -207,6 +217,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateAddHandCommand(std::strin
 	return nullptr;
 }
 
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSelectHandCommand(std::string& minSelect, std::string& maxSelect, std::string& selectCard, std::string& notSelectCard) {
+	std::unique_ptr<SelectHandCommand> cmd = std::make_unique<SelectHandCommand>();
+	if (cmd->Initialize(minSelect, maxSelect, selectCard, notSelectCard)) {
+		return cmd;
+	}
+	return nullptr;
+}
+
 // 墓地系コマンドの生成
 std::unique_ptr<CardCommand> CardCommandFactory::CreateAddCemeteryCommand(std::string& card) {
 	std::unique_ptr<AddCemeteryCommand> cmd = std::make_unique<AddCemeteryCommand>();
@@ -224,6 +242,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 		return cmd;
 	}
 
+	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateAddCardCharacteristicsCommand(std::string& card, std::string& characteristics) {
+	std::unique_ptr<AddCardCharacteristicsCommand> cmd = std::make_unique<AddCardCharacteristicsCommand>();
+	if (cmd->Initialize(card, characteristics)) {
+		return cmd;
+	}
 	return nullptr;
 }
 

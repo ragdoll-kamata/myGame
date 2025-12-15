@@ -1,6 +1,6 @@
 #pragma once
 #include "CardCommand.h"
-class AddCardCharacteristicscommand : public CardCommand {
+class AddCardCharacteristicsCommand : public CardCommand {
 public:
 	bool Initialize(const std::string& card, const std::string& characteristics);
 	ExecuteResult Execute(Card* card) override;

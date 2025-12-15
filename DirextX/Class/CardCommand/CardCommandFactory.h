@@ -1,11 +1,15 @@
 #pragma once
 #include<memory>
 #include "CardCommand.h"
+#include <functional>
 
 class CardData;
 namespace CardCommandFactory
 {
 	std::unique_ptr<CardCommand> CreateCommand(std::string key, std::vector<std::string>& commandTokens);
+
+	// 
+	std::unique_ptr<CardCommand>  CreateCommandIfArgsValid(int size, int index, std::function< std::unique_ptr<CardCommand>()> func);
 
 	// 初期設定コマンドの生成
 	std::unique_ptr<CardCommand> CreareCardNameCommand(std::string& cardName);
@@ -25,12 +29,16 @@ namespace CardCommandFactory
 
 	// 手札系コマンドの生成
 	std::unique_ptr<CardCommand> CreateAddHandCommand(std::string& card);
+	std::unique_ptr<CardCommand> CreateSelectHandCommand(std::string& minSelect, std::string& maxSelect, std::string& selectCard, std::string& notSelectCard);
 
 	// 墓地系コマンドの生成
 	std::unique_ptr<CardCommand> CreateAddCemeteryCommand(std::string& card);
 
 	// カードフィルター系コマンドの生成
 	std::unique_ptr<CardCommand> CreateElementFilterCommand(std::string& element, std::string& card, std::string& card2);
+
+	// 特性付与コマンドの生成
+	std::unique_ptr<CardCommand> CreateAddCardCharacteristicsCommand(std::string& card, std::string& characteristics);
 
 	// 制御系コマンドの生成
 	std::unique_ptr<CardCommand> CreateIfCommand(CardData* cardData, int nestID, const std::vector<std::string>& commandTokens);

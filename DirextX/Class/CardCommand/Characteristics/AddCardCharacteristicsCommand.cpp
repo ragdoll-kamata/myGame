@@ -1,7 +1,7 @@
 #include "AddCardCharacteristicscommand.h"
 #include "ErrorMessage.h"
 
-bool AddCardCharacteristicscommand::Initialize(const std::string& card, const std::string& characteristics) {
+bool AddCardCharacteristicsCommand::Initialize(const std::string& card, const std::string& characteristics) {
 	if(card.front() != '$') {
 		ErrorMessage::GetInstance()->SetMessage(U"カード変数になってないよ");
 		return false;
@@ -15,7 +15,7 @@ bool AddCardCharacteristicscommand::Initialize(const std::string& card, const st
 	return true;
 }
 
-ExecuteResult AddCardCharacteristicscommand::Execute(Card* card) {
+ExecuteResult AddCardCharacteristicsCommand::Execute(Card* card) {
 	std::vector<Card*> cards = card->GetCards(card_);
 	for (auto& card : cards) {
 		card->SetIsCardCharacteristics(characteristics_, true);

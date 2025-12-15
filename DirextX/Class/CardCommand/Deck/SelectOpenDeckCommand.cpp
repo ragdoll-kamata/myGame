@@ -119,14 +119,19 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 		cardManager_->SetEndSelectButtonColorV(1.0f);
 		if (Input::GetInstance()->TriggerMouseButton(0)) {
 			if (cardManager_->IsEndSelectButton()) {
+				std::vector<Card*> selectCards;
+				std::vector<Card*> notSelectCards;
 				for (Card* c : selectCards_) {
 					if (c->IsWaku()) {
-						card->AddCard(selectCard_, c);
+						selectCards.push_back(c);
 					} else {
-						card->AddCard(notSelectCard_, c);
+						notSelectCards.push_back(c);
 					}
 					c->SetWaku(false);
 				}
+				// カード変数に代入
+				card->SetCards(selectCard_, selectCards);
+				card->SetCards(notSelectCard_, notSelectCards);
 				cardManager_->SetIsSelectCard(false);
 				isStart_ = false;
 				nawSelectCount_ = 0;

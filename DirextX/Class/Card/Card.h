@@ -102,6 +102,9 @@ public:
 	bool IsWaku() const {
 		return isWaku_;
 	}
+	void InitializeDurability() {
+		durability_ = durabilityInitial_;
+	}
 private:
 	void UpdateDesription();
 	
@@ -133,6 +136,7 @@ private:
 	BuildingActivationTiming buildingActivationTiming_ = BuildingActivationTiming::None;
 
 	int durability_ = 0; // 耐久値
+	int durabilityInitial_ = 0; // 初期耐久値
 private:
 	CardZone zone_ = CardZone::None;
 
@@ -232,7 +236,7 @@ public:
 	}
 
 	void SetDurability(int durability) {
-		durability_ = durability;
+		durabilityInitial_ = durability;
 	}
 	int GetDurability() const {
 		return durability_;

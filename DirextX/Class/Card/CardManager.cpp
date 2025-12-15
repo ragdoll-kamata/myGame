@@ -132,6 +132,25 @@ void CardManager::Update(TrunState& trunState) {
 		ExecutionCard();
 	}
 
+	if (effectStandby_.empty()) {
+		for (auto& fi : fieldCardField) {
+			if (fi.card) {
+				if (fi.card->GetDurability() <= 0) {
+					std::unique_ptr<CardMove> moveCard = std::make_unique<CardMove>();
+					moveCard->Initialize(fi.card, CemeteryCardPos(), 0.5f, false);
+					std::vector<std::unique_ptr<CardMove>> moves;
+					moves.push_back(std::move(moveCard));
+					AddCardMove(std::move(moves));
+
+					MoveCard(fi.card, CardZone::Cemetery);
+
+					fi.card = nullptr;
+					fi.isOn = false;
+				}
+			}
+		}
+	}
+
 	CardMoveUpdate();
 
 	for (const auto& card : allCards) {
@@ -314,7 +333,7 @@ void CardManager::MainTrun(TrunState& trunState) {
 
 void CardManager::EndTrun(TrunState& trunState) {
 	isHoldCard = false;
-	if (!zoneMap[CardZone::Execution].empty()) {
+	if (!effectStandby_.empty()) {
 		return;
 	}
 	if (!isEndStart) {
@@ -396,12 +415,15 @@ void CardManager::PlayerInput() {
 				for (auto& fi : fieldCardField) {
 					if (fi.field->IsOnCollision(mousePos)) {
 						if (!fi.isOn) {
-							if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
-								Vector2 pos = FieldCardPos(i);
-								fi.isOn = true;
-								fi.card = zoneMap[CardZone::Hand][holdCardIndex];
-								zoneMap[CardZone::Hand][holdCardIndex]->SetNewPos(pos);
-								MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
+							if (zoneMap[CardZone::Hand][holdCardIndex]->GetType() == CardType::Building) {
+								if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
+									Vector2 pos = FieldCardPos(i);
+									fi.isOn = true;
+									fi.card = zoneMap[CardZone::Hand][holdCardIndex];
+									zoneMap[CardZone::Hand][holdCardIndex]->SetNewPos(pos);
+									zoneMap[CardZone::Hand][holdCardIndex]->InitializeDurability();
+									MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Field);
+								}
 							}
 						}
 					}
@@ -572,10 +594,22 @@ void CardManager::ExecutionCard() {
 		if (!effectStandby_.empty()) {
 			if (effectStandby_.front()->GetType() == CardType::Building) {
 				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
-					Vector2 pos = FieldCardPos(-1);
-					effectStandby_.front()->SetNewPos(pos);
-					effectStandby_.front()->SetIsDraw(true);
-					MoveCard(effectStandby_.front(), CardZone::Field);
+					int i = 0;
+					for (auto& fi : fieldCardField) {
+						if (!fi.isOn) {
+							if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
+								Vector2 pos = FieldCardPos(i);
+								fi.isOn = true;
+								fi.card = effectStandby_.front();
+								effectStandby_.front()->SetNewPos(pos);
+								effectStandby_.front()->SetIsDraw(true);
+								effectStandby_.front()->InitializeDurability();
+								MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Field);
+								break;
+							}
+						}
+						i++;
+					}
 					effectStandby_.pop();
 					return;
 				}

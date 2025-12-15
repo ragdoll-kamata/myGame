@@ -148,6 +148,9 @@ bool Card::Effect() {
 	if (result == FunctionResult::Standby) {
 		return false;
 	}
+	if(type_ == CardType::Building) {
+		durability_--;
+	}
 	return true;
 }
 
