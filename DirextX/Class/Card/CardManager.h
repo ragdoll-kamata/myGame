@@ -42,6 +42,9 @@ public:
 	void TextDraw();
 
 	void AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard);
+	std::unordered_map<std::string, std::unique_ptr<CardData>>& GetCardDataMap() {
+		return CardDataMap;
+	}
 
 private:
 	void CardDraw();

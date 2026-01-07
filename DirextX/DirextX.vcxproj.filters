@@ -293,6 +293,7 @@
     <ClCompile Include="Class\CardCommand\Initialize\CardRarityCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
+    <ClCompile Include="ShopManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -637,6 +638,7 @@
     <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
     <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
     <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
+    <ClInclude Include="ShopManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
