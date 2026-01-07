@@ -84,17 +84,11 @@ private:
 	std::stack<int> nestStack;
 
 	std::queue<std::function<bool()>> commandQueue;
-	
 
-
-	//void CommandAdaptation(std::string key, std::vector<std::string> commandTokens);
 	std::unordered_map<std::string, int> functionMap;
 
 	std::unordered_map<int, std::vector<std::unique_ptr<CardCommand>>> cardCommands;
 
 	int lineNum = 0;
-
-	//int newFunctionId = 0;
-	//int nowFunctionId = -1;
 };
 

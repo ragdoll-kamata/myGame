@@ -40,6 +40,13 @@ enum class CardCharacteristics {
 	TemporaryProtection, // 一時保護
 	Error,          // エラー用の要素
 };
+enum class CardRarity {
+	Common,
+	Uncommon,
+	Epic,
+	Legendary,
+	Error,
+};
 
 enum class BuildingDurabilityDecreasenTiming {
 	None,
@@ -115,7 +122,9 @@ private:
 	CardElement element_ = CardElement::None;
 	CardType type_ = CardType::Error; // カードの種類（儀式、建物など）
 	int cost_ = 0; // コスト
-	CardElement elementCost_ = CardElement::None; // コストの要素
+	CardElement elementCost_ = CardElement::Error; // コストの要素
+	CardRarity rarity_ = CardRarity::Error; // レアリティ
+
 	CardData* cardData_ = nullptr;
 
 	std::string fileName = "white.png";
@@ -220,6 +229,13 @@ public:
 	void SetIsCardCharacteristics(CardCharacteristics characteristics, bool isSet);
 
 	bool GetIsCardCharacteristics(CardCharacteristics characteristics) const;
+
+	void SetRarity(CardRarity rarity) {
+		rarity_ = rarity;
+	}
+	CardRarity GetRarity() const {
+		return rarity_;
+	}
 
 	void SetBuildingDurabilityDecreasenTiming(BuildingDurabilityDecreasenTiming timing) {
 		buildingDurabilityDecreasenTiming_ = timing;

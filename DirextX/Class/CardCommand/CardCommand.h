@@ -81,6 +81,7 @@ protected:
 	CardElement ParseCardElement(std::string element, Card* card);
 	CardType ParseCardType(std::string type, Card* card);
 	CardCharacteristics ParseCardCharacteristics(std::string characteristics);
+	CardRarity ParseCardRarity(std::string rarity);
 	BuildingDurabilityDecreasenTiming ParseBuildingDurabilityDecreasenTiming(std::string timing);
 	BuildingActivationTiming ParseBuildingActivationTiming(std::string timing);
 	std::u32string Utf8ToU32(const std::string& str);

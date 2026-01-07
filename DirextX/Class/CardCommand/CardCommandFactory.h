@@ -17,6 +17,7 @@ namespace CardCommandFactory
 	std::unique_ptr<CardCommand> CreareCardElementCommand(std::string& cardElement);
 	std::unique_ptr<CardCommand> CreareCardExplanationCommand(std::string& cardExplanation);
 	std::unique_ptr<CardCommand> CreareCardCostCommand(std::string& costElement,std::string& costNum);
+	std::unique_ptr<CardCommand> CreareCardRarityCommand(std::string& cardRarity);
 	std::unique_ptr<CardCommand> CreareSetCardCharacteristicsCommand(std::vector<std::string>& characteristics);
 	std::unique_ptr<CardCommand> CreareSetCardDurabilityCommand(std::string& durability);
 	std::unique_ptr<CardCommand> CreareSetCardActivationTimingCommand(std::string& activationTimings);

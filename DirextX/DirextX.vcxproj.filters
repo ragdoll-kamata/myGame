@@ -290,6 +290,9 @@
     <ClCompile Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Hand\SelectHandCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\CardRarityCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -633,6 +636,7 @@
     <ClInclude Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.h" />
     <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
     <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

@@ -21,9 +21,9 @@ namespace fs = std::filesystem;
 
 void CardManager::Initialize() {
 	std::random_device rd; // 乱数の種
-	g.seed(rd());
+	seed.seed(rd());
 	endTurnButton = std::make_unique<Button>();
-	endTurnButton->Initialize({1100.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 0.0f, 1.0f});
+	endTurnButton->Initialize({950.0f, 500.0f}, {150.0f, 50.0f}, "white.png", {1.0f, 0.0f, 0.0f, 1.0f});
 	endTurnButton->SetIsDraw(false);
 
 	startOpenButton = std::make_unique<Button>();
@@ -65,6 +65,20 @@ void CardManager::Initialize() {
 	selectCardBackSprite->Initialize("white.png");
 	selectCardBackSprite->SetSize({1280.0f, 720.0f});
 	selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, 0.0f});
+
+	runawayGaugeBackSprite = std::make_unique<Sprite>();
+	runawayGaugeBackSprite->Initialize("white.png");
+	runawayGaugeBackSprite->SetSize({30.0f, 500.0f});
+	runawayGaugeBackSprite->SetPosition({1250.0f, 100.0f});
+	runawayGaugeBackSprite->SetAnchorPoint({0.5f, 0.0f});
+	runawayGaugeBackSprite->SetColor({0.2f, 0.2f, 0.2f, 1.0f});
+
+	runawayGaugeSprite = std::make_unique<Sprite>();
+	runawayGaugeSprite->Initialize("white.png");
+	runawayGaugeSprite->SetSize({30.0f, 0.0f});
+	runawayGaugeSprite->SetPosition({1250.0f, 600.0f});
+	runawayGaugeSprite->SetAnchorPoint({0.5f, 1.0f});
+	runawayGaugeSprite->SetColor({1.0f, 0.0f, 1.0f, 1.0f});
 
 	endSelectButton = std::make_unique<Button>();
 	endSelectButton->Initialize({640.0f, 650.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 1.0f, 1.0f});
@@ -121,7 +135,7 @@ bool CardManager::StartCardSet() {
 		}
 	}
 
-	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
+	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), seed);
 	return true;
 }
 
@@ -171,6 +185,11 @@ void CardManager::Update(TrunState& trunState) {
 	costBackSprite->Updata();
 	costBackSprite2->Updata();
 
+	float gaugeH = (runawayGauge_ / maxRunawayGauge_) * 500.0f;
+	runawayGaugeSprite->SetSize({30.0f, gaugeH});
+	runawayGaugeSprite->Updata();
+	runawayGaugeBackSprite->Updata();
+
 	if (isSelectCard) {
 		selectCardBackSpriteAlpha += 0.05f;
 		if (selectCardBackSpriteAlpha > selectCardBackSpriteMaxAlpha) {
@@ -193,9 +212,9 @@ void CardManager::Draw() {
 
 	SpriteCommon::GetInstance()->PreDraw();
 	endTurnButton->Draw();
-	startOpenButton->Draw();
-	startOpenEndButton->Draw();
-	endTurnButton->Draw();
+	runawayGaugeBackSprite->Draw();
+	runawayGaugeSprite->Draw();
+
 
 	cardExecutionField->Draw();
 	for (const auto& fi : fieldCardField) {
@@ -212,6 +231,42 @@ void CardManager::Draw() {
 		effectTextCard_->EffectTextDraw();
 	}
 
+	
+	CardDraw();
+
+	SpriteCommon::GetInstance()->PreDraw();
+
+	startOpenButton->Draw();
+	startOpenEndButton->Draw();
+
+	if (isSelectCard) {
+
+		selectCardBackSprite->Draw();
+		endSelectButton->Draw();
+
+		for (const auto& card : selectCards) {
+			SpriteCommon::GetInstance()->PreDraw();
+			card->Draw();
+
+			TextCommon::GetInstance()->PreDraw();
+			card->TextDraw();
+			TextCommon::GetInstance()->PostDraw();
+		}
+	}
+}
+
+void CardManager::TextDraw() {
+	for (const auto& card : allCards) {
+		card->TextDraw();
+	}
+
+}
+
+void CardManager::AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard) {
+	cardMoves.push_back(std::move(moveCard));
+}
+
+void CardManager::CardDraw() {
 	TextCommon::GetInstance()->PostDraw();
 	for (const auto& card : allCards) {
 		SpriteCommon::GetInstance()->PreDraw();
@@ -239,33 +294,6 @@ void CardManager::Draw() {
 		card->TextDraw();
 		TextCommon::GetInstance()->PostDraw();
 	}
-
-	if (isSelectCard) {
-		SpriteCommon::GetInstance()->PreDraw();
-
-		selectCardBackSprite->Draw();
-		endSelectButton->Draw();
-
-		for (const auto& card : selectCards) {
-			SpriteCommon::GetInstance()->PreDraw();
-			card->Draw();
-
-			TextCommon::GetInstance()->PreDraw();
-			card->TextDraw();
-			TextCommon::GetInstance()->PostDraw();
-		}
-	}
-}
-
-void CardManager::TextDraw() {
-	for (const auto& card : allCards) {
-		card->TextDraw();
-	}
-
-}
-
-void CardManager::AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard) {
-	cardMoves.push_back(std::move(moveCard));
 }
 
 void CardManager::StartTrun(TrunState& trunState) {
@@ -326,6 +354,7 @@ void CardManager::MainTrun(TrunState& trunState) {
 		if (endTurnButton->IsOnCollision(mousePos)) {
 			FieldCardEffectCheck(BuildingActivationTiming::EndTurn);
 			endTurnButton->SetIsDraw(false);
+			runawayGauge_ += 10.0f;
 			trunState = TrunState::End;
 		}
 	}
@@ -573,13 +602,14 @@ void CardManager::HandAdjustment() {
 void CardManager::ReShuffleDeck() {
 	std::vector<Card*> cemeteryCards = zoneMap[CardZone::Cemetery];
 	Vector2 pos = Vector2{-100.0, -100.0f};
+	runawayGauge_ += 5.0f;
 	for (const auto& card : cemeteryCards) {
 		card->SetPos(pos);
 		card->RessetVariable();
 		card->SetIsDraw(false);
 		MoveCard(card, CardZone::Deck);
 	}
-	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), g);
+	std::shuffle(zoneMap[CardZone::Deck].begin(), zoneMap[CardZone::Deck].end(), seed);
 
 	std::unique_ptr<CardShuffleMove> shuffleMove = std::make_unique<CardShuffleMove>();
 	shuffleMove->Initialize(cemeteryCards, shuffleSE, 1.0f);
@@ -678,7 +708,7 @@ bool CardManager::IsEndSelectButton() const {
 }
 
 void CardManager::ShufleCards(std::vector<Card*>& cards) {
-	std::shuffle(cards.begin(), cards.end(), g);
+	std::shuffle(cards.begin(), cards.end(), seed);
 }
 
 void CardManager::MoveCard(Card* card, CardZone cardZone) {

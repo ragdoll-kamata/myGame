@@ -9,6 +9,7 @@
 #include "Initialize/SetCardDurabilityCommand.h"
 #include "Initialize/SetCardDurabilityDecreaseConditionCommand.h"
 #include "Initialize/SetCardActivationTimingCommand.h"
+#include "Initialize/CardRarityCommand.h"
 
 #include "Deck/OpenDeckCommand.h"
 #include "Deck/SelectOpenDeckCommand.h"
@@ -44,6 +45,8 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardExplanationCommand(commandTokens[0]); });
 	} else if (key == "エネルギーコスト") {
 		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreareCardCostCommand(commandTokens[0], commandTokens[1]); });
+	} else if (key == "レアリティ") {
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardRarityCommand(commandTokens[0]); });
 	} else if (key == "画像") {
 		//return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardNameCommand(commandTokens[0]); });
 	} else if (key == "カード特性") {
@@ -143,6 +146,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardExplanationCommand(st
 std::unique_ptr<CardCommand> CardCommandFactory::CreareCardCostCommand(std::string& costElement, std::string& costNum) {
 	std::unique_ptr<CardCostCommand> cmd = std::make_unique<CardCostCommand>();
 	if (cmd->Initialize(costElement, costNum)) {
+		return cmd;
+	}
+	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreareCardRarityCommand(std::string& cardRarity) {
+	std::unique_ptr<CardRarityCommand> cmd = std::make_unique<CardRarityCommand>();
+	if (cmd->Initialize(cardRarity)) {
 		return cmd;
 	}
 	return nullptr;

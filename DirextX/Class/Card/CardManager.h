@@ -44,6 +44,7 @@ public:
 	void AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard);
 
 private:
+	void CardDraw();
 	void StartTrun(TrunState& trunState);
 
 	void MainTrun(TrunState& trunState);
@@ -108,7 +109,7 @@ private:
 	Vector2 FieldCardPos(int i);
 private:
 	// 乱数生成器
-	std::mt19937 g;
+	std::mt19937 seed;
 	//　カード場
 	std::vector<std::unique_ptr<Card>> allCards;
 	std::unordered_map<CardZone, std::vector<Card*>> zoneMap{
@@ -155,6 +156,15 @@ private:
 	int lightCost = 0;
 	int darknessCost = 0;
 
+	int money_ = 0;
+
+	float runawayGauge_ = 0;
+	const float maxRunawayGauge_ = 500.0f;
+	std::unique_ptr<Sprite> runawayGaugeBackSprite = nullptr;
+	std::unique_ptr<Sprite> runawayGaugeSprite = nullptr;
+
+	int turnCount = 0;
+
 	// 効果テキスト用のカード参照
 	Card* effectTextCard_ = nullptr; 
 
@@ -172,9 +182,9 @@ private:
 
 	// ターン管理
 	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
-		{TrunState::Start, [&](TrunState& i) {return StartTrun(i); }},
-		{TrunState::Main,  [&](TrunState& i) {return MainTrun(i);  }},
-		{TrunState::End,   [&](TrunState& i) {return EndTrun(i);   }},
+		{TrunState::Start, [&](TrunState& i) { return StartTrun(i); }},
+		{TrunState::Main,  [&](TrunState& i) { return MainTrun(i);  }},
+		{TrunState::End,   [&](TrunState& i) { return EndTrun(i);   }},
 	};
 	bool isStartOpen = true;
 	bool isEndStartTrun = false;

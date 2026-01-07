@@ -26,13 +26,13 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 
 		}
 		if (num == "山札枚数") {
-
+			return static_cast<int>(cardManager_->GetZoneCards(CardZone::Deck).size());
 		}
 		if (num == "墓地枚数") {
-
+			return static_cast<int>(cardManager_->GetZoneCards(CardZone::Cemetery).size());
 		}
 		if (num == "手札枚数") {
-
+			return static_cast<int>(cardManager_->GetZoneCards(CardZone::Hand).size());
 		}
 		if (num == "スコア") {
 
@@ -78,6 +78,14 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 		return true;
 	}
 	if (cardNum == "手札") {
+		cards = cardManager_->GetZoneCards(CardZone::Hand);
+		return true;
+	}
+	if (cardNum == "墓地") {
+		cards = cardManager_->GetZoneCards(CardZone::Hand);
+		return true;
+	}
+	if (cardNum == "山札") {
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
 		return true;
 	}
@@ -156,6 +164,22 @@ CardCharacteristics CardCommand::ParseCardCharacteristics(std::string characteri
 		return CardCharacteristics::TemporaryProtection;
 	}
 	return CardCharacteristics::Error;
+}
+
+CardRarity CardCommand::ParseCardRarity(std::string rarity) {
+	if (rarity == "コモン") {
+		return CardRarity::Common;
+	}
+	if (rarity == "アンコモン") {
+		return CardRarity::Uncommon;
+	}
+	if (rarity == "エピック") {
+		return CardRarity::Epic;
+	}
+	if (rarity == "レジェンダリー") {
+		return CardRarity::Legendary;
+	}
+	return CardRarity::Error;
 }
 
 BuildingDurabilityDecreasenTiming CardCommand::ParseBuildingDurabilityDecreasenTiming(std::string timing) {
