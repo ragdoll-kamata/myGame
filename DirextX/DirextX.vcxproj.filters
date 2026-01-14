@@ -285,15 +285,23 @@
     <ClCompile Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
-    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.cpp" />
-    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.cpp" />
-    <ClCompile Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Hand\SelectHandCommand.cpp" />
-    <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Initialize\CardRarityCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Initialize</Filter>
     </ClCompile>
     <ClCompile Include="ShopManager.cpp" />
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Initialize</Filter>
+    </ClCompile>
+    <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Characteristics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -632,13 +640,21 @@
     <ClInclude Include="Class\CardCommand\Initialize\SetCardCharacteristicsCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
     </ClInclude>
-    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.h" />
-    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.h" />
-    <ClInclude Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.h" />
     <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
-    <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
     <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
     <ClInclude Include="ShopManager.h" />
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardActivationTimingCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Initialize</Filter>
+    </ClInclude>
+    <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h">
+      <Filter>ヘッダー ファイル\CardCommand\Characteristics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
@@ -804,6 +820,12 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Move">
       <UniqueIdentifier>{d37ed9af-e3b7-4c58-b347-0babe142fbf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Characteristics">
+      <UniqueIdentifier>{c7d66b38-6043-4c0b-8b8c-cabefdadbbbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\CardCommand\Characteristics">
+      <UniqueIdentifier>{bc80baec-6d8a-4572-9ad8-650402f582b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

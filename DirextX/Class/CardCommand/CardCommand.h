@@ -56,7 +56,6 @@ public:
 		std::string str;
 		std::unique_ptr<ExprNode> left, right;
 	};
-	
 
 	
 
@@ -78,6 +77,7 @@ public:
 protected:
 	int ParseInt(std::string num, Card* card);
 	bool ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card);
+	bool ParseCardIfKey(const std::string& key, const std::string& cardNum, std::vector<Card*>& cards, Card* card);
 	CardElement ParseCardElement(std::string element, Card* card);
 	CardType ParseCardType(std::string type, Card* card);
 	CardCharacteristics ParseCardCharacteristics(std::string characteristics);
