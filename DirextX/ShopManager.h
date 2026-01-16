@@ -11,14 +11,42 @@ class ShopManager {
 public:
 	void Initialize(CardManager* cardManager);
 
+	void Update();
+
+	void Draw();
+
+	/// <summary>
+	/// ショップカードデータの読み込み
+	/// </summary>
 	void LoadShopCardData();
 
 
 private:
+	/// <summary>
+	/// ショップカードの生成
+	/// </summary>
 	void GenerateShopCards();
+
+	/// <summary>
+	/// ユニークなランダムカードIDの取得
+	/// </summary>
+	/// <param name="candidateIDs">ランダムに選ぶカードIDs</param>
+	/// <param name="generatedCardIDs">すでに選んだカードIDs</param>
+	/// <returns>カードID</returns>
 	int GetUniqueRandomCardID(const std::vector<int>& candidateIDs, const std::vector<int>& generatedCardIDs);
+
+	/// <summary>
+	/// カードの生成
+	/// </summary>
+	/// <param name="cardID">生成するカードID</param>
 	void GenerateCard(int cardID);
-	int GetRandomCardIDByRarity(const std::vector<int>& cardIDs);
+
+	/// <summary>
+	/// ランダムなカードIDの取得
+	/// </summary>
+	/// <param name="cardIDs">ランダムに選ぶカードIDs</param>
+	/// <returns>カードID</returns>
+	int GetRandomCardID(const std::vector<int>& cardIDs);
 
 private:
 	std::mt19937 seed;
@@ -31,18 +59,21 @@ private:
 
 	std::vector<std::unique_ptr<Card>> shopCards;
 
+	// 初期確率
 	const int kShopCardCount = 5;
-	const int kShopRerityCommonBaseRate = 650;
-	const int kShopRerityUncommonBaseRate = 300;
-	const int kShopRerityEpicBaseRate = 50;
-	const int kShopRerityLegendaaryBaseRate = 0;
-	const int kShopTotalRate = kShopRerityCommonBaseRate + kShopRerityUncommonBaseRate + kShopRerityEpicBaseRate + kShopRerityLegendaaryBaseRate;
+	const int kShopRarityCommonBaseRate = 650;
+	const int kShopRarityUncommonBaseRate = 300;
+	const int kShopRarityEpicBaseRate = 50;
+	const int kShopRarityLegendaryBaseRate = 0;
+	const int kShopTotalRate = kShopRarityCommonBaseRate + kShopRarityUncommonBaseRate + kShopRarityEpicBaseRate + kShopRarityLegendaryBaseRate;
 
+	// 一回のカード生成で上昇する確率ボーナス
 	const int kShopEpicRateBonus = 4;
-	const int kShopLegendaaryRateBonus = 1;
+	const int kShopLegendaryRateBonus = 1;
 
+	// 確率ボーナス
 	int shopEpicRateBonus_ = 0;
-	int shopLegendaaryRateBonus_ = 0;
+	int shopLegendaryRateBonus_ = 0;
 
 };
 

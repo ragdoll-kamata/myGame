@@ -8,8 +8,11 @@ void ShopManager::Initialize(CardManager* cardManager) {
 }
 
 void ShopManager::LoadShopCardData() {
+	// カードデータの分類
+	// カードデータマップの取得
 	std::unordered_map<std::string, std::unique_ptr<CardData>>& cardDataMap = cardManager_->GetCardDataMap();
 	int id = 1;
+	// カードデータをレアリティごとに分類し、カードIDを割り当てる
 	for (const auto& [name, data] : cardDataMap) {
 		std::unique_ptr<Card> card(new Card());
 		card->InitializeCard(data.get());
@@ -32,24 +35,34 @@ void ShopManager::GenerateShopCards() {
 	shopCards.clear();
 	std::vector<int> generatedCardIDs;
 	for (int i = 0; i < kShopCardCount; i++) {
+		// ロール
 		int rarityRoll = std::uniform_int_distribution<int>(1, kShopTotalRate)(seed);
 		int cardID = -1;
-		int totalBonus = shopEpicRateBonus_ + shopLegendaaryRateBonus_;
-		if (rarityRoll <= kShopRerityCommonBaseRate - totalBonus) {
+		int totalBonus = shopEpicRateBonus_ + shopLegendaryRateBonus_;
+		// コモン判定
+		if (rarityRoll <= kShopRarityCommonBaseRate - totalBonus) {
 			generatedCardIDs.push_back(GetUniqueRandomCardID(commonCardIDs, generatedCardIDs));
 			continue;
 		}
-		rarityRoll -= (kShopRerityCommonBaseRate - totalBonus);
-		if (rarityRoll <= kShopRerityUncommonBaseRate) {
+		// コモン確率減算
+		rarityRoll -= (kShopRarityCommonBaseRate - totalBonus);
+		// アンコモン判定
+		if (rarityRoll <= kShopRarityUncommonBaseRate) {
 			generatedCardIDs.push_back(GetUniqueRandomCardID(uncommonCardIDs, generatedCardIDs));
 			continue;
 		}
-		rarityRoll -= kShopRerityUncommonBaseRate;
-		if (rarityRoll <= kShopRerityEpicBaseRate + kShopEpicRateBonus) {
+		// アンコモン確率減算
+		rarityRoll -= kShopRarityUncommonBaseRate;
+		// エピック判定
+		if (rarityRoll <= kShopRarityEpicBaseRate + shopEpicRateBonus_) {
 			generatedCardIDs.push_back(GetUniqueRandomCardID(epicCardIDs, generatedCardIDs));
+			shopEpicRateBonus_ = 0;
 			continue;
 		}
+		// 余りの確率はレジェンダリー
+		// レジェンダリー判定
 		generatedCardIDs.push_back(GetUniqueRandomCardID(legendaryCardIDs, generatedCardIDs));
+		shopLegendaryRateBonus_ = 0;
 	}
 	for (const int& id : generatedCardIDs) {
 		GenerateCard(id);
@@ -57,6 +70,7 @@ void ShopManager::GenerateShopCards() {
 }
 
 int ShopManager::GetUniqueRandomCardID(const std::vector<int>& candidateIDs, const std::vector<int>& generatedCardIDs) {
+	// すでに選んだカードIDを除外した一時的な候補リストを作成
 	std::vector<int> tempGeneratedCardIDs;
 	for (const int& id : candidateIDs) {
 		bool isUnique = true;
@@ -70,10 +84,12 @@ int ShopManager::GetUniqueRandomCardID(const std::vector<int>& candidateIDs, con
 		}
 	}
 	
+	// 確率ボーナスの更新
 	shopEpicRateBonus_ += kShopEpicRateBonus;
-	shopLegendaaryRateBonus_ += kShopLegendaaryRateBonus;
+	shopLegendaryRateBonus_ += kShopLegendaryRateBonus;
 
-	return GetRandomCardIDByRarity(tempGeneratedCardIDs);
+	// ランダムにカードIDを取得
+	return GetRandomCardID(tempGeneratedCardIDs);
 }
 
 void ShopManager::GenerateCard(int cardID) {
@@ -84,7 +100,7 @@ void ShopManager::GenerateCard(int cardID) {
 	}
 }
 
-int ShopManager::GetRandomCardIDByRarity(const std::vector<int>& cardIDs) {
+int ShopManager::GetRandomCardID(const std::vector<int>& cardIDs) {
 	if (cardIDs.empty()) {
 		return -1;
 	}
