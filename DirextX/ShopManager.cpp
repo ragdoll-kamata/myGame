@@ -74,8 +74,8 @@ int ShopManager::GetUniqueRandomCardID(const std::vector<int>& candidateIDs, con
 	std::vector<int> tempGeneratedCardIDs;
 	for (const int& id : candidateIDs) {
 		bool isUnique = true;
-		for (int id2 : generatedCardIDs) {
-			if (id == id2) {
+		for (int generatedCardID : generatedCardIDs) {
+			if (id == generatedCardID) {
 				isUnique = false;
 			}
 		}

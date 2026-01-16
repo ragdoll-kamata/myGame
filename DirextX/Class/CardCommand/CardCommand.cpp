@@ -92,6 +92,27 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 	return false;
 }
 
+bool CardCommand::ParseCardIfKey(const std::string& key, const std::string& cardNum, std::vector<Card*>& cards, Card* card) {
+	if (cardNum.front() == '$') {
+		if (card == nullptr) {
+			return false;
+		}
+		//　カード変数の属性を取得する処理
+		size_t pos = cardNum.find('.');
+		std::string str = cardNum.substr(pos + 1);
+		if (str == key) {
+			std::string ke = cardNum.substr(0, pos);
+			if (!ParseCard(ke, cards, card)) {
+				return false;
+			}
+			if (cards.size() > 0) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 	// 直接属性名が指定されている場合
 	if (element == "光属性") {
@@ -103,23 +124,11 @@ CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 	if (element == "無属性") {
 		return CardElement::None;
 	}
-	if (element.front() == '$') {
-		if (card == nullptr) {
-			return CardElement::Error;
-		}
-		//　カード変数の属性を取得する処理
-		size_t pos = element.find('.');
-		std::string str = element.substr(pos + 1);
-		if (str == "属性") {
-			std::string key = element.substr(0, pos);
-			std::vector<Card*> cards;
-			if(!ParseCard(key, cards, card)) {
-				return CardElement::Error;
-			}
-			if (cards.size() > 0) {
-				return cards[0]->GetElement();
-			}
-		}
+	std::vector<Card*> cards;
+	if (ParseCardIfKey("属性", element, cards, card)) {
+		return cards[0]->GetElement();
+	} else {
+		return CardElement::Error;
 	}
 
 	return CardElement::Error;
