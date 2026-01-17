@@ -17,81 +17,17 @@
 
 #include "Audio.h"
 
+#include "UIManager.h"
+#include "ResourceManager.h"
+
 namespace fs = std::filesystem;
 
-void CardManager::Initialize() {
+void CardManager::Initialize(UIManager* uiManager, ResourceManager* resourceManager) {
+	uiManager_ = uiManager;
+	resourceManager_ = resourceManager;
 	std::random_device rd; // 乱数の種
 	seed.seed(rd());
-	endTurnButton = std::make_unique<Button>();
-	endTurnButton->Initialize({950.0f, 500.0f}, {150.0f, 50.0f}, "white.png", {1.0f, 0.0f, 0.0f, 1.0f});
-	endTurnButton->SetIsDraw(false);
-
-	startOpenButton = std::make_unique<Button>();
-	startOpenButton->Initialize({200.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {0.0f, 1.0f, 0.0f, 1.0f});
-	startOpenButton->SetIsDraw(false);
-
-	startOpenEndButton = std::make_unique<Button>();
-	startOpenEndButton->Initialize({440.0f, 600.0f}, {200.0f, 100.0f}, "white.png", {0.0f, 0.0f, 1.0f, 1.0f});
-	startOpenEndButton->SetIsDraw(false);
-
-	cardExecutionField = std::make_unique<Button>();
-	cardExecutionField->Initialize({1150.0f, 400.0f}, {120.0f * 1.2f, 160.0f * 1.2f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
-	cardExecutionField->SetIsDraw(true);
 	shuffleSE = Audio::GetInstance()->LoadSound("cardShuffle.mp3");
-
-	costBackSprite = std::make_unique<Sprite>();
-	costBackSprite->Initialize("white.png");
-	costBackSprite->SetSize({60.0f, 40.0f});
-	costBackSprite->SetPosition({0.0f, 0.0f});
-	costBackSprite->SetColor({0.9f, 0.9f, 0.5f, 1.0f});
-
-	costBackSprite2 = std::make_unique<Sprite>();
-	costBackSprite2->Initialize("white.png");
-	costBackSprite2->SetSize({60.0f, 40.0f});
-	costBackSprite2->SetPosition({60.0f, 0.0f});
-	costBackSprite2->SetColor({0.5f, 0.0f, 0.5f, 1.0f});
-
-	lightCostText = std::make_unique<Text>();
-	lightCostText->Initialize(U"00", {10.0f, 0.0f}, 20000.0f);
-	lightCostText->Update();
-	lightCostText->CalcFitSize(40.0f);
-
-	darknessCostText = std::make_unique<Text>();
-	darknessCostText->Initialize(U"00", {70.0f, 0.0f}, 2000.0f);
-	darknessCostText->Update();
-	darknessCostText->CalcFitSize(40.0f);
-
-	selectCardBackSprite = std::make_unique<Sprite>();
-	selectCardBackSprite->Initialize("white.png");
-	selectCardBackSprite->SetSize({1280.0f, 720.0f});
-	selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, 0.0f});
-
-	runawayGaugeBackSprite = std::make_unique<Sprite>();
-	runawayGaugeBackSprite->Initialize("white.png");
-	runawayGaugeBackSprite->SetSize({30.0f, 500.0f});
-	runawayGaugeBackSprite->SetPosition({1250.0f, 100.0f});
-	runawayGaugeBackSprite->SetAnchorPoint({0.5f, 0.0f});
-	runawayGaugeBackSprite->SetColor({0.2f, 0.2f, 0.2f, 1.0f});
-
-	runawayGaugeSprite = std::make_unique<Sprite>();
-	runawayGaugeSprite->Initialize("white.png");
-	runawayGaugeSprite->SetSize({30.0f, 0.0f});
-	runawayGaugeSprite->SetPosition({1250.0f, 600.0f});
-	runawayGaugeSprite->SetAnchorPoint({0.5f, 1.0f});
-	runawayGaugeSprite->SetColor({1.0f, 0.0f, 1.0f, 1.0f});
-
-	endSelectButton = std::make_unique<Button>();
-	endSelectButton->Initialize({640.0f, 650.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 1.0f, 1.0f});
-	endSelectButton->SetIsDraw(false);
-
-	for (int i = 0; i < maxFieldCard; i++) {
-		FieldCard fi;
-		fi.field = std::make_unique<Button>();
-		fi.field->Initialize(FieldCardPos(i), {120.0f * 1.1f, 160.0f * 1.1f}, "white.png", {0.4f, 0.9f, 0.4f, 0.9f});
-		fi.field->SetIsDraw(true);
-		fieldCardField.push_back(std::move(fi));
-	}
-
 }
 
 bool CardManager::StartCardSet() {
@@ -139,28 +75,29 @@ bool CardManager::StartCardSet() {
 	return true;
 }
 
-void CardManager::Update(TrunState& trunState) {
-	trunMap[trunState](trunState);
+void CardManager::Update(TurnState& turnState) {
+	if (turnMap.find(turnState) != turnMap.end()) {
+		turnMap[turnState](turnState);
+	}
 
 	if (!isMove) {
 		ExecutionCard();
 	}
 
 	if (effectStandby_.empty()) {
-		for (auto& fi : fieldCardField) {
-			if (fi.card) {
-				if (fi.card->GetDurability() <= 0) {
-					std::unique_ptr<CardMove> moveCard = std::make_unique<CardMove>();
-					moveCard->Initialize(fi.card, CemeteryCardPos(), 0.5f, false);
-					std::vector<std::unique_ptr<CardMove>> moves;
-					moves.push_back(std::move(moveCard));
-					AddCardMove(std::move(moves));
+		for (auto& card : GetZoneCards(CardZone::Field)) {
+			if (card->GetDurability() <= 0) {
+				std::unique_ptr<CardMove> moveCard = std::make_unique<CardMove>();
+				moveCard->Initialize(card, uiManager_->GetCardPos(CardZone::Cemetery, 0, 0), 0.5f, false);
+				std::vector<std::unique_ptr<CardMove>> moves;
+				moves.push_back(std::move(moveCard));
+				AddCardMove(std::move(moves));
 
-					MoveCard(fi.card, CardZone::Cemetery);
+				MoveCard(card, CardZone::Cemetery);
 
-					fi.card = nullptr;
-					fi.isOn = false;
-				}
+				int index = fieldCardIndexMap[card];
+				uiManager_->SetFieldCardFieldIsOn(index, false);
+				fieldCardIndexMap.erase(card);
 			}
 		}
 	}
@@ -171,79 +108,23 @@ void CardManager::Update(TrunState& trunState) {
 		card->Update();
 	}
 
-	endTurnButton->Update();
-	startOpenButton->Update();
-	startOpenEndButton->Update();
 
-	cardExecutionField->Update();
-	for (const auto& fi : fieldCardField) {
-		fi.field->Update();
-	}
 
-	lightCostText->Update();
-	darknessCostText->Update();
-	costBackSprite->Updata();
-	costBackSprite2->Updata();
 
-	float gaugeH = (runawayGauge_ / maxRunawayGauge_) * 500.0f;
-	runawayGaugeSprite->SetSize({30.0f, gaugeH});
-	runawayGaugeSprite->Updata();
-	runawayGaugeBackSprite->Updata();
 
-	if (isSelectCard) {
-		selectCardBackSpriteAlpha += 0.05f;
-		if (selectCardBackSpriteAlpha > selectCardBackSpriteMaxAlpha) {
-			selectCardBackSpriteAlpha = selectCardBackSpriteMaxAlpha;
-		}
-		selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, selectCardBackSpriteAlpha});
-	} else {
-		selectCardBackSpriteAlpha -= 0.05f;
-		if (selectCardBackSpriteAlpha < 0.0f) {
-			selectCardBackSpriteAlpha = 0.0f;
-		}
-		selectCardBackSprite->SetColor({0.0f, 0.0f, 0.0f, selectCardBackSpriteAlpha});
-
-	}
-	selectCardBackSprite->Updata();
-	endSelectButton->Update();
 }
 
 void CardManager::Draw() {
-
-	SpriteCommon::GetInstance()->PreDraw();
-	endTurnButton->Draw();
-	runawayGaugeBackSprite->Draw();
-	runawayGaugeSprite->Draw();
-
-
-	cardExecutionField->Draw();
-	for (const auto& fi : fieldCardField) {
-		fi.field->Draw();
-	}
-
-	costBackSprite->Draw();
-	costBackSprite2->Draw();
 	TextCommon::GetInstance()->PreDraw();
-
-	lightCostText->Draw();
-	darknessCostText->Draw();
 	if (effectTextCard_) {
 		effectTextCard_->EffectTextDraw();
 	}
 
-	
 	CardDraw();
+}
 
-	SpriteCommon::GetInstance()->PreDraw();
-
-	startOpenButton->Draw();
-	startOpenEndButton->Draw();
-
+void CardManager::SelectDraw() {
 	if (isSelectCard) {
-
-		selectCardBackSprite->Draw();
-		endSelectButton->Draw();
-
 		for (const auto& card : selectCards) {
 			SpriteCommon::GetInstance()->PreDraw();
 			card->Draw();
@@ -296,31 +177,31 @@ void CardManager::CardDraw() {
 	}
 }
 
-void CardManager::StartTrun(TrunState& trunState) {
+void CardManager::StartTurn(TurnState& turnState) {
 	Input* input = Input::GetInstance();
-	startOpenButton->SetIsDraw(true);
-	startOpenEndButton->SetIsDraw(true);
-	if (!isEndStartTrun) {
+	uiManager_->SetStartOpenButtonIsDraw(true);
+	uiManager_->SetStartOpenEndButtonIsDraw(true);
+	if (!isEndStartTurn) {
 		if (isStartOpen) {
 			OpenDeck(1);
 			isStartOpen = false;
 			nowOpenCard++;
 			if (nowOpenCard >= startMaxOpenCard) {
-				isEndStartTrun = true;
+				isEndStartTurn = true;
 			}
 		}
 		Vector2 mousePos = input->GetMousePos();
 		if (input->TriggerMouseButton(0)) {
-			if (startOpenButton->IsOnCollision(mousePos) && nowOpenCard < startMaxOpenCard) {
+			if (uiManager_->IsOnCollisionStartOpenButton(mousePos) && nowOpenCard < startMaxOpenCard) {
 				isStartOpen = true;
 			}
-			if (startOpenEndButton->IsOnCollision(mousePos)) {
-				isEndStartTrun = true;
+			if (uiManager_->IsOnCollisionStartOpenEndButton(mousePos)) {
+				isEndStartTurn = true;
 			}
 		}
 	} else {
-		startOpenButton->SetIsDraw(false);
-		startOpenEndButton->SetIsDraw(false);
+		uiManager_->SetStartOpenButtonIsDraw(false);
+		uiManager_->SetStartOpenEndButtonIsDraw(false);
 		bool is = false;
 		for (const auto& card : zoneMap[CardZone::Open]) {
 			if (card->IsMove()) {
@@ -332,11 +213,11 @@ void CardManager::StartTrun(TrunState& trunState) {
 			is = true;
 		}
 		if (!is) {
-			isEndStartTrun = false;
+			isEndStartTurn = false;
 			isStartOpen = true;
 			nowOpenCard = 0;
 			OpenDeckAdjustment();
-			trunState = TrunState::Main;
+			turnState = TurnState::Main;
 		}
 		//
 
@@ -345,22 +226,21 @@ void CardManager::StartTrun(TrunState& trunState) {
 
 }
 
-void CardManager::MainTrun(TrunState& trunState) {
-	endTurnButton->SetIsDraw(true);
+void CardManager::MainTurn(TurnState& turnState) {
+	uiManager_->SetEndTurnButtonIsDraw(true);
 	Input* input = Input::GetInstance();
 	Vector2 mousePos = input->GetMousePos();
-	PlayerInput();
 	if (input->TriggerMouseButton(0)) {
-		if (endTurnButton->IsOnCollision(mousePos)) {
+		if (uiManager_->IsOnCollisionEndTurnButton(mousePos)) {
 			FieldCardEffectCheck(BuildingActivationTiming::EndTurn);
-			endTurnButton->SetIsDraw(false);
-			runawayGauge_ += 10.0f;
-			trunState = TrunState::End;
+			uiManager_->SetEndTurnButtonIsDraw(false);
+			resourceManager_->AddRunawayGauge(10.0f);
+			turnState = TurnState::End;
 		}
 	}
 }
 
-void CardManager::EndTrun(TrunState& trunState) {
+void CardManager::EndTurn(TurnState& turnState) {
 	isHoldCard = false;
 	if (!effectStandby_.empty()) {
 		return;
@@ -377,7 +257,7 @@ void CardManager::EndTrun(TrunState& trunState) {
 				continue;
 			}
 			std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
-			move->Initialize(card, CemeteryCardPos(), 0.5f, false);
+			move->Initialize(card, uiManager_->GetCardPos(CardZone::Cemetery, 0, 0), 0.5f, false);
 			moves.push_back(std::move(move));
 			MoveCard(card, CardZone::Cemetery);
 		}
@@ -398,72 +278,7 @@ void CardManager::EndTrun(TrunState& trunState) {
 	}
 
 	isEndStart = false;
-	trunState = TrunState::Start;
-}
-
-void CardManager::PlayerInput() {
-	if (isSelectCard) {
-		return;
-	}
-	Input* input = Input::GetInstance();
-	Vector2 mousePos = input->GetMousePos();
-
-	if (!isHoldCard) {
-		effectTextCard_ = nullptr;
-		int index = 0;
-		for (const auto& card : zoneMap[CardZone::Hand]) {
-			if (card->IsDraw() && card->IsOnCollision(mousePos)) {
-				effectTextCard_ = card;
-				if (input->TriggerMouseButton(0)) {
-					card->SetIsMove(false);
-					isHoldCard = true;
-					holdCardIndex = index;
-					break;
-				}
-			}
-			index++;
-		}
-
-	} else {
-
-		if (input->PressMouseButton(0)) {
-			zoneMap[CardZone::Hand][holdCardIndex]->SetPos(mousePos);
-			zoneMap[CardZone::Hand][holdCardIndex]->SetIsMove(false);
-		} else if (input->ReleaseMouseButton(0)) {
-			if (cardExecutionField->IsOnCollision(mousePos)) {
-				if (zoneMap[CardZone::Hand][holdCardIndex]->GetType() == CardType::Ritual) {
-					if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
-						CostTextUpdate();
-						zoneMap[CardZone::Hand][holdCardIndex]->SetIsDraw(false);
-						effectStandby_.push(zoneMap[CardZone::Hand][holdCardIndex]);
-						MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Execution);
-					}
-				}
-			} else {
-				int i = 0;
-				for (auto& fi : fieldCardField) {
-					if (fi.field->IsOnCollision(mousePos)) {
-						if (!fi.isOn) {
-							if (zoneMap[CardZone::Hand][holdCardIndex]->GetType() == CardType::Building) {
-								if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
-									Vector2 pos = FieldCardPos(i);
-									fi.isOn = true;
-									fi.card = zoneMap[CardZone::Hand][holdCardIndex];
-									zoneMap[CardZone::Hand][holdCardIndex]->SetNewPos(pos);
-									zoneMap[CardZone::Hand][holdCardIndex]->InitializeDurability();
-									MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Field);
-								}
-							}
-						}
-					}
-					i++;
-				}
-			}
-			isHoldCard = false;
-			HandAdjustment();
-		}
-	}
-
+	turnState = TurnState::Start;
 }
 
 void CardManager::CardMoveUpdate() {
@@ -572,7 +387,7 @@ void CardManager::OpenDeckAdjustment() {
 	// 墓地に送るカードを移動
 	for (const auto& card : removeCards) {
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
-		move->Initialize(card, CemeteryCardPos(), 0.5f, false);
+		move->Initialize(card, uiManager_->GetCardPos(CardZone::Cemetery, 0, 0), 0.5f, false);
 		moves.push_back(std::move(move));
 		MoveCard(card, CardZone::Cemetery);
 	}
@@ -592,7 +407,7 @@ void CardManager::HandAdjustment() {
 		if (card->IsCommandMove()) {
 			continue;
 		}
-		pos = HandCardPos(i);
+		pos = uiManager_->GetCardPos(CardZone::Hand, i, size);
 		card->SetNewPos(pos);
 		card->SetIsDraw(true);
 		i++;
@@ -602,7 +417,7 @@ void CardManager::HandAdjustment() {
 void CardManager::ReShuffleDeck() {
 	std::vector<Card*> cemeteryCards = zoneMap[CardZone::Cemetery];
 	Vector2 pos = Vector2{-100.0, -100.0f};
-	runawayGauge_ += 5.0f;
+	resourceManager_->AddRunawayGauge(5.0f);
 	for (const auto& card : cemeteryCards) {
 		card->SetPos(pos);
 		card->RessetVariable();
@@ -622,28 +437,6 @@ void CardManager::ReShuffleDeck() {
 void CardManager::ExecutionCard() {
 	if (!IsMoveCard()) {
 		if (!effectStandby_.empty()) {
-			if (effectStandby_.front()->GetType() == CardType::Building) {
-				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
-					int i = 0;
-					for (auto& fi : fieldCardField) {
-						if (!fi.isOn) {
-							if (zoneMap[CardZone::Hand][holdCardIndex]->IsCostSufficient(lightCost, darknessCost)) {
-								Vector2 pos = FieldCardPos(i);
-								fi.isOn = true;
-								fi.card = effectStandby_.front();
-								effectStandby_.front()->SetNewPos(pos);
-								effectStandby_.front()->SetIsDraw(true);
-								effectStandby_.front()->InitializeDurability();
-								MoveCard(zoneMap[CardZone::Hand][holdCardIndex], CardZone::Field);
-								break;
-							}
-						}
-						i++;
-					}
-					effectStandby_.pop();
-					return;
-				}
-			}
 
 			if (effectStandby_.front()->Effect()) {
 				if (effectStandby_.front()->GetZone() == CardZone::Execution) {
@@ -668,9 +461,9 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 		zoneMap[CardZone::Deck].front()->SetIsDraw(true);
 		result.push_back(zoneMap[CardZone::Deck].front());
 		if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Light) {
-			lightCost++;
+			resourceManager_->AddLightCost(1);
 		} else if (zoneMap[CardZone::Deck].front()->GetElement() == CardElement::Darkness) {
-			darknessCost++;
+			resourceManager_->AddDarknessCost(1);
 		}
 		MoveCard(zoneMap[CardZone::Deck].front(), CardZone::Open);
 	}
@@ -685,29 +478,18 @@ std::vector<Card*> CardManager::OpenDeck(int num, bool isCommand) {
 
 void CardManager::SetIsSelectCard(bool isSelect) {
 	isSelectCard = isSelect;
-	endSelectButton->SetIsDraw(isSelect);
+	uiManager_->SetIsSelectCard(isSelect);
+	uiManager_->SetEndSelectButtonIsDraw(isSelect);
 	if (!isSelect) {
 		selectCards.clear();
 	}
 }
 
-void CardManager::SetEndSelectButtonColorV(float v) {
-	endSelectButton->SetColor({endSelectButtonColor.x * v, endSelectButtonColor.y * v, endSelectButtonColor.z * v, 1.0f});
-}
-
-void CardManager::SetEndSelectButtonNormalVector() {
-	endSelectButton->SetPosition({640.0f, 650.0f});
-}
-
-void CardManager::SetEndSelectButtonHandVector() {
-	endSelectButton->SetPosition({640.0f, 360.0f});
-}
-
 bool CardManager::IsEndSelectButton() const {
-	return endSelectButton->IsOnCollision(Input::GetInstance()->GetMousePos());
+	return uiManager_->IsOnCollisionEndSelectButton(Input::GetInstance()->GetMousePos());
 }
 
-void CardManager::ShufleCards(std::vector<Card*>& cards) {
+void CardManager::ShuffleCards(std::vector<Card*>& cards) {
 	std::shuffle(cards.begin(), cards.end(), seed);
 }
 
@@ -725,10 +507,6 @@ void CardManager::MoveCard(Card* card, CardZone cardZone) {
 
 /////////////////////////////////////////////////////////////////
 
-void CardManager::CostTextUpdate() {
-	lightCostText->SetText(lightCostText->GetIntToString(lightCost, 2));
-	darknessCostText->SetText(darknessCostText->GetIntToString(darknessCost, 2));
-}
 
 void CardManager::AllCardLoad(const std::string& file) {
 	std::string basePath = file;
@@ -753,53 +531,13 @@ void CardManager::AllCardLoad(const std::string& file) {
 
 }
 
-Vector2 CardManager::GetCardPos(CardZone zone, int index) {
-	if (zone == CardZone::Hand) {
-		return HandCardPos(index);
-	} else if (zone == CardZone::Open) {
-		return OpenCardPos(index);
-	} else if (zone == CardZone::Cemetery) {
-		return CemeteryCardPos();
-	} else if (zone == CardZone::Deck) {
-		return Vector2(640.0f, -160.0f);
-	}
-
-	return Vector2();
-}
-
-Vector2 CardManager::HandCardPos(int index) {
-	Vector2 pos = {};
-	int size = static_cast<int>(zoneMap[CardZone::Hand].size()) - 1;
-	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + handCardPading);
-	pos.y = 720.0f - 80.0f;
-	return pos;
-}
-
-Vector2 CardManager::OpenCardPos(int index) {
-	Vector2 pos = {};
-	int size = static_cast<int>(zoneMap[CardZone::Open].size()) - 1;
-	pos.x = 640.0f - (size / 2.0f - index) * (cardSizeW + openCardPading);
-	pos.y = 140.0f;
-	return pos;
-}
-
-Vector2 CardManager::CemeteryCardPos() {
-	return Vector2(-150.0f, 80.0f);
-}
-
-Vector2 CardManager::FieldCardPos(int i) {
-	if (i > -1) {
-		return {200.0f + i * (cardSizeW * 1.1f + fieldCardPading), 360.0f};
-	}
+int CardManager::HandCardCollision(Vector2 pos) {
 	int index = 0;
-	Vector2 pos = {};
-	pos.y = 360.0f;
-	for (const auto& card : fieldCardField) {
-		if (card.isOn) {
-			pos.x = 200.0f + index * (cardSizeW * 1.1f + fieldCardPading);
-			return pos;
+	for (const auto& card : zoneMap[CardZone::Hand]) {
+		if (card->IsDraw() && card->IsOnCollision(pos)) {
+			return index;
 		}
 		index++;
 	}
-	return Vector2(-200.0f, -200.0f);
+	return -1;
 }

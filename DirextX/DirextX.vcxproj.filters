@@ -302,6 +302,9 @@
     <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Characteristics</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerInput.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -655,6 +658,9 @@
     <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h">
       <Filter>ヘッダー ファイル\CardCommand\Characteristics</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerInput.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

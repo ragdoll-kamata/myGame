@@ -1,5 +1,6 @@
 #include "OpenDeckAlignmentMove.h"
 #include "CardManager.h"
+#include "UIManager.h"
 
 void OpenDeckAlignmentMove::Update() {
 	std::vector<Card*> cards = cardManager_->GetZoneCards(CardZone::Open);
@@ -8,10 +9,10 @@ void OpenDeckAlignmentMove::Update() {
 	Vector2 pos{};
 	pos.y = 240.0f;
 	for (const auto& card : cards) {
-		pos = cardManager_->GetCardPos(CardZone::Open, i);
+		pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Open, i, size);
 		card->SetNewPos(pos);
 		i++;
 	}
-	cardManager_->CostTextUpdate();
+	cardManager_->GetUIManager()->CostTextUpdate();
 	isEnd_ = true;
 }

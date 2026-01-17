@@ -1,5 +1,6 @@
 #include "SelectOpenDeckCommand.h"
 #include "CardManager.h"
+#include "UIManager.h"
 #include "ErrorMessage.h"
 #include "Input.h"
 
@@ -62,6 +63,7 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
 		return ExecuteResult::Error; // Error: card is null
 	}
+	UIManager* uiManager = cardManager_->GetUIManager();
 	// 開始処理
 	if (!isStart_) {
 		isStart_ = true;
@@ -75,7 +77,7 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 			c->SetIsDraw(true);
 		}
 		for (Card* c : openCards) {
-			Vector2 pos = cardManager_->GetCardPos(CardZone::Open, i);
+			Vector2 pos = uiManager->GetCardPos(CardZone::Open, i, static_cast<int>(openCards.size()));
 			std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 			move->Initialize(c, pos, 0.5f, true);
 			moves.push_back(std::move(move));
@@ -87,11 +89,11 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 		maxSelectNum_ = ParseInt(maxSelect_, card);
 
 		if (minSelectNum_ == 0) {
-			cardManager_->SetEndSelectButtonColorV(1.0f);
+			uiManager->SetEndSelectButtonColorV(1.0f);
 		} else {
-			cardManager_->SetEndSelectButtonColorV(0.3f);
+			uiManager->SetEndSelectButtonColorV(0.3f);
 		}
-		cardManager_->SetEndSelectButtonNormalVector();
+		uiManager->SetEndSelectButtonNormalVector();
 		return ExecuteResult::Standby;
 	}
 
@@ -114,9 +116,9 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 		}
 	}
 	if (nawSelectCount_ < minSelectNum_) {
-		cardManager_->SetEndSelectButtonColorV(0.3f);
+		uiManager->SetEndSelectButtonColorV(0.3f);
 	} else {
-		cardManager_->SetEndSelectButtonColorV(1.0f);
+		uiManager->SetEndSelectButtonColorV(1.0f);
 		if (Input::GetInstance()->TriggerMouseButton(0)) {
 			if (cardManager_->IsEndSelectButton()) {
 				std::vector<Card*> selectCards;

@@ -1,5 +1,6 @@
 #include "CardShuffleMove.h"
 #include "CardManager.h"
+#include "UIManager.h"
 #include "DeltaTime.h"
 #include "Audio.h"
 
@@ -20,7 +21,7 @@ void CardShuffleMove::Update() {
 	}
 	nowTime_ += DeltaTime::GetInstance()->GetDeltaTime();
 	if (nowTime_ >= time_) {
-		Vector2 pos = cardManager_->GetCardPos(CardZone::Deck, 0);
+		Vector2 pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Deck, 0, 0);
 		for (Card* c : shuffleCards_) {
 			c->SetPos(pos);
 		}

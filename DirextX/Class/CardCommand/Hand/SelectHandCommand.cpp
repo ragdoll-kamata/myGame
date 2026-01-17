@@ -1,6 +1,7 @@
 #include "SelectHandCommand.h"
 #include "Input.h"
 #include "CardManager.h"
+#include "UIManager.h"
 #include "ErrorMessage.h"
 
 bool SelectHandCommand::Initialize(const std::string& minSelect, const std::string& maxSelect, const std::string& selectCard, const std::string& notSelectCard) {
@@ -49,6 +50,7 @@ ExecuteResult SelectHandCommand::Execute(Card* card) {
 		ErrorMessage::GetInstance()->SetMessage(U"カードがないよ");
 		return ExecuteResult::Error; // Error: card is null
 	}
+	UIManager* uiManager = cardManager_->GetUIManager();
 	// 開始処理
 	if (!isStart_) {
 		isStart_ = true;
@@ -60,11 +62,11 @@ ExecuteResult SelectHandCommand::Execute(Card* card) {
 		minSelectNum_ = ParseInt(minSelect_, card);
 		maxSelectNum_ = ParseInt(maxSelect_, card);
 		if (minSelectNum_ == 0) {
-			cardManager_->SetEndSelectButtonColorV(1.0f);
+			uiManager->SetEndSelectButtonColorV(1.0f);
 		} else {
-			cardManager_->SetEndSelectButtonColorV(0.3f);
+			uiManager->SetEndSelectButtonColorV(0.3f);
 		}
-		cardManager_->SetEndSelectButtonHandVector();
+		uiManager->SetEndSelectButtonHandVector();
 		
 		return ExecuteResult::Standby;
 	}
@@ -88,9 +90,9 @@ ExecuteResult SelectHandCommand::Execute(Card* card) {
 		}
 	}
 	if (nawSelectCount_ < minSelectNum_) {
-		cardManager_->SetEndSelectButtonColorV(0.3f);
+		uiManager->SetEndSelectButtonColorV(0.3f);
 	} else {
-		cardManager_->SetEndSelectButtonColorV(1.0f);
+		uiManager->SetEndSelectButtonColorV(1.0f);
 		if (Input::GetInstance()->TriggerMouseButton(0)) {
 			if (cardManager_->IsEndSelectButton()) {
 				std::vector<Card*> selectCards;

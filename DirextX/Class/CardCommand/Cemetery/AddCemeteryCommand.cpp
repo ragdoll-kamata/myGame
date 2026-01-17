@@ -1,6 +1,7 @@
 #include "AddCemeteryCommand.h"
 #include "ErrorMessage.h"
 #include "CardManager.h"
+#include "UIManager.h"
 #include "CardMove.h"
 
 bool AddCemeteryCommand::Initialize(const std::string& card) {
@@ -24,7 +25,7 @@ ExecuteResult AddCemeteryCommand::Execute(Card* card) {
 	}
 	std::vector<std::unique_ptr<CardMove>> moves;
 	for (Card* c : car) {
-		Vector2 pos = cardManager_->GetCardPos(CardZone::Cemetery, 0);
+		Vector2 pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Cemetery, 0, 0);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 		move->Initialize(c, pos, 0.5f, false);
 		moves.push_back(std::move(move));

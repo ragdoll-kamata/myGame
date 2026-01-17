@@ -3,6 +3,7 @@
 #include "DeltaTime.h"
 
 #include "CardManager.h"
+#include "UIManager.h"
 
 using namespace MathUtility;
 
@@ -34,7 +35,7 @@ void CardMove::Update() {
 		isStart_ = false;
 		card_->SetIsMove(false);
 		card_->SetIsDraw(true);
-		cardManager_->CostTextUpdate();
+		cardManager_->GetUIManager()->CostTextUpdate();
 	}
 	if (isEnd_) {
 		return;

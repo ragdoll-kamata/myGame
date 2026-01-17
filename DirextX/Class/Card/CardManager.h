@@ -23,21 +23,19 @@ struct CardMoveData {
 	Card* card;
 	Vector2 pos;
 };
-struct FieldCard {
-	Card* card = nullptr;
-	std::unique_ptr<Button> field;
-	bool isOn = false;
-};
+class UIManager;
+class ResourceManager;
 
 class CardManager {
 public:
-	void Initialize();
+	void Initialize(UIManager* uiManager, ResourceManager* resourceManager);
 
 	bool StartCardSet();
 
-	void Update(TrunState& trunState);
+	void Update(TurnState& trunState);
 
 	void Draw();
+	void SelectDraw();
 
 	void TextDraw();
 
@@ -48,14 +46,11 @@ public:
 
 private:
 	void CardDraw();
-	void StartTrun(TrunState& trunState);
+	void StartTurn(TurnState& trunState);
 
-	void MainTrun(TrunState& trunState);
+	void MainTurn(TurnState& trunState);
 
-	void EndTrun(TrunState& trunState);
-
-	void PlayerInput();
-
+	void EndTurn(TurnState& trunState);
 	void CardMoveUpdate();
 
 	void FieldCardEffectCheck(BuildingActivationTiming buildingActivationTiming);
@@ -68,6 +63,7 @@ private:
 
 	void ExecutionCard();
 public:
+
 	void HandAdjustment();
 
 	std::vector<Card*> GetZoneCards(CardZone zone) {
@@ -82,35 +78,55 @@ public:
 
 	void SetIsSelectCard(bool isSelect);
 
-	void SetEndSelectButtonColorV(float v);
-
-	void SetEndSelectButtonNormalVector();
-
-	void SetEndSelectButtonHandVector();
 
 
 	bool IsEndSelectButton() const;
 
 
-	void ShufleCards(std::vector<Card*>& cards);
+	void ShuffleCards(std::vector<Card*>& cards);
 
 	void MoveCard(Card* card, CardZone cardZone);
+
+	UIManager* GetUIManager() const {
+		return uiManager_;
+	}
 
 	bool IsMoveCard() const {
 		return !cardMoves.empty();
 	}
-
-	void CostTextUpdate();
 public:
 	void AllCardLoad(const std::string& file);
 
-	Vector2 GetCardPos(CardZone zone, int index);
+	bool IsHoldCard() const {
+		return isHoldCard;
+	}
+	void SetIsHoldCard(bool isHold) {
+		isHoldCard = isHold;
+		if (!isHold) {
+			holdCardIndex = -1;
+		}
+	}
+	int GetHoldCardIndex() const {
+		return holdCardIndex;
+	}
+	void SetHoldCard(int index) {
+		isHoldCard = true;
+		holdCardIndex = index;
+		effectTextCard_ = zoneMap[CardZone::Hand][holdCardIndex];
+	}
+	bool IsSelectCard() const {
+		return isSelectCard;
+	}
+	void SetEffectStandby(Card* card) {
+		effectStandby_.push(card);
+	}
+	int HandCardCollision(Vector2 pos);
+	void SetFieldCardIndex(Card* card, int index) {
+		fieldCardIndexMap[card] = index;
+	}
 private:
-	Vector2 HandCardPos(int index);
-	Vector2 OpenCardPos(int index);
-	Vector2 CemeteryCardPos();
-	Vector2 FieldCardPos(int i);
-private:
+	UIManager* uiManager_ = nullptr;
+	ResourceManager* resourceManager_ = nullptr;
 	// 乱数生成器
 	std::mt19937 seed;
 	//　カード場
@@ -129,75 +145,31 @@ private:
 	// カードデータ
 	std::unordered_map<std::string, std::unique_ptr<CardData>> CardDataMap;
 
+	std::unordered_map<Card*, int> fieldCardIndexMap;
+
 	const int maxFieldCard = 5;
 private:
 	std::vector<std::vector<std::unique_ptr<CardMove>>> cardMoves;
 
-	// ボタン
-	std::unique_ptr<Button> endTurnButton = nullptr;
 
-	std::unique_ptr<Button> startOpenButton = nullptr;
-	std::unique_ptr<Button> startOpenEndButton = nullptr;
-
-	std::unique_ptr<Button> endSelectButton = nullptr;
-	const Vector4 endSelectButtonColor = {0.0f, 0.5f, 1.0f, 1.0f};
-
-	//
-	std::unique_ptr<Button> cardExecutionField = nullptr;
-	std::vector<FieldCard> fieldCardField;
-
-
-	// コスト表示用背景スプライト
-	std::unique_ptr<Sprite> costBackSprite = nullptr;
-	std::unique_ptr<Sprite> costBackSprite2 = nullptr;
-
-	// コスト表示用テキスト
-	std::unique_ptr<Text> lightCostText = nullptr;
-	std::unique_ptr<Text> darknessCostText = nullptr;
-
-	// エネルギーコスト
-	int lightCost = 0;
-	int darknessCost = 0;
-
-	int money_ = 0;
-
-	float runawayGauge_ = 0;
-	const float maxRunawayGauge_ = 500.0f;
-	std::unique_ptr<Sprite> runawayGaugeBackSprite = nullptr;
-	std::unique_ptr<Sprite> runawayGaugeSprite = nullptr;
+	std::vector<Card*> selectCards;
+	bool isSelectCard = false;
 
 	int turnCount = 0;
 
 	// 効果テキスト用のカード参照
 	Card* effectTextCard_ = nullptr; 
 
-	// カード選択中かどうか
-	bool isSelectCard = false;
-	std::unique_ptr<Sprite> selectCardBackSprite = nullptr;
-
-	std::vector<Card*> selectCards;
-
-	float selectCardBackSpriteAlpha = 0.0f;
-
-	const float selectCardBackSpriteMaxAlpha = 0.5f;
-
 	bool isMove = false;
 
 	// ターン管理
-	std::unordered_map<TrunState, std::function<void(TrunState&)>> trunMap{
-		{TrunState::Start, [&](TrunState& i) { return StartTrun(i); }},
-		{TrunState::Main,  [&](TrunState& i) { return MainTrun(i);  }},
-		{TrunState::End,   [&](TrunState& i) { return EndTrun(i);   }},
+	std::unordered_map<TurnState, std::function<void(TurnState&)>> turnMap{
+		{TurnState::Start, [&](TurnState& i) { return StartTurn(i); }},
+		{TurnState::Main,  [&](TurnState& i) { return MainTurn(i);  }},
+		{TurnState::End,   [&](TurnState& i) { return EndTurn(i);   }},
 	};
 	bool isStartOpen = true;
-	bool isEndStartTrun = false;
-
-	float cardSizeW = 120.0f;
-
-	// カード間のパディング
-	const float openCardPading = 10.0f;
-	const float handCardPading = 5.0f;
-	const float fieldCardPading = 20.0f;
+	bool isEndStartTurn = false;
 
 	// 開始時のオープンカードの最大枚数
 	const int startMaxOpenCard = 5;

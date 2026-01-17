@@ -100,7 +100,10 @@
     <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Hand\SelectHandCommand.cpp" />
+    <ClCompile Include="PlayerInput.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ShopManager.cpp" />
+    <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
@@ -211,7 +214,10 @@
     <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityCommand.h" />
     <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.h" />
     <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
+    <ClInclude Include="PlayerInput.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShopManager.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="utf8\utf8.h" />
     <ClInclude Include="utf8\checked.h" />
     <ClInclude Include="utf8\core.h" />

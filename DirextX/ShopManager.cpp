@@ -7,6 +7,14 @@ void ShopManager::Initialize(CardManager* cardManager) {
 	cardManager_ = cardManager;
 }
 
+void ShopManager::Update() {
+	// ショップカードの更新処理
+}
+
+void ShopManager::Draw() {
+	// ショップカードの描画処理
+}
+
 void ShopManager::LoadShopCardData() {
 	// カードデータの分類
 	// カードデータマップの取得

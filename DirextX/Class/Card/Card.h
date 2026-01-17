@@ -8,6 +8,7 @@
 
 class CardManager;
 class CardData;
+class ResourceManager;
 
 enum class CardZone {
 	Hand,
@@ -258,7 +259,7 @@ public:
 		return durability_;
 	}
 
-	bool IsCostSufficient(int& light, int& darkness);
+	bool IsCostSufficient(ResourceManager* resourceManager);
 
 private:
 // 参照変数

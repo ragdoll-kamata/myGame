@@ -1,5 +1,6 @@
 #include "OpenDeckCommand.h"
 #include "CardManager.h"
+#include "UIManager.h"
 #include "ErrorMessage.h"
 #include "CardMove.h"
 
@@ -40,7 +41,7 @@ ExecuteResult OpenDeckCommand::Execute(Card* card) {
 		c->SetIsDraw(true);
 	}
 	for (Card* c : openCards) {
-		Vector2 pos = cardManager_->GetCardPos(CardZone::Open, i);
+		Vector2 pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Open, i , static_cast<int>(openCards.size()) - 1);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 		move->Initialize(c, pos, 0.5f, true);
 		moves.push_back(std::move(move));

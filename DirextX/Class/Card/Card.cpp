@@ -1,5 +1,6 @@
 #include "Card.h"
 #include "CardData.h"
+#include "ResourceManager.h"
 
 #include <MathUtility.h>
 
@@ -236,28 +237,24 @@ bool Card::GetIsCardCharacteristics(CardCharacteristics characteristics) const {
 	return false;
 }
 
-bool Card::IsCostSufficient(int& light, int& darkness) {
+bool Card::IsCostSufficient(ResourceManager* resourceManager) {
+	int light = resourceManager->GetLightCost();
+	int darkness = resourceManager->GetDarknessCost();
 
 	if (elementCost_ == CardElement::Light) {
 		if (cost_ <= light) {
-			light -= cost_;
+			resourceManager->AddLightCost(-cost_);
 			return true;
 		}
 	} else if (elementCost_ == CardElement::Darkness) {
 		if (cost_ <= darkness) {
-			darkness -= cost_;
+			resourceManager->AddDarknessCost(-cost_);
 			return true;
 		}
 	} else if (elementCost_ == CardElement::None) {
 		if (cost_ <= darkness || cost_ <= light) {
-			darkness -= cost_;
-			light -= cost_;
-			if (darkness < 0) {
-				darkness = 0;
-			}
-			if (light < 0) {
-				light = 0;
-			}
+			resourceManager->AddLightCost(-cost_);
+			resourceManager->AddDarknessCost(-cost_);
 			return true;
 		}
 	}

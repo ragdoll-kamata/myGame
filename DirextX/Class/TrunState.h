@@ -1,7 +1,8 @@
 #pragma once
-enum class TrunState {
+enum class TurnState {
 	Start,
 	Main,
 	End,
+	Shop,
 	None
 };
