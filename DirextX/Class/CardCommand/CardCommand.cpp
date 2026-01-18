@@ -17,7 +17,8 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 	if (num.front() == '#') {
 		// 変数の場合
 		return card->GetInt(num);
-	} else if (num != "") {
+	}
+	if (num != "") {
 		// 固定値の場合
 		if (num == "光エネルギー") {
 
@@ -77,6 +78,11 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 		cards = getCards;
 		return true;
 	}
+	if (cardNum == "自分") {
+		cards.clear();
+		cards.push_back(card);
+		return true;
+	}
 	if (cardNum == "手札") {
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
 		return true;
@@ -97,7 +103,8 @@ bool CardCommand::ParseCardIfKey(const std::string& key, const std::string& card
 		if (card == nullptr) {
 			return false;
 		}
-		//　カード変数の属性を取得する処理
+
+		// キー指定の場合
 		size_t pos = cardNum.find('.');
 		std::string str = cardNum.substr(pos + 1);
 		if (str == key) {
@@ -127,8 +134,6 @@ CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 	std::vector<Card*> cards;
 	if (ParseCardIfKey("属性", element, cards, card)) {
 		return cards[0]->GetElement();
-	} else {
-		return CardElement::Error;
 	}
 
 	return CardElement::Error;
@@ -137,22 +142,16 @@ CardElement CardCommand::ParseCardElement(std::string element, Card* card) {
 CardType CardCommand::ParseCardType(std::string type, Card* card) {
 	if (type == "儀式") {
 		return CardType::Ritual;
-	} else if (type == "建物") {
+	}
+	if (type == "建物") {
 		return CardType::Building;
 	}
 
-	if (type.front() == '$') {
-		if (card == nullptr) {
-			return CardType::Error;
-		}
-		size_t pos = type.find('.');
-		std::string str = type.substr(pos + 1);
-		if (str == "タイプ") {
-			std::string key = type.substr(0, pos);
-			std::vector<Card*> cards = card->GetCards(key);
-			return cards.front()->GetType();
-		}
+	std::vector<Card*> cards;
+	if (ParseCardIfKey("タイプ", type, cards, card)) {
+		return cards[0]->GetType();
 	}
+
 	return CardType::Error;
 }
 
@@ -188,6 +187,7 @@ CardRarity CardCommand::ParseCardRarity(std::string rarity) {
 	if (rarity == "レジェンダリー") {
 		return CardRarity::Legendary;
 	}
+
 	return CardRarity::Error;
 }
 
