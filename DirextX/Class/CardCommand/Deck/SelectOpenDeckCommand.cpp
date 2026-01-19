@@ -77,7 +77,7 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 			c->SetIsDraw(true);
 		}
 		for (Card* c : openCards) {
-			Vector2 pos = uiManager->GetCardPos(CardZone::Open, i, static_cast<int>(openCards.size()));
+			Vector2 pos = uiManager->GetCardPos(CardZone::Open, i, static_cast<int>(openCards.size() - 1));
 			std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 			move->Initialize(c, pos, 0.5f, true);
 			moves.push_back(std::move(move));
@@ -94,55 +94,30 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 			uiManager->SetEndSelectButtonColorV(0.3f);
 		}
 		uiManager->SetEndSelectButtonNormalVector();
+		cardManager_->SetMinMaxSelectCard(minSelectNum_, maxSelectNum_);
 		return ExecuteResult::Standby;
 	}
 
 	// 選択処理
 	cardManager_->SetIsSelectCard(true);
-	Vector2 mousePos = Input::GetInstance()->GetMousePos();
-	if (Input::GetInstance()->TriggerMouseButton(0)) {
+	if (cardManager_->IsEndSelect()) {
+		std::vector<Card*> selectCards;
+		std::vector<Card*> notSelectCards;
 		for (Card* c : selectCards_) {
-			if (c->IsOnCollision(mousePos)) {
-				if (!c->IsWaku()) {
-					if (nawSelectCount_ < maxSelectNum_) {
-						c->SetWaku(true);
-						nawSelectCount_++;
-					}
-				} else {
-					c->SetWaku(false);
-					nawSelectCount_--;
-				}
+			if (c->IsWaku()) {
+				selectCards.push_back(c);
+			} else {
+				notSelectCards.push_back(c);
 			}
+			c->SetWaku(false);
 		}
+		card->SetCards(selectCard_, selectCards);
+		card->SetCards(notSelectCard_, notSelectCards);
+		cardManager_->SetIsSelectCard(false);
+		isStart_ = false;
+		nawSelectCount_ = 0;
+		return ExecuteResult::Normal;
 	}
-	if (nawSelectCount_ < minSelectNum_) {
-		uiManager->SetEndSelectButtonColorV(0.3f);
-	} else {
-		uiManager->SetEndSelectButtonColorV(1.0f);
-		if (Input::GetInstance()->TriggerMouseButton(0)) {
-			if (cardManager_->IsEndSelectButton()) {
-				std::vector<Card*> selectCards;
-				std::vector<Card*> notSelectCards;
-				for (Card* c : selectCards_) {
-					if (c->IsWaku()) {
-						selectCards.push_back(c);
-					} else {
-						notSelectCards.push_back(c);
-					}
-					c->SetWaku(false);
-				}
-				// カード変数に代入
-				card->SetCards(selectCard_, selectCards);
-				card->SetCards(notSelectCard_, notSelectCards);
-				cardManager_->SetIsSelectCard(false);
-				isStart_ = false;
-				nawSelectCount_ = 0;
-				return ExecuteResult::Normal;
-			}
-		}
-	}
-
-
 
 	return ExecuteResult::Standby;
 }

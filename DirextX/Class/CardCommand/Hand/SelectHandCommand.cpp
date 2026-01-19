@@ -67,56 +67,30 @@ ExecuteResult SelectHandCommand::Execute(Card* card) {
 			uiManager->SetEndSelectButtonColorV(0.3f);
 		}
 		uiManager->SetEndSelectButtonHandVector();
+		cardManager_->SetMinMaxSelectCard(minSelectNum_, maxSelectNum_);
 		
 		return ExecuteResult::Standby;
 	}
 
 	// 選択処理
 	cardManager_->SetIsSelectCard(true);
-	Vector2 mousePos = Input::GetInstance()->GetMousePos();
-	if (Input::GetInstance()->TriggerMouseButton(0)) {
+	if(cardManager_->IsEndSelect()) {
+		std::vector<Card*> selectCards;
+		std::vector<Card*> notSelectCards;
 		for (Card* c : selectCards_) {
-			if (c->IsOnCollision(mousePos)) {
-				if (!c->IsWaku()) {
-					if (nawSelectCount_ < maxSelectNum_) {
-						c->SetWaku(true);
-						nawSelectCount_++;
-					}
-				} else {
-					c->SetWaku(false);
-					nawSelectCount_--;
-				}
+			if (c->IsWaku()) {
+				selectCards.push_back(c);
+			} else {
+				notSelectCards.push_back(c);
 			}
+			c->SetWaku(false);
 		}
+		card->SetCards(selectCard_, selectCards);
+		card->SetCards(notSelectCard_, notSelectCards);
+		cardManager_->SetIsSelectCard(false);
+		isStart_ = false;
+		nawSelectCount_ = 0;
+		return ExecuteResult::Normal;
 	}
-	if (nawSelectCount_ < minSelectNum_) {
-		uiManager->SetEndSelectButtonColorV(0.3f);
-	} else {
-		uiManager->SetEndSelectButtonColorV(1.0f);
-		if (Input::GetInstance()->TriggerMouseButton(0)) {
-			if (cardManager_->IsEndSelectButton()) {
-				std::vector<Card*> selectCards;
-				std::vector<Card*> notSelectCards;
-				for (Card* c : selectCards_) {
-					if (c->IsWaku()) {
-						selectCards.push_back(c);
-					} else {
-						notSelectCards.push_back(c);
-					}
-					c->SetWaku(false);
-				}
-
-				card->SetCards(selectCard_, selectCards);
-				card->SetCards(notSelectCard_, notSelectCards);
-				cardManager_->SetIsSelectCard(false);
-				isStart_ = false;
-				nawSelectCount_ = 0;
-				return ExecuteResult::Normal;
-			}
-		}
-	}
-
-
-
 	return ExecuteResult::Standby;
 }

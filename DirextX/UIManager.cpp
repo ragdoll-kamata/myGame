@@ -82,6 +82,8 @@ void UIManager::Initialize(ResourceManager* resourceManager) {
 	darknessCostText_->Update();
 	darknessCostText_->CalcFitSize(40.0f);
 
+	////
+
 
 }
 void UIManager::Update() {

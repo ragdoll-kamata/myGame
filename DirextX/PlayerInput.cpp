@@ -14,6 +14,11 @@ void PlayerInput::Initialize(CardManager* cardManager, ShopManager* shopManager,
 }
 
 void PlayerInput::Update(TurnState& turnState) {
+	monsePos_ = input_->GetMousePos();
+	if (cardManager_->IsSelectCard()) {
+		SelectUpdate();
+		return;
+	}
 	if(turnMap.find(turnState) == turnMap.end()) {
 		return;
 	}
@@ -21,15 +26,10 @@ void PlayerInput::Update(TurnState& turnState) {
 }
 
 void PlayerInput::MainTurnUpdate(TurnState& turnState) {
-	if (cardManager_->IsSelectCard()) {
-		return;
-	}
-
-	Vector2 mousePos = input_->GetMousePos();
-
+	
 	if(!cardManager_->IsHoldCard()) {
 		if (input_->PressMouseButton(0)) {
-			int index = cardManager_->HandCardCollision(mousePos);
+			int index = cardManager_->HandCardCollision(monsePos_);
 			if (index != -1) {
 				cardManager_->SetHoldCard(index);
 			}
@@ -41,7 +41,7 @@ void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 
 	if(input_->PressMouseButton(0)) {
 		Card* card = cardManager_->GetZoneCards(CardZone::Hand)[cardManager_->GetHoldCardIndex()];
-		card->SetPos(mousePos);
+		card->SetPos(monsePos_);
 		card->SetIsMove(false);
 		return;
 	}
@@ -50,8 +50,8 @@ void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 	if (input_->ReleaseMouseButton(0)) {
 		int holdCardIndex = cardManager_->GetHoldCardIndex();
 
-		if (TryExecution(mousePos, holdCardIndex)) {
-		}else if (TryBuilding(mousePos, holdCardIndex)) {
+		if (TryExecution(monsePos_, holdCardIndex)) {
+		}else if (TryBuilding(monsePos_, holdCardIndex)) {
 		}
 		cardManager_->SetIsHoldCard(false);
 		cardManager_->HandAdjustment();
@@ -59,6 +59,40 @@ void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 }
 
 void PlayerInput::ShopTurnUpdate(TurnState& turnState) {
+}
+
+void PlayerInput::SelectUpdate() {
+	std::vector<Card*> selectCards = cardManager_->GetSelectCards();
+	int minSelectCard = 0;
+	int maxSelectCard = 0;
+	cardManager_->GetMinMaxSelectCard(minSelectCard, maxSelectCard);
+
+	if (Input::GetInstance()->TriggerMouseButton(0)) {
+		for (Card* c : selectCards) {
+			if (c->IsOnCollision(monsePos_)) {
+				if (!c->IsWaku()) {
+					if (nawSelectCount_ < maxSelectCard) {
+						c->SetWaku(true);
+						nawSelectCount_++;
+					}
+				} else {
+					c->SetWaku(false);
+					nawSelectCount_--;
+				}
+			}
+		}
+	}
+	if (nawSelectCount_ < minSelectCard) {
+		uiManager_->SetEndSelectButtonColorV(0.3f);
+	} else {
+		uiManager_->SetEndSelectButtonColorV(1.0f);
+		if (Input::GetInstance()->TriggerMouseButton(0)) {
+			if (uiManager_->IsOnCollisionEndSelectButton(monsePos_)) {
+				nawSelectCount_ = 0;
+				cardManager_->SetIsEndSelect(true);
+			}
+		}
+	}
 }
 
 bool PlayerInput::TryExecution(Vector2 mousePos, int holdCardIndex) {

@@ -482,6 +482,7 @@ void CardManager::SetIsSelectCard(bool isSelect) {
 	uiManager_->SetEndSelectButtonIsDraw(isSelect);
 	if (!isSelect) {
 		selectCards.clear();
+		isEndSelect = false;
 	}
 }
 

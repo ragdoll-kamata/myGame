@@ -21,6 +21,7 @@ private:
 	void MainTurnUpdate(TurnState& turnState);
 	void ShopTurnUpdate(TurnState& turnState);
 
+	void SelectUpdate();
 
 	bool TryExecution(Vector2 mousePos, int holdCardIndex);
 
@@ -32,6 +33,9 @@ private:
 	UIManager* uiManager_ = nullptr;
 	ResourceManager* resourceManager_ = nullptr;
 	Input* input_ = nullptr;
+
+	Vector2 monsePos_ = {0.0f, 0.0f};
+	int nawSelectCount_ = 0;
 
 	std::unordered_map<TurnState, std::function<void(TurnState&)>> turnMap{
 		{TurnState::Main, [&](TurnState& i) { return MainTurnUpdate(i); }},

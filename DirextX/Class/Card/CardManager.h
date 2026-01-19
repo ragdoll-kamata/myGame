@@ -75,10 +75,27 @@ public:
 	void AddSelectCard(Card* card) {
 		selectCards.push_back(card);
 	}
+	std::vector<Card*> GetSelectCards() const {
+		return selectCards;
+	}
+	void SetMinMaxSelectCard(int min, int max) {
+		minSelectCard = min;
+		maxSelectCard = max;
+	}
+	void GetMinMaxSelectCard(int& min, int& max) const {
+		min = minSelectCard;
+		max = maxSelectCard;
+	}
 
 	void SetIsSelectCard(bool isSelect);
 
+	bool IsEndSelect() const {
+		return isEndSelect;
+	}
 
+	void SetIsEndSelect(bool isEnd) {
+		isEndSelect = isEnd;
+	}
 
 	bool IsEndSelectButton() const;
 
@@ -154,6 +171,10 @@ private:
 
 	std::vector<Card*> selectCards;
 	bool isSelectCard = false;
+	bool isEndSelect = false;
+
+	int minSelectCard = 0;
+	int maxSelectCard = 0;
 
 	int turnCount = 0;
 
