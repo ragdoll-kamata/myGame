@@ -46,6 +46,7 @@ enum class CardRarity {
 	Uncommon,
 	Epic,
 	Legendary,
+	Standard,
 	Error,
 };
 

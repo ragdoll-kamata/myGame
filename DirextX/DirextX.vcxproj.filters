@@ -305,6 +305,7 @@
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="AddMoneyCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -661,6 +662,8 @@
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="AddMoneyCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
@@ -833,5 +836,11 @@
     <Filter Include="ヘッダー ファイル\CardCommand\Characteristics">
       <UniqueIdentifier>{bc80baec-6d8a-4572-9ad8-650402f582b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\CardCommand\Resourece">
+      <UniqueIdentifier>{abeb43a0-60a2-4c5f-9a5b-73543a4ca2b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirextX.rc" />
   </ItemGroup>
 </Project>

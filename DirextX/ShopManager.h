@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <random>
 #include <memory>
+
+#include "Sprite.h"
+
 class CardManager;
 class CardData;
 class Card;

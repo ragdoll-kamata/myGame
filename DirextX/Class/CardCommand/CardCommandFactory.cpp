@@ -91,6 +91,11 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return  CreateAddCardCharacteristicsCommand(commandTokens[0], commandTokens[1]); });
 	}
 
+	// リソース系
+	if (key == "所持金加算") {
+
+	}
+
 	//　変数操作
 	if (key.front() == '#') {
 		return CreateCommandIfArgsValid(tokenSize, 0, [&]() { return CreateIntVariableControlCommand(key, commandTokens); });

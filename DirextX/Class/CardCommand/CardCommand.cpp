@@ -187,6 +187,9 @@ CardRarity CardCommand::ParseCardRarity(std::string rarity) {
 	if (rarity == "レジェンダリー") {
 		return CardRarity::Legendary;
 	}
+	if(rarity == "スタンダード") {
+		return CardRarity::Standard;
+	}
 
 	return CardRarity::Error;
 }

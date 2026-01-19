@@ -24,8 +24,17 @@ void ShopManager::LoadShopCardData() {
 	for (const auto& [name, data] : cardDataMap) {
 		std::unique_ptr<Card> card(new Card());
 		card->InitializeCard(data.get());
-		cardMap[id] = data.get();
+
 		CardRarity rarity = card->GetRarity();
+
+		if(rarity == CardRarity::Error) {
+			continue; // レアリティが不明なカードはスキップ
+		}
+		if(rarity == CardRarity::Standard) {
+			continue; // スタンダードカードはスキップ
+		}
+
+		cardMap[id] = data.get();
 		if (rarity == CardRarity::Common) {
 			commonCardIDs.push_back(id);
 		} else if (rarity == CardRarity::Uncommon) {

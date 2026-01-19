@@ -99,6 +99,8 @@ private:
 	float selectCardBackSpriteAlpha = 0.0f;
 	const float kSelectCardBackSpriteMaxAlpha = 0.5f;
 
+	std::unique_ptr<Button> endShopButton_ = nullptr;
+
 	// カード実行Field
 	std::unique_ptr<Button> cardExecutionField_ = nullptr;
 	std::vector<FieldCard> fieldCardField_;
@@ -120,6 +122,12 @@ private:
 	// カード選択中かどうか
 	bool isSelectCard_ = false;
 	std::unique_ptr<Sprite> selectCardBackSprite_ = nullptr;
+
+	// ショップ背景スプライト
+	std::unique_ptr<Sprite> shopBackSprite_ = nullptr;
+
+
+
 
 	// カードゾーンごとの所定中央位置
 

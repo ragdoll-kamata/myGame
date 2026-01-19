@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddMoneyCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Initialize\CardRarityCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Deck\AddDeckBottomCommand.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddMoneyCommand.h" />
     <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
     <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
     <ClInclude Include="Class\CardCommand\Deck\AddDeckBottomCommand.h" />
@@ -215,6 +217,7 @@
     <ClInclude Include="Class\CardCommand\Initialize\SetCardDurabilityDecreaseConditionCommand.h" />
     <ClInclude Include="Class\CardCommand\Hand\SelectHandCommand.h" />
     <ClInclude Include="PlayerInput.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShopManager.h" />
     <ClInclude Include="UIManager.h" />
@@ -307,6 +310,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirextX.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
