@@ -28,6 +28,7 @@ void CardManager::Initialize(UIManager* uiManager, ResourceManager* resourceMana
 	std::random_device rd; // 乱数の種
 	seed.seed(rd());
 	shuffleSE = Audio::GetInstance()->LoadSound("cardShuffle.mp3");
+	turnCount = 1;
 }
 
 bool CardManager::StartCardSet() {
@@ -60,7 +61,17 @@ bool CardManager::StartCardSet() {
 		}
 
 		if (CardDataMap.contains(name)) {
-			int number = std::stoi(num);
+			int number = 0;
+			try {
+				number = std::stoi(num);
+			} catch (const std::invalid_argument& e) {
+				e;
+				number = 1;
+			} catch (const std::out_of_range& e) {
+				e;
+				number = 1;
+			}
+			
 			for (int i = 0; i < number; i++) {
 				std::unique_ptr<Card> card(new Card());
 				card->InitializeCard(CardDataMap[name].get());
@@ -107,11 +118,6 @@ void CardManager::Update(TurnState& turnState) {
 	for (const auto& card : allCards) {
 		card->Update();
 	}
-
-
-
-
-
 }
 
 void CardManager::Draw() {
@@ -276,9 +282,13 @@ void CardManager::EndTurn(TurnState& turnState) {
 		moveVec.push_back(std::move(move));
 		AddCardMove(std::move(moveVec));
 	}
-
+	turnCount++;
+	
 	isEndStart = false;
 	turnState = TurnState::Start;
+	if (turnCount % 3 == 0) {
+		turnState = TurnState::Shop;
+	}
 }
 
 void CardManager::CardMoveUpdate() {

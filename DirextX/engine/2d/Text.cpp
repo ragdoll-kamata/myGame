@@ -50,22 +50,39 @@ void Text::Update() {
 		Vector2 scaleLocal = {ch.localPos.x * size_.x, ch.localPos.y * size_.y};
 		Vector2 drawPos = scaleLocal + pos_;
 		float baselineY = drawPos.y + fontLoader->GetAscender() * size_.y;
-		float charY = baselineY - static_cast<float>(info->bearingY) * size_.y;
+		float charY = 0.0f;
+		if (info == nullptr) {
+			charY = baselineY;
+		} else {
+			charY = baselineY - static_cast<float>(info->bearingY) * size_.y;
+		}
 
 		EulerTransform t{
-			{float(info->width) * size_.x, float(info->height) * size_.y, 1.0f},
+			{1.0f, 1.0f, 1.0f},
 			{0, 0, 0},
 			{drawPos.x, charY, 0.0f}
 		};
+		if (info == nullptr) {
+			t.scale = {fontLoader->GetMaxAdvance() * size_.x, fontLoader->GetHeight() * size_.y, 1.0f};
+		} else {
+			t.scale = {float(info->width) * size_.x, float(info->height) * size_.y, 1.0f};
+		}
 
 		Matrix4x4 world = MakeAffineMatrix(t.scale, t.rotate, t.translate);
 		TextData* tData = textData.GetStruct();
 		tData[instanceNum].WVP = world * view * proj;
 		tData[instanceNum].color = ch.color; // 色を適用
-		tData[instanceNum].uvTopLeft = info->leftTopUv;
-		tData[instanceNum].uvBottomRight = info->rightBottomUv;
-		tData[instanceNum].layerIndex = info->layerIndex;
-		tData[instanceNum].isTemp = info->isTemp;
+		if (info == nullptr) {
+			tData[instanceNum].uvTopLeft = {0.0f, 0.0f};
+			tData[instanceNum].uvBottomRight = {0.0f, 0.0f};
+			tData[instanceNum].layerIndex = 0;
+			tData[instanceNum].isTemp = false;
+		} else {
+			tData[instanceNum].uvTopLeft = info->leftTopUv;
+			tData[instanceNum].uvBottomRight = info->rightBottomUv;
+			tData[instanceNum].layerIndex = info->layerIndex;
+			tData[instanceNum].isTemp = info->isTemp;
+		}
 
 		instanceNum++;
 	}
@@ -112,7 +129,7 @@ std::u32string Text::GetIntToString(int num, int count) {
 
 	std::u32string result;
 
-	for(int i= 0; i < zeroCount; i++) {
+	for (int i = 0; i < zeroCount; i++) {
 		result += U'0';
 	}
 	std::string tmp = std::to_string(num); // int → std::string
@@ -135,7 +152,7 @@ int Text::Number(int num1, int num2, std::vector<int>& digits) {
 }
 
 void Text::TextLayout() {
-	
+
 	if (!isFullLayout) {
 		FullLayout();
 	} else {
@@ -169,6 +186,19 @@ void Text::FullLayout() {
 			lineWidth = 0.0f;
 			lW = 0.0f;
 			preW = 0.0f;
+			continue;
+		}
+		if (c == U' ') {
+			lW += TextCommon::GetInstance()->GetFontLoader()->GetMaxAdvance() * anchorPoint_.x + preW;
+			// 文字のレイアウト
+			CharacterLayout layout;
+			layout.character = c;
+			layout.localPos = {lW, float(lines.size()) * lineHeight};
+			layout.glyph = nullptr; // スペースはGlyphInfoなし
+			currentLine.push_back(layout);
+			preW = (TextCommon::GetInstance()->GetFontLoader()->GetMaxAdvance() * (1.0f - anchorPoint_.x) + padding_);
+			lineWidth += (TextCommon::GetInstance()->GetFontLoader()->GetMaxAdvance() + padding_);
+			i++;
 			continue;
 		}
 
@@ -240,6 +270,10 @@ void Text::FullLayout() {
 	for (auto& line : lines) {
 		float lineW = 0.0f;
 		for (const auto& ch : line) {
+			if (ch.glyph == nullptr) {
+				lineW += TextCommon::GetInstance()->GetFontLoader()->GetMaxAdvance();
+				continue;
+			}
 			lineW += ch.glyph->width;
 		}
 		lineW += static_cast<float>(line.size() - 1) * padding_;
@@ -253,7 +287,7 @@ void Text::FullLayout() {
 		case TextFormat::Centor: xOffset = (textWidth_ - lineW) / 2.0f; break;
 		case TextFormat::Right:  xOffset = (textWidth_ - lineW); break;
 		}
-		
+
 		for (auto& ch : line) {
 			CharacterLayout finalCh = ch;
 			finalCh.localPos.x += xOffset + anchorOffset.x;
@@ -282,7 +316,7 @@ void Text::FullLayout() {
 	//右下
 	vertexData[3].position = {right, bottom, 0.0f, 1.0f};
 	vertexData[3].texcoord = {1.0f, 1.0f};
-	
+
 	isFullLayout = true;
 }
 
@@ -321,7 +355,7 @@ void Text::UpdateLayoutState() {
 
 		ch.localPos.x += xOffset + anchorOffset.x;
 		ch.localPos.y += anchorOffset.y;
-		
+
 		preW = (info->width * (1.0f - anchorPoint_.x) + padding_);
 	}
 
@@ -529,7 +563,7 @@ float Text::ParseTime(const std::u32string& timeStr) {
 
 
 void Text::CreateVertex() {
-	vertexBuffer_.Initialize(TextCommon::GetInstance()->GetDirectXCommon(),  4);
+	vertexBuffer_.Initialize(TextCommon::GetInstance()->GetDirectXCommon(), 4);
 }
 
 void Text::CreateTextData() {

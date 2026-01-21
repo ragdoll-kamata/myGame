@@ -25,6 +25,14 @@ void UIManager::Initialize(ResourceManager* resourceManager) {
 	endSelectButton_->Initialize({640.0f, 650.0f}, {200.0f, 100.0f}, "white.png", {1.0f, 0.0f, 1.0f, 1.0f});
 	endSelectButton_->SetIsDraw(false);
 
+	rerollShopButton_ = std::make_unique<Button>();
+	rerollShopButton_->Initialize({900.0f, 600.0f}, {150.0f, 50.0f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
+	rerollShopButton_->SetIsDraw(false);
+
+	endShopButton_ = std::make_unique<Button>();
+	endShopButton_->Initialize({1100.0f, 600.0f}, {150.0f, 50.0f}, "white.png", {1.0f, 1.0f, 0.0f, 1.0f});
+	endShopButton_->SetIsDraw(false);
+
 	// フィールドカード用当たり判定初期化
 	cardExecutionField_ = std::make_unique<Button>();
 	cardExecutionField_->Initialize({1150.0f, 400.0f}, {120.0f * 1.2f, 160.0f * 1.2f}, "white.png", {0.0f, 1.0f, 1.0f, 1.0f});
@@ -82,7 +90,17 @@ void UIManager::Initialize(ResourceManager* resourceManager) {
 	darknessCostText_->Update();
 	darknessCostText_->CalcFitSize(40.0f);
 
-	////
+	// 所持金表示用テキスト初期化
+	moneyText_ = std::make_unique<Text>();
+	moneyText_->Initialize(U"お金 0000", {1000.0f, 10.0f}, 2000.0f);
+	moneyText_->Update();
+	moneyText_->CalcFitSize(120.0f);
+
+	// スコア表示用テキスト初期化
+	scoreText_ = std::make_unique<Text>();
+	scoreText_->Initialize(U"スコア 0000", {1000.0f, 50.0f}, 2000.0f);
+	scoreText_->Update();
+	scoreText_->CalcFitSize(120.0f);
 
 
 }
@@ -93,6 +111,9 @@ void UIManager::Update() {
 	startOpenButton_->Update();
 	startOpenEndButton_->Update();
 	endSelectButton_->Update();
+
+	rerollShopButton_->Update();
+	endShopButton_->Update();
 
 	// コスト表示更新
 	lightCostText_->Update();
@@ -111,6 +132,14 @@ void UIManager::Update() {
 	rampageGaugeSprite_->SetSize({30.0f, gaugeH});
 	rampageGaugeSprite_->Updata();
 	rampageGaugeBackSprite_->Updata();
+
+	// 所持金表示更新
+	moneyText_->SetText(U"お金 " + moneyText_->GetIntToString(resourceManager_->GetMoney(), 4));
+	moneyText_->Update();
+
+	// スコア表示更新
+	scoreText_->SetText(U"スコア " + scoreText_->GetIntToString(resourceManager_->GetScore(), 4));
+	scoreText_->Update();
 
 	// セレクトバック更新
 	if (isSelectCard_) {
@@ -140,10 +169,6 @@ void UIManager::Draw() {
 	// コスト表示描画
 	costBackSprite_->Draw();
 	costBackSprite2_->Draw();
-	TextCommon::GetInstance()->PreDraw();
-	lightCostText_->Draw();
-	darknessCostText_->Draw();
-	TextCommon::GetInstance()->PostDraw();
 
 	SpriteCommon::GetInstance()->PreDraw();
 	// フィールドカード用当たり判定描画
@@ -155,6 +180,22 @@ void UIManager::Draw() {
 	rampageGaugeBackSprite_->Draw();
 	rampageGaugeSprite_->Draw();
 
+
+	TextCommon::GetInstance()->PreDraw();
+	//// コスト表示テキスト描画
+	lightCostText_->Draw();
+	darknessCostText_->Draw();
+	// 所持金表示テキスト描画
+	moneyText_->Draw();
+	//// スコア表示テキスト描画
+	scoreText_->Draw();
+	TextCommon::GetInstance()->PostDraw();
+}
+void UIManager::ShopDraw() {
+	// ショップ描画
+	SpriteCommon::GetInstance()->PreDraw();
+	rerollShopButton_->Draw();
+	endShopButton_->Draw();
 }
 void UIManager::SelectDraw() {
 	// セレクト描画

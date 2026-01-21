@@ -59,8 +59,12 @@ private:
 	uint32_t tempAtlasSrvIndex;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_mainAtlas;
 	uint32_t mainAtlasSrvIndex;
+	uint32_t nextMainAtlasSrvIndex;
 
-	std::unordered_map<uint32_t, GlyphInfo> m_glyphMap;
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_preTempAtlas;
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_preMainAtlas;
+
+	std::unordered_map<uint32_t, std::unique_ptr<GlyphInfo>> m_glyphMap;
 
 	std::list< Microsoft::WRL::ComPtr<ID3D12Resource>> uploadBuffers;
 

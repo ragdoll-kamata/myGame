@@ -17,6 +17,7 @@ public:
 	void Initialize(ResourceManager* resourceManager);
 	void Update();
 	void Draw();
+	void ShopDraw();
 	void SelectDraw();
 
 	void CostTextUpdate();
@@ -29,6 +30,12 @@ public:
 	}
 	void SetStartOpenEndButtonIsDraw(bool isDraw) {
 		startOpenEndButton_->SetIsDraw(isDraw);
+	}
+	void SetRerollShopButtonIsDraw(bool isDraw) {
+		rerollShopButton_->SetIsDraw(isDraw);
+	}
+	void SetEndShopButtonIsDraw(bool isDraw) {
+		endShopButton_->SetIsDraw(isDraw);
 	}
 	void SetIsSelectCard(bool isSelect) {
 		isSelectCard_ = isSelect;
@@ -76,6 +83,12 @@ public:
 	bool IsOnCollisionExecutionField(Vector2 pos) {
 		return cardExecutionField_->IsOnCollision(pos);
 	}
+	bool IsOnCollisionRerollShopButton(Vector2 pos) {
+		return rerollShopButton_->IsOnCollision(pos);
+	}
+	bool IsOnCollisionEndShopButton(Vector2 pos) {
+		return endShopButton_->IsOnCollision(pos);
+	}
 
 	int IsOnCollisionFieldCardField(Vector2 pos);
 
@@ -99,6 +112,7 @@ private:
 	float selectCardBackSpriteAlpha = 0.0f;
 	const float kSelectCardBackSpriteMaxAlpha = 0.5f;
 
+	std::unique_ptr<Button> rerollShopButton_ = nullptr;
 	std::unique_ptr<Button> endShopButton_ = nullptr;
 
 	// カード実行Field
@@ -118,6 +132,12 @@ private:
 	// コスト表示用テキスト
 	std::unique_ptr<Text> lightCostText_ = nullptr;
 	std::unique_ptr<Text> darknessCostText_ = nullptr;
+
+	// 所持金表示用テキスト
+	std::unique_ptr<Text> moneyText_ = nullptr;
+
+	// スコア表示用テキスト
+	std::unique_ptr<Text> scoreText_ = nullptr;
 
 	// カード選択中かどうか
 	bool isSelectCard_ = false;

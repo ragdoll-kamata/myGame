@@ -11,7 +11,7 @@ bool FontAtlasManager::Initialize(DirectXCommon* directXCommon, FontLoader* load
 	srvManager_ = srvManager;
 	m_atlasWidth = atlasWidth;
 	m_atlasHeight = atlasHeight;
-	m_currentLayerCount = 1; // 最初は1レイヤー
+	m_currentLayerCount = 0; // 最初は1レイヤー
 
 	m_cursorX = 0;
 	m_cursorY = 0;
@@ -32,6 +32,7 @@ bool FontAtlasManager::Initialize(DirectXCommon* directXCommon, FontLoader* load
 	srvManager_->CreateSRVforTexture2D(tempAtlasSrvIndex, m_tempAtlas.Get(), DXGI_FORMAT_R8_UNORM, 1);
 
 	mainAtlasSrvIndex = srvManager_->Allocate();
+	nextMainAtlasSrvIndex = srvManager_->Allocate();
 	srvManager_->CreateSRVforTexture2DArray(mainAtlasSrvIndex, m_mainAtlas.Get(), DXGI_FORMAT_R8_UNORM, 1, 1);
 
 	return true;
@@ -43,7 +44,7 @@ const GlyphInfo* FontAtlasManager::GetOrCreateGlyphInfo(uint32_t codepoint) {
 			assert(false);
 		}
 	}
-	return &m_glyphMap[codepoint];
+	return m_glyphMap[codepoint].get();
 }
 
 bool FontAtlasManager::AddGlyph(uint32_t codepoint) {
@@ -85,19 +86,19 @@ bool FontAtlasManager::AddGlyph(uint32_t codepoint) {
 	float v1 = static_cast<float>(m_cursorY + bitmap.height) / m_atlasHeight;
 
 	// GlyphInfo 作成
-	GlyphInfo info;
-	info.codepoint = codepoint;
-	info.leftTopUv = {u0, v0};
-	info.rightBottomUv = {u1, v1};
-	info.layerIndex = 0;     // 仮アトラスのレイヤーは常に0
-	info.isTemp = true;
-	info.width = bitmap.width;
-	info.height = bitmap.height;
-	info.bearingY = bitmap.bearingY;
+	std::unique_ptr<GlyphInfo> info(new GlyphInfo());
+	info->codepoint = codepoint;
+	info->leftTopUv = {u0, v0};
+	info->rightBottomUv = {u1, v1};
+	info->layerIndex = 0;     // 仮アトラスのレイヤーは常に0
+	info->isTemp = true;
+	info->width = bitmap.width;
+	info->height = bitmap.height;
+	info->bearingY = bitmap.bearingY;
 	
 
 	// 登録
-	m_glyphMap[codepoint] = info;
+	m_glyphMap[codepoint] = std::move(info);
 
 	// カーソル更新
 	m_cursorX += bitmap.width + padding_;
@@ -222,31 +223,39 @@ bool FontAtlasManager::CommitTempAtlas() {
 	// 新しいテクスチャを作成（レイヤー数+1）
 	Microsoft::WRL::ComPtr<ID3D12Resource> newAtlas =
 		directXCommon_->CreateTextTexture2DArray(m_atlasWidth, m_atlasHeight, newLayerCount);
-
+	uint32_t index = mainAtlasSrvIndex;
+	mainAtlasSrvIndex = nextMainAtlasSrvIndex;
+	nextMainAtlasSrvIndex = index;
+	srvManager_->CreateSRVforTexture2DArray(mainAtlasSrvIndex, newAtlas.Get(), DXGI_FORMAT_R8_UNORM, 1, newLayerCount);
 	// 各レイヤーを旧アトラスから新アトラスへコピー
-	for (uint32_t layer = 0; layer < m_currentLayerCount; ++layer) {
+	for (uint32_t layer = 0; layer < newLayerCount; ++layer) {
 		CopyAtlasLayer(m_mainAtlas.Get(), layer, newAtlas.Get(), layer);
 	}
 
 	// 仮アトラスを新アトラスの最後のレイヤーへコピー
 	CopyAtlasLayer(m_tempAtlas.Get(), 0, newAtlas.Get(), m_currentLayerCount);
+	// GlyphInfo の更新
 	for (auto& [codepoint, glyphInfo] : m_glyphMap) {
-		if (glyphInfo.isTemp) {
-			glyphInfo.isTemp = false;
-			glyphInfo.layerIndex = m_currentLayerCount;
+		if (glyphInfo->isTemp) {
+			glyphInfo->isTemp = false;
+			glyphInfo->layerIndex = m_currentLayerCount;
 		}
 	}
 
 	// mainAtlasを置き換え
+	m_preMainAtlas = m_mainAtlas;
 	m_mainAtlas = newAtlas;
 	m_currentLayerCount = newLayerCount;
 
 	// 仮アトラスをクリア（次回用に再初期化）
+	m_preTempAtlas = m_tempAtlas;
 	m_tempAtlas = directXCommon_->CreateTextTexture2DArray(m_atlasWidth, m_atlasHeight, 1);
+
 
 	srvManager_->CreateSRVforTexture2D(tempAtlasSrvIndex, m_tempAtlas.Get(), DXGI_FORMAT_R8_UNORM, 1);
 
-	srvManager_->CreateSRVforTexture2DArray(mainAtlasSrvIndex, m_mainAtlas.Get(), DXGI_FORMAT_R8_UNORM, 1, m_currentLayerCount);
+
+	
 
 	return true;
 }
@@ -265,6 +274,15 @@ void FontAtlasManager::CopyAtlasLayer(ID3D12Resource* src, uint32_t srcLayer, ID
 	srcLoc.pResource = src;
 	srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 	srcLoc.SubresourceIndex = srcLayer;
+
+	D3D12_RESOURCE_BARRIER barrier{};
+
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = src;
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+	commandList->ResourceBarrier(1, &barrier);
 
 	// Box は nullptr（全体コピー）
 	commandList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);

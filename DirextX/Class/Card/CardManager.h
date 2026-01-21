@@ -43,6 +43,12 @@ public:
 	std::unordered_map<std::string, std::unique_ptr<CardData>>& GetCardDataMap() {
 		return CardDataMap;
 	}
+	void AddPurchaseCard(std::unique_ptr<Card>& card) {
+		Card* newCard = card.get();
+		allCards.push_back(std::move(card));
+		MoveCard(newCard, CardZone::Cemetery);
+		
+	}
 
 private:
 	void CardDraw();
@@ -106,6 +112,9 @@ public:
 
 	UIManager* GetUIManager() const {
 		return uiManager_;
+	}
+	ResourceManager* GetResourceManager() const {
+		return resourceManager_;
 	}
 
 	bool IsMoveCard() const {

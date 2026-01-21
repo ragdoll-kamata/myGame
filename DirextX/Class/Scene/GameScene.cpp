@@ -21,13 +21,14 @@ void GameScene::Initialize() {
 	cardManager_->StartCardSet();
 
 	shopManager_ = std::make_unique<ShopManager>();
-	shopManager_->Initialize(cardManager_.get());
+	shopManager_->Initialize(cardManager_.get(), uiManager_.get());
 
 	playerInput_ = std::make_unique<PlayerInput>();
 	playerInput_->Initialize(cardManager_.get(), shopManager_.get(), uiManager_.get(), resourceManager_.get());
 
 	CardCommand::SetCardManager(cardManager_.get());
 	CardMove::SetCatdManager(cardManager_.get());
+	trunState_ = TurnState::Shop;
 }
 
 void GameScene::Update() {
@@ -36,6 +37,9 @@ void GameScene::Update() {
 	uiManager_->Update();
 	if (Input::GetInstance()->TriggerKey(DIK_F1)) {
 		SceneManager::GetInstance()->SetNextScene("GameScene");
+	}
+	if (trunState_ == TurnState::Shop) {
+		shopManager_->Update(trunState_);
 	}
 }
 
@@ -46,5 +50,9 @@ void GameScene::Draw() {
 
 	uiManager_->SelectDraw();
 	cardManager_->SelectDraw();
+	if (trunState_ == TurnState::Shop) {
+		shopManager_->Draw();
+		uiManager_->ShopDraw();
+	}
 
 }

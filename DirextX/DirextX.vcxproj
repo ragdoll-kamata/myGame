@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AddMoneyCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Resource\AddMoneyCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Initialize\CardRarityCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.cpp" />
     <ClCompile Include="Class\CardCommand\Deck\AddDeckBottomCommand.cpp" />
@@ -107,7 +107,7 @@
     <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AddMoneyCommand.h" />
+    <ClInclude Include="Class\CardCommand\Resource\AddMoneyCommand.h" />
     <ClInclude Include="Class\CardCommand\Initialize\CardRarityCommand.h" />
     <ClInclude Include="Class\CardCommand\Characteristics\AddCardCharacteristicsCommand.h" />
     <ClInclude Include="Class\CardCommand\Deck\AddDeckBottomCommand.h" />

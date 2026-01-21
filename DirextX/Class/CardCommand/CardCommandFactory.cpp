@@ -11,6 +11,8 @@
 #include "Initialize/SetCardActivationTimingCommand.h"
 #include "Initialize/CardRarityCommand.h"
 
+#include "Resource/AddMoneyCommand.h"
+
 #include "Deck/OpenDeckCommand.h"
 #include "Deck/SelectOpenDeckCommand.h"
 #include "Deck/AddDeckBottomCommand.h"
@@ -60,6 +62,12 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	}
 
 	///// 効果設定コマンド
+
+	// リソース系
+	if (key == "所持金加算") {
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateAddMoneyCommand(commandTokens[0]); });
+	}
+
 	// 山札系
 	if (key == "表向きにする") {
 		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreateOpenDeckCommand(commandTokens[0], commandTokens[1]); });
@@ -72,7 +80,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	// 手札系
 	if (key == "手札に加える") {
 		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateAddHandCommand(commandTokens[0]); });
-	}else if(key == "手札選択") {
+	} else if (key == "手札選択") {
 		return CreateCommandIfArgsValid(tokenSize, 4, [&]() { return  CreateSelectHandCommand(commandTokens[0], commandTokens[1], commandTokens[2], commandTokens[3]); });
 	}
 
@@ -91,15 +99,10 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return  CreateAddCardCharacteristicsCommand(commandTokens[0], commandTokens[1]); });
 	}
 
-	// リソース系
-	if (key == "所持金加算") {
-
-	}
-
 	//　変数操作
 	if (key.front() == '#') {
 		return CreateCommandIfArgsValid(tokenSize, 0, [&]() { return CreateIntVariableControlCommand(key, commandTokens); });
-	}else if (key.front() == '$') {
+	} else if (key.front() == '$') {
 		return CreateCommandIfArgsValid(tokenSize, 0, [&]() { return CreateCardVariableControlCommand(key, commandTokens); });
 	}
 
@@ -197,6 +200,15 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardDurabilityDecrease
 }
 
 //////////////////////////////
+
+// リソース系コマンドの生成
+std::unique_ptr<CardCommand> CardCommandFactory::CreateAddMoneyCommand(std::string& num) {
+	std::unique_ptr<AddMoneyCommand> cmd = std::make_unique<AddMoneyCommand>();
+	if (cmd->Initialize(num)) {
+		return cmd;
+	}
+	return nullptr;
+}
 
 
 // 山札系コマンドの生成
@@ -299,7 +311,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateIfCommand(CardData* cardD
 
 std::unique_ptr<CardCommand> CardCommandFactory::CreateReturnCommand(std::vector<std::string>& commandTokens) {
 	std::unique_ptr<ReturnCommand> cmd = std::make_unique<ReturnCommand>();
-	if(cmd->Initialize(commandTokens)) {
+	if (cmd->Initialize(commandTokens)) {
 		return cmd;
 	}
 	return nullptr;

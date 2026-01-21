@@ -3,6 +3,7 @@
 #include "CardManager.h"
 #include "ShopManager.h"
 #include "UIManager.h"
+#include "ResourceManager.h"
 
 
 void PlayerInput::Initialize(CardManager* cardManager, ShopManager* shopManager, UIManager* uiManager, ResourceManager* resourceManager) {
@@ -33,8 +34,6 @@ void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 			if (index != -1) {
 				cardManager_->SetHoldCard(index);
 			}
-
-			
 		}
 		return;
 	}
@@ -59,6 +58,19 @@ void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 }
 
 void PlayerInput::ShopTurnUpdate(TurnState& turnState) {
+	if (input_->TriggerMouseButton(0)) {
+		if (uiManager_->IsOnCollisionRerollShopButton(monsePos_)) {
+			shopManager_->RerollShopCards();
+		}
+		if (uiManager_->IsOnCollisionEndShopButton(monsePos_)) {
+			shopManager_->SetIsEndShop(true);
+		}
+		int index = shopManager_->PurchaseCard(monsePos_, resourceManager_->GetMoney());
+
+		if(index != -1) {
+			resourceManager_->AddMoney(-index);
+		}
+	}
 }
 
 void PlayerInput::SelectUpdate() {
@@ -103,6 +115,7 @@ bool PlayerInput::TryExecution(Vector2 mousePos, int holdCardIndex) {
 				card->SetIsDraw(false);
 				cardManager_->SetEffectStandby(card);
 				cardManager_->MoveCard(card, CardZone::Execution);
+				uiManager_->CostTextUpdate();
 				return true;
 			}
 		}
@@ -126,6 +139,7 @@ bool PlayerInput::TryBuilding(Vector2 mousePos, int holdCardIndex) {
 					std::vector<std::unique_ptr<CardMove>> moves;
 					moves.push_back(std::move(moveCard));
 					cardManager_->AddCardMove(std::move(moves));
+					uiManager_->CostTextUpdate();
 
 					card->InitializeDurability();
 					cardManager_->MoveCard(card, CardZone::Field);

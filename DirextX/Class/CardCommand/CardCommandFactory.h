@@ -23,6 +23,9 @@ namespace CardCommandFactory
 	std::unique_ptr<CardCommand> CreareSetCardActivationTimingCommand(std::string& activationTimings);
 	std::unique_ptr<CardCommand> CreareSetCardDurabilityDecreaseConditionCommand(std::string& conditions);
 
+	// リソース系コマンドの生成
+	std::unique_ptr<CardCommand> CreateAddMoneyCommand(std::string& num);
+
 	// 山札系コマンドの生成
 	std::unique_ptr<CardCommand> CreateOpenDeckCommand(std::string& num, std::string& card);
 	std::unique_ptr<CardCommand> CreateSelectOpenDeckCommand(std::string& num, std::string& minSelect, std::string& maxSelect, std::string& selectCard, std::string& notSelectCard);

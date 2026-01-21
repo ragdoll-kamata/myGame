@@ -305,7 +305,9 @@
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="AddMoneyCommand.cpp" />
+    <ClCompile Include="Class\CardCommand\Resource\AddMoneyCommand.cpp">
+      <Filter>ソース ファイル\CardCommand\Resourece</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -663,7 +665,7 @@
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="AddMoneyCommand.h" />
+    <ClInclude Include="Class\CardCommand\Resource\AddMoneyCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">
