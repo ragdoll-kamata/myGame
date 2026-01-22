@@ -251,6 +251,7 @@ void CardManager::EndTurn(TurnState& turnState) {
 	if (!effectStandby_.empty()) {
 		return;
 	}
+	
 	if (!isEndStart) {
 		std::vector<Card*> handCards = zoneMap[CardZone::Hand];
 		std::vector<std::unique_ptr<CardMove>> moves;
@@ -270,18 +271,19 @@ void CardManager::EndTurn(TurnState& turnState) {
 		if (!moves.empty()) {
 			AddCardMove(std::move(moves));
 		}
+		if (!zoneMap[CardZone::Hand].empty()) {
+			std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
+			move->Initialize(zoneMap[CardZone::Hand], 0.5f);
+			std::vector<std::unique_ptr<CardMove>> moveVec;
+			moveVec.push_back(std::move(move));
+			AddCardMove(std::move(moveVec));
+		}
 		isEndStart = true;
 	}
 	if (IsMoveCard()) {
 		return;
 	}
-	if (!zoneMap[CardZone::Hand].empty()) {
-		std::unique_ptr<HandCardMove> move = std::make_unique<HandCardMove>();
-		move->Initialize(zoneMap[CardZone::Hand], 0.5f);
-		std::vector<std::unique_ptr<CardMove>> moveVec;
-		moveVec.push_back(std::move(move));
-		AddCardMove(std::move(moveVec));
-	}
+	
 	turnCount++;
 	
 	isEndStart = false;
@@ -540,6 +542,10 @@ void CardManager::AllCardLoad(const std::string& file) {
 	}
 
 
+}
+
+void CardManager::SetEffectTextCard(Card* card) {
+	effectTextCard_ = card;
 }
 
 int CardManager::HandCardCollision(Vector2 pos) {

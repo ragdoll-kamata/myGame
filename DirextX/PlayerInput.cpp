@@ -16,6 +16,15 @@ void PlayerInput::Initialize(CardManager* cardManager, ShopManager* shopManager,
 
 void PlayerInput::Update(TurnState& turnState) {
 	monsePos_ = input_->GetMousePos();
+	if (input_->TriggerMouseButton(1)) {
+		for (const auto& card : cardManager_->GetAllCard()) {
+			if (card->IsDraw()) {
+				if (card->IsOnCollision(monsePos_)) {
+					cardManager_->SetEffectTextCard(card.get());
+				}
+			}
+		}
+	}
 	if (cardManager_->IsSelectCard()) {
 		SelectUpdate();
 		return;
@@ -29,7 +38,7 @@ void PlayerInput::Update(TurnState& turnState) {
 void PlayerInput::MainTurnUpdate(TurnState& turnState) {
 	
 	if(!cardManager_->IsHoldCard()) {
-		if (input_->PressMouseButton(0)) {
+		if (input_->TriggerMouseButton(0)) {
 			int index = cardManager_->HandCardCollision(monsePos_);
 			if (index != -1) {
 				cardManager_->SetHoldCard(index);

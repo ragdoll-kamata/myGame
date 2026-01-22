@@ -75,6 +75,9 @@ public:
 	std::vector<Card*> GetZoneCards(CardZone zone) {
 		return zoneMap[zone];
 	}
+	std::vector<std::unique_ptr<Card>>& GetAllCard() {
+		return allCards;
+	}
 
 	std::vector<Card*> OpenDeck(int num, bool isCommand = false);
 
@@ -140,6 +143,7 @@ public:
 		holdCardIndex = index;
 		effectTextCard_ = zoneMap[CardZone::Hand][holdCardIndex];
 	}
+	void SetEffectTextCard(Card* card);
 	bool IsSelectCard() const {
 		return isSelectCard;
 	}
