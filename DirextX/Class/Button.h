@@ -28,6 +28,10 @@ public:
 	Vector4 GetColor() const {
 		return sprite->GetColor();
 	}
+	void SetAnchorPoint(const Vector2& pos);
+	void SetSize(const Vector2& size) {
+		sprite->SetSize(size);
+	}
 
 protected:
 	std::unique_ptr<Sprite> sprite;

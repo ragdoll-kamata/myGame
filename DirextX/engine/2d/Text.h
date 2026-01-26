@@ -57,7 +57,7 @@ public:
 
 	~Text();
 
-	void Initialize(std::u32string text, const Vector2& pos, float maxWidth);
+	void Initialize(std::u32string text, const Vector2& pos, float maxWidth, float oneHeight = 0.0f);
 
 	void Update();
 
@@ -109,6 +109,10 @@ public:
 	/// <param name="maxWidth">最大横幅</param>
 	void SetMaxWidth(float maxWidth) {
 		maxWidth_ = maxWidth;
+	}
+
+	float GetTextHeight()const {
+		return textHeight_;
 	}
 
 	static std::u32string GetIntToString(int num, int count);

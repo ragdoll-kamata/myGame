@@ -114,9 +114,15 @@ public:
 	void InitializeDurability() {
 		durability_ = durabilityInitial_;
 	}
+	void SetEffectTextPos(const Vector2& pos) {
+		description_->SetPosition(pos);
+	}
+	float GetEffectTextHeight() const {
+		return description_->GetTextHeight();
+	}
 private:
 	void UpdateDesription();
-	
+
 private:
 	std::unique_ptr<Text> name_ = nullptr;
 	std::u32string descriptionstr_;
@@ -313,7 +319,7 @@ public:
 		cards[key].push_back(card);
 	}
 	void RemoveCard(const std::string& key, Card* card) {
-		if(!cards.contains(key)) {
+		if (!cards.contains(key)) {
 			return;
 		}
 		auto& cardList = cards[key];

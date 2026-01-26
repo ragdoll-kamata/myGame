@@ -14,8 +14,7 @@ bool Card::InitializeCard(CardData* loadCard) {
 	name_->Initialize(U"名前", {0.0f, 0.0f}, 9999.0f);
 	name_->SetAnchorPoint({0.5f, 1.0f});
 	name_->SetTextFormat(Text::TextFormat::Centor);
-	description_->Initialize(U"説明", {5.0f, 45.0f}, 500.0f);
-	description_->CalcFitSizeOneHeight(25.0f);
+	description_->Initialize(U"説明", {5.0f, 45.0f}, 500.0f, 25.0f);
 	int dummyLine = 0;
 	isVoid_ = true;
 	FunctionResult result = cardData_->CardFunctionLoad(this, "初期設定", dummyLine);

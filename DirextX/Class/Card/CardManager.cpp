@@ -29,6 +29,13 @@ void CardManager::Initialize(UIManager* uiManager, ResourceManager* resourceMana
 	seed.seed(rd());
 	shuffleSE = Audio::GetInstance()->LoadSound("cardShuffle.mp3");
 	turnCount = 1;
+
+	effectTextCardBackSprite_ = std::make_unique<Button>();
+	effectTextCardBackSprite_->Initialize({},{1.0f,1.0f}, "white.png", {0.5f, 0.5f, 0.5f, 1.0f});
+	effectTextCardBackSprite_->SetAnchorPoint({0.0f, 0.0f});
+	effectTextCardBackSprite_->SetPosition({0.0f, 0.0f});
+	effectTextCardBackSprite_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
+	effectTextCardBackSprite_->SetIsDraw(true);
 }
 
 bool CardManager::StartCardSet() {
@@ -122,9 +129,6 @@ void CardManager::Update(TurnState& turnState) {
 
 void CardManager::Draw() {
 	TextCommon::GetInstance()->PreDraw();
-	if (effectTextCard_) {
-		effectTextCard_->EffectTextDraw();
-	}
 
 	CardDraw();
 }
@@ -147,6 +151,15 @@ void CardManager::TextDraw() {
 		card->TextDraw();
 	}
 
+}
+void CardManager::EffectTextDraw() {
+	if (effectTextCard_) {
+		SpriteCommon::GetInstance()->PreDraw();
+		effectTextCardBackSprite_->Draw();
+		TextCommon::GetInstance()->PreDraw();
+		effectTextCard_->EffectTextDraw();
+		TextCommon::GetInstance()->PostDraw();
+	}
 }
 
 void CardManager::AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard) {
@@ -544,8 +557,21 @@ void CardManager::AllCardLoad(const std::string& file) {
 
 }
 
+void CardManager::SetHoldCard(int index) {
+	isHoldCard = true;
+	holdCardIndex = index;
+	effectTextCard_ = zoneMap[CardZone::Hand][holdCardIndex];
+	CalcEffectTextBackSpriteSize();
+}
+
 void CardManager::SetEffectTextCard(Card* card) {
 	effectTextCard_ = card;
+	CalcEffectTextBackSpriteSize();
+}
+
+void CardManager::SetEffectTextCardPos(Vector2 pos) {
+	effectTextCard_->SetEffectTextPos(pos);
+	effectTextCardBackSprite_->SetPosition(pos);
 }
 
 int CardManager::HandCardCollision(Vector2 pos) {
@@ -557,4 +583,9 @@ int CardManager::HandCardCollision(Vector2 pos) {
 		index++;
 	}
 	return -1;
+}
+
+void CardManager::CalcEffectTextBackSpriteSize() {
+	float size = effectTextCard_->GetEffectTextHeight();
+	effectTextCardBackSprite_->SetSize({500.0f, size});
 }

@@ -110,7 +110,10 @@ private:
 	const int kShopLegendaryBasePrice = 600;
 
 	// 価格振れ幅倍率(%)
-	const int kShopPriceFluctuation = 20;
+	const float kShopPriceFluctuation = 0.2f;
+
+	// 価格振れ幅倍率にイージングによる重みを付与するための最大値
+	const int kShopPriceFluctuationNormalizationMax = 100;
 
 	// 割引発生確率
 	const int kShopDiscountRate = 10;

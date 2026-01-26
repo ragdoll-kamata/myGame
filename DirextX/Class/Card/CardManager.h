@@ -39,6 +39,8 @@ public:
 
 	void TextDraw();
 
+	void EffectTextDraw();
+
 	void AddCardMove(std::vector<std::unique_ptr<CardMove>> moveCard);
 	std::unordered_map<std::string, std::unique_ptr<CardData>>& GetCardDataMap() {
 		return CardDataMap;
@@ -138,12 +140,11 @@ public:
 	int GetHoldCardIndex() const {
 		return holdCardIndex;
 	}
-	void SetHoldCard(int index) {
-		isHoldCard = true;
-		holdCardIndex = index;
-		effectTextCard_ = zoneMap[CardZone::Hand][holdCardIndex];
-	}
+	void SetHoldCard(int index);
 	void SetEffectTextCard(Card* card);
+
+	void SetEffectTextCardPos(Vector2 pos);
+
 	bool IsSelectCard() const {
 		return isSelectCard;
 	}
@@ -154,6 +155,8 @@ public:
 	void SetFieldCardIndex(Card* card, int index) {
 		fieldCardIndexMap[card] = index;
 	}
+private:
+	void CalcEffectTextBackSpriteSize();
 private:
 	UIManager* uiManager_ = nullptr;
 	ResourceManager* resourceManager_ = nullptr;
@@ -192,6 +195,7 @@ private:
 	int turnCount = 0;
 
 	// 効果テキスト用のカード参照
+	std::unique_ptr<Button> effectTextCardBackSprite_;
 	Card* effectTextCard_ = nullptr; 
 
 	bool isMove = false;

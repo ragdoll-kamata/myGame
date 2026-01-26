@@ -28,7 +28,7 @@ void GameScene::Initialize() {
 
 	CardCommand::SetCardManager(cardManager_.get());
 	CardMove::SetCatdManager(cardManager_.get());
-	trunState_ = TurnState::Shop;
+	trunState_ = TurnState::Start;
 }
 
 void GameScene::Update() {
@@ -54,5 +54,5 @@ void GameScene::Draw() {
 		shopManager_->Draw();
 		uiManager_->ShopDraw();
 	}
-
+	cardManager_->EffectTextDraw();
 }

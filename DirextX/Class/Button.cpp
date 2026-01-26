@@ -28,10 +28,11 @@ void Button::Draw() {
 }
 
 bool Button::IsOnCollision(Vector2 pos) {
-
+	Vector2 anchor = sprite->GetAnchorPoint();
+	Vector2 size = sprite->GetSize();
 	Vector2 hPos{
-		std::clamp(pos.x, sprite->GetPosition().x - halfSize.x, sprite->GetPosition().x + halfSize.x),
-		std::clamp(pos.y, sprite->GetPosition().y - halfSize.y, sprite->GetPosition().y + halfSize.y),
+		std::clamp(pos.x, sprite->GetPosition().x - size.x * anchor.x, sprite->GetPosition().x + size.x * (1.0f - anchor.x)),
+		std::clamp(pos.y, sprite->GetPosition().y - size.y * anchor.y, sprite->GetPosition().y + size.y * (1.0f - anchor.y)),
 	};
 
 	hPos.x -= pos.x;
@@ -45,4 +46,8 @@ bool Button::IsOnCollision(Vector2 pos) {
 
 void Button::SetTextureRect(Vector2 rect) {
 	sprite->SetTextureSize(rect);
+}
+
+void Button::SetAnchorPoint(const Vector2& pos) {
+	sprite->SetAnchorPoint(pos);
 }

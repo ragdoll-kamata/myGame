@@ -171,8 +171,10 @@ void ShopManager::GenerateShopCards() {
 			salesCardData.price = kShopLegendaryBasePrice;
 		}
 		// 価格の振れ幅倍率を計算
-		int fluctuation = std::uniform_int_distribution<int>(-kShopPriceFluctuation, kShopPriceFluctuation)(seed);
-		salesCardData.price += static_cast<int>(salesCardData.price * (static_cast<float>(fluctuation) / 100.0f));
+		int fluctuation = std::uniform_int_distribution<int>(-kShopPriceFluctuationNormalizationMax, kShopPriceFluctuationNormalizationMax)(seed);
+		float t = static_cast<float>(fluctuation) / static_cast<float>(kShopPriceFluctuationNormalizationMax);
+		t = t * t * t;
+		salesCardData.price += static_cast<int>(salesCardData.price * t * kShopPriceFluctuation);
 		// 割引発生判定
 		int discountRoll = std::uniform_int_distribution<int>(1, 100)(seed);
 		salesCardData.isDiscounted = false;
@@ -187,7 +189,7 @@ void ShopManager::GenerateShopCards() {
 		std::u32string priceStr = Text::GetIntToString(salesCardData.price, 0);
 		if (salesCardData.isDiscounted) {
 			std::u32string t = priceStr;
-			priceStr = U"<color=rgba(1.0f,0.0f,0.0f,1.0f)>";
+			priceStr = U"<color=rgba(0.3f,0.3f,1.0f,1.0f)>";
 			priceStr += t;
 		}
 		salesCardData.priceText->Initialize(priceStr, {shopCardPos.x, shopCardPos.y + 100.0f}, 2000.0f);
