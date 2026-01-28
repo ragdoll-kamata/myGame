@@ -143,7 +143,10 @@ public:
 	void SetHoldCard(int index);
 	void SetEffectTextCard(Card* card);
 
-	void SetEffectTextCardPos(Vector2 pos);
+	void SetEffectTextPos(Vector2 pos);
+	Vector2 GetEffectTextPos() const {
+		return effectTextPos;
+	}
 
 	bool IsSelectCard() const {
 		return isSelectCard;
@@ -155,8 +158,9 @@ public:
 	void SetFieldCardIndex(Card* card, int index) {
 		fieldCardIndexMap[card] = index;
 	}
+	bool EffectTextOnCllision(const Vector2& pos);
 private:
-	void CalcEffectTextBackSpriteSize();
+	void CalcEffectTextBackSprite();
 private:
 	UIManager* uiManager_ = nullptr;
 	ResourceManager* resourceManager_ = nullptr;
@@ -196,6 +200,7 @@ private:
 
 	// 効果テキスト用のカード参照
 	std::unique_ptr<Button> effectTextCardBackSprite_;
+	Vector2 effectTextPos;
 	Card* effectTextCard_ = nullptr; 
 
 	bool isMove = false;

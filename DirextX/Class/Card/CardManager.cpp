@@ -20,6 +20,10 @@
 #include "UIManager.h"
 #include "ResourceManager.h"
 
+#include "MathUtility.h"
+
+using namespace MathUtility;
+
 namespace fs = std::filesystem;
 
 void CardManager::Initialize(UIManager* uiManager, ResourceManager* resourceManager) {
@@ -31,11 +35,12 @@ void CardManager::Initialize(UIManager* uiManager, ResourceManager* resourceMana
 	turnCount = 1;
 
 	effectTextCardBackSprite_ = std::make_unique<Button>();
-	effectTextCardBackSprite_->Initialize({},{1.0f,1.0f}, "white.png", {0.5f, 0.5f, 0.5f, 1.0f});
+	effectTextCardBackSprite_->Initialize({}, {1.0f, 1.0f}, "white.png", {0.5f, 0.5f, 0.5f, 1.0f});
 	effectTextCardBackSprite_->SetAnchorPoint({0.0f, 0.0f});
 	effectTextCardBackSprite_->SetPosition({0.0f, 0.0f});
 	effectTextCardBackSprite_->SetColor({0.5f, 0.5f, 0.5f, 1.0f});
 	effectTextCardBackSprite_->SetIsDraw(true);
+	effectTextPos = {10.0f, 40.0f};
 }
 
 bool CardManager::StartCardSet() {
@@ -78,7 +83,7 @@ bool CardManager::StartCardSet() {
 				e;
 				number = 1;
 			}
-			
+
 			for (int i = 0; i < number; i++) {
 				std::unique_ptr<Card> card(new Card());
 				card->InitializeCard(CardDataMap[name].get());
@@ -125,6 +130,7 @@ void CardManager::Update(TurnState& turnState) {
 	for (const auto& card : allCards) {
 		card->Update();
 	}
+	effectTextCardBackSprite_->Update();
 }
 
 void CardManager::Draw() {
@@ -154,11 +160,13 @@ void CardManager::TextDraw() {
 }
 void CardManager::EffectTextDraw() {
 	if (effectTextCard_) {
-		SpriteCommon::GetInstance()->PreDraw();
-		effectTextCardBackSprite_->Draw();
-		TextCommon::GetInstance()->PreDraw();
-		effectTextCard_->EffectTextDraw();
-		TextCommon::GetInstance()->PostDraw();
+		if (effectTextCard_->IsDraw()) {
+			SpriteCommon::GetInstance()->PreDraw();
+			effectTextCardBackSprite_->Draw();
+			TextCommon::GetInstance()->PreDraw();
+			effectTextCard_->EffectTextDraw();
+			TextCommon::GetInstance()->PostDraw();
+		}
 	}
 }
 
@@ -264,7 +272,7 @@ void CardManager::EndTurn(TurnState& turnState) {
 	if (!effectStandby_.empty()) {
 		return;
 	}
-	
+
 	if (!isEndStart) {
 		std::vector<Card*> handCards = zoneMap[CardZone::Hand];
 		std::vector<std::unique_ptr<CardMove>> moves;
@@ -296,9 +304,9 @@ void CardManager::EndTurn(TurnState& turnState) {
 	if (IsMoveCard()) {
 		return;
 	}
-	
+
 	turnCount++;
-	
+
 	isEndStart = false;
 	turnState = TurnState::Start;
 	if (turnCount % 3 == 0) {
@@ -561,17 +569,17 @@ void CardManager::SetHoldCard(int index) {
 	isHoldCard = true;
 	holdCardIndex = index;
 	effectTextCard_ = zoneMap[CardZone::Hand][holdCardIndex];
-	CalcEffectTextBackSpriteSize();
+	CalcEffectTextBackSprite();
 }
 
 void CardManager::SetEffectTextCard(Card* card) {
 	effectTextCard_ = card;
-	CalcEffectTextBackSpriteSize();
+	CalcEffectTextBackSprite();
 }
 
-void CardManager::SetEffectTextCardPos(Vector2 pos) {
-	effectTextCard_->SetEffectTextPos(pos);
-	effectTextCardBackSprite_->SetPosition(pos);
+void CardManager::SetEffectTextPos(Vector2 pos) {
+	effectTextPos = pos;
+	CalcEffectTextBackSprite();
 }
 
 int CardManager::HandCardCollision(Vector2 pos) {
@@ -585,7 +593,24 @@ int CardManager::HandCardCollision(Vector2 pos) {
 	return -1;
 }
 
-void CardManager::CalcEffectTextBackSpriteSize() {
-	float size = effectTextCard_->GetEffectTextHeight();
-	effectTextCardBackSprite_->SetSize({500.0f, size});
+bool CardManager::EffectTextOnCllision(const Vector2& pos) {
+	if (!effectTextCard_) {
+		return false;
+	}
+	if (!effectTextCard_->IsDraw()) {
+		return false;
+	}
+	return effectTextCardBackSprite_->IsOnCollision(pos);
+}
+
+void CardManager::CalcEffectTextBackSprite() {
+	Vector2 pos = {5.0f, 5.0f};
+	Vector2 size = {500.0f, effectTextCard_->GetEffectTextHeight()};
+	if (size.y < 25.0f * 2.0f) {
+		size.y = 25.0f * 2.0f;
+	}
+	size = size + pos * 2.0f;
+	effectTextCard_->SetEffectTextPos(effectTextPos);
+	effectTextCardBackSprite_->SetPosition(effectTextPos - pos);
+	effectTextCardBackSprite_->SetSize(size);
 }

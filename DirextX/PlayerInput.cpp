@@ -5,6 +5,9 @@
 #include "UIManager.h"
 #include "ResourceManager.h"
 
+#include "MathUtility.h"
+
+using namespace MathUtility;
 
 void PlayerInput::Initialize(CardManager* cardManager, ShopManager* shopManager, UIManager* uiManager, ResourceManager* resourceManager) {
 	cardManager_ = cardManager;
@@ -16,15 +19,7 @@ void PlayerInput::Initialize(CardManager* cardManager, ShopManager* shopManager,
 
 void PlayerInput::Update(TurnState& turnState) {
 	monsePos_ = input_->GetMousePos();
-	if (input_->TriggerMouseButton(1)) {
-		for (const auto& card : cardManager_->GetAllCard()) {
-			if (card->IsDraw()) {
-				if (card->IsOnCollision(monsePos_)) {
-					cardManager_->SetEffectTextCard(card.get());
-				}
-			}
-		}
-	}
+	EffectTextUpdate();
 	if (cardManager_->IsSelectCard()) {
 		SelectUpdate();
 		return;
@@ -112,6 +107,36 @@ void PlayerInput::SelectUpdate() {
 				nawSelectCount_ = 0;
 				cardManager_->SetIsEndSelect(true);
 			}
+		}
+	}
+}
+
+void PlayerInput::EffectTextUpdate() {
+	if (input_->TriggerMouseButton(1)) {
+		for (const auto& card : cardManager_->GetAllCard()) {
+			if (card->IsDraw()) {
+				if (card->IsOnCollision(monsePos_)) {
+					cardManager_->SetEffectTextCard(card.get());
+				}
+			}
+		}
+
+	}
+	if (input_->TriggerMouseButton(0)) {
+		if (cardManager_->EffectTextOnCllision(monsePos_)) {
+			Vector2 pos = cardManager_->GetEffectTextPos();
+			effectTextPosOffset = pos - monsePos_;
+			hasEffectText = true;
+		}
+	}
+	if (input_->PressMouseButton(0)) {
+		if (hasEffectText) {
+			cardManager_->SetEffectTextPos(effectTextPosOffset + monsePos_);
+		}
+	}
+	if (input_->ReleaseMouseButton(0)) {
+		if (hasEffectText) {
+			hasEffectText = false;
 		}
 	}
 }

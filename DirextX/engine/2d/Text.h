@@ -112,7 +112,7 @@ public:
 	}
 
 	float GetTextHeight()const {
-		return textHeight_;
+		return size_.y * textHeight_;
 	}
 
 	static std::u32string GetIntToString(int num, int count);

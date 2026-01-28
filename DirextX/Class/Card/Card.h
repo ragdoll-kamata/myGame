@@ -117,6 +117,9 @@ public:
 	void SetEffectTextPos(const Vector2& pos) {
 		description_->SetPosition(pos);
 	}
+	Vector2 GetEffectTextPos() {
+		return description_->GetPosition();
+	}
 	float GetEffectTextHeight() const {
 		return description_->GetTextHeight();
 	}

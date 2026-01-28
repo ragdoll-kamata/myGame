@@ -23,6 +23,8 @@ private:
 
 	void SelectUpdate();
 
+	void EffectTextUpdate();
+
 	bool TryExecution(Vector2 mousePos, int holdCardIndex);
 
 	bool TryBuilding(Vector2 mousePos, int holdCardIndex);
@@ -36,6 +38,9 @@ private:
 
 	Vector2 monsePos_ = {0.0f, 0.0f};
 	int nawSelectCount_ = 0;
+
+	Vector2 effectTextPosOffset;
+	bool hasEffectText = false;
 
 	std::unordered_map<TurnState, std::function<void(TurnState&)>> turnMap{
 		{TurnState::Main, [&](TurnState& i) { return MainTurnUpdate(i); }},
