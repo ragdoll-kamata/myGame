@@ -154,6 +154,16 @@ bool Card::Effect() {
 	return true;
 }
 
+bool Card::Function(std::string& str) {
+	isVoid_ = true;
+	int dummyLine = 0;
+	FunctionResult result = cardData_->CardFunctionLoad(this, str, dummyLine);
+	if (result != FunctionResult::Normal) {
+		return false;
+	}
+	return true;
+}
+
 void Card::UpdateDesription() {
 	std::u32string str = descriptionstr_;
 	std::u32string str2;

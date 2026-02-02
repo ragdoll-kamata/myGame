@@ -40,18 +40,8 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 		}
 		// カード変数の場合
 		std::vector<Card*> cards;
-		size_t pos = num.find('.');
-		std::string key = num.substr(0, pos);
-
-		if (ParseCard(key, cards, card)) {
-			if (card == nullptr) {
-				return -1;
-			}
-			std::string str = num.substr(pos + 1);
-			if (str == "枚数") {
-				return static_cast<int>(cards.size());
-			}
-
+		if (ParseCardIfKey("枚数", num, cards, card)) {
+			return static_cast<int>(cards.size());
 		}
 
 
@@ -93,6 +83,11 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 	}
 	if (cardNum == "山札") {
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
+		return true;
+	}
+	if (cardNum == "墓地") {
+		cards.clear();
+		cards.push_back(card);
 		return true;
 	}
 	return false;
@@ -258,6 +253,7 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 		subTokens.erase(subTokens.begin());
 
 
+		// 再起で処理した部分のスキップ
 		if (isGroup) {
 			if (token == ")") {
 				skipCount--;
@@ -332,12 +328,14 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 		//// 変換できる先を探す
 
 		// 変数の場合
+		// int変数
 		if (token.front() == '#') {
 			data.type = ParseBoolType::Int;
 			data.value = token;
 			parseBoolResult->groups[index].dates.push_back(data);
 			continue;
 		}
+		// カード変数
 		if (token.front() == '$') {
 			size_t pos = token.find('.');
 			std::string str = token.substr(pos + 1);
@@ -360,6 +358,7 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 		}
 		// 固定値の場合
 
+		// bool
 		if (token == "true" || token == "True") {
 			data.type = ParseBoolType::Bool;
 			parseBoolResult->groups[index].dates.push_back(data);
@@ -372,19 +371,21 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 		}
 
 		CardElement element = ParseCardElement(token, nullptr);
-
+		// 属性
 		if (element != CardElement::Error) {
 			data.type = ParseBoolType::Element;
 			parseBoolResult->groups[index].dates.push_back(data);
 			continue;
 		}
 		CardType type = ParseCardType(token, nullptr);
+		// タイプ
 		if (type != CardType::Error) {
 			data.type = ParseBoolType::Type;
 			parseBoolResult->groups[index].dates.push_back(data);
 			continue;
 		}
 		int i = ParseInt(token, nullptr);
+		// int
 		if (i != -1) {
 			data.type = ParseBoolType::Int;
 			parseBoolResult->groups[index].dates.push_back(data);

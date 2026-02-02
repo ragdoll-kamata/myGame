@@ -81,6 +81,9 @@ public:
 	bool IsOnCollision(Vector2 pos);
 
 	bool Effect();
+
+	bool Function(std::string& str);
+
 public:
 
 	void SetZone(CardZone zone) {
@@ -276,7 +279,14 @@ private:
 	std::unordered_map<std::string, std::vector<Card*>> cards;
 	std::unordered_map<std::string, int> ints;
 	std::string returnValue;
+	Card* targetCard;
 public:
+	void SetTargetCard(Card* card) {
+		targetCard = card;
+	}
+	Card* GetTargetCard() const {
+		return targetCard;
+	}
 	// 変数
 	void SetInt(const std::string& key, int value) {
 		ints[key] = value;
