@@ -33,15 +33,12 @@ ExecuteResult OpenDeckCommand::Execute(Card* card) {
 	}
 	int number = ParseInt(num_, card);
 	std::vector<Card*> ca = cardManager_->OpenDeck(number, true);
-	int i = 0;
-	std::vector<Card*> openCards = cardManager_->GetZoneCards(CardZone::Open);
 	std::vector<std::unique_ptr<CardMove>> moves;
+	int i = 0;
 	for(Card* c : ca) {
 		card->AddCard(card_, c);
 		c->SetIsDraw(true);
-	}
-	for (Card* c : openCards) {
-		Vector2 pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Open, i , static_cast<int>(openCards.size()) - 1);
+		Vector2 pos = cardManager_->GetUIManager()->GetCardPos(CardZone::Open, i, static_cast<int>(ca.size()) - 1);
 		std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 		move->Initialize(c, pos, 0.5f, true);
 		moves.push_back(std::move(move));

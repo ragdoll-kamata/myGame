@@ -68,23 +68,29 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 	if (!isStart_) {
 		isStart_ = true;
 		int number = ParseInt(num_, card);
-		selectCards_ = cardManager_->OpenDeck(number, true);
-		int i = 0;
-		std::vector<Card*> openCards = cardManager_->GetZoneCards(CardZone::Open);
+
+		notSelectCards_ = cardManager_->OpenDeck(number, true);
 		std::vector<std::unique_ptr<CardMove>> moves;
-		for (Card* c : selectCards_) {
-			cardManager_->AddSelectCard(c);
+		int i = 0;
+		for (Card* c : notSelectCards_) {
 			c->SetIsDraw(true);
-		}
-		for (Card* c : openCards) {
-			Vector2 pos = uiManager->GetCardPos(CardZone::Open, i, static_cast<int>(openCards.size() - 1));
+			Vector2 pos = uiManager->GetCardPos(CardZone::Open, i, static_cast<int>(notSelectCards_.size() - 1));
 			std::unique_ptr<CardMove> move = std::make_unique<CardMove>();
 			move->Initialize(c, pos, 0.5f, true);
 			moves.push_back(std::move(move));
 			i++;
 		}
+
 		cardManager_->AddCardMove(std::move(moves));
 
+		if (!CalcSelectCardIf(notSelectCards_, selectCards_, card)) {
+			selectCards_ = notSelectCards_;
+			notSelectCards_.clear();
+		}
+		for (Card* c : selectCards_) {
+			cardManager_->AddSelectCard(c);
+		}
+	
 		minSelectNum_ = ParseInt(minSelect_, card);
 		maxSelectNum_ = ParseInt(maxSelect_, card);
 
@@ -95,6 +101,9 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 		}
 		uiManager->SetEndSelectButtonNormalVector();
 		cardManager_->SetMinMaxSelectCard(minSelectNum_, maxSelectNum_);
+		if (selectCards_.size() == 0) {
+			cardManager_->SetIsEndSelect(true);
+		}
 		return ExecuteResult::Standby;
 	}
 
@@ -111,11 +120,17 @@ ExecuteResult SelectOpenDeckCommand::Execute(Card* card) {
 			}
 			c->SetWaku(false);
 		}
+		for (Card* c : notSelectCards_) {
+			notSelectCards.push_back(c);
+		}
+
 		card->SetCards(selectCard_, selectCards);
 		card->SetCards(notSelectCard_, notSelectCards);
 		cardManager_->SetIsSelectCard(false);
 		isStart_ = false;
 		nawSelectCount_ = 0;
+		selectCards_.clear();
+		notSelectCards_.clear();
 		return ExecuteResult::Normal;
 	}
 

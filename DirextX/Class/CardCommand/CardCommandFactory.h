@@ -44,6 +44,9 @@ namespace CardCommandFactory
 	// 特性付与コマンドの生成
 	std::unique_ptr<CardCommand> CreateAddCardCharacteristicsCommand(std::string& card, std::string& characteristics);
 
+	// 選択条件設定コマンドの生成
+	std::unique_ptr<CardCommand> CreateSetSelectCardIfCommandCommand(std::string& functionName);
+
 	// 制御系コマンドの生成
 	std::unique_ptr<CardCommand> CreateIfCommand(CardData* cardData, int nestID, const std::vector<std::string>& commandTokens);
 	std::unique_ptr<CardCommand> CreateReturnCommand(std::vector<std::string>& commandTokens);

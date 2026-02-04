@@ -99,7 +99,7 @@ protected:
 	/// <param name="cards">取得したカード</param>
 	/// <param name="card">カード</param>
 	/// <returns>成功したかどうか</returns>
-	bool ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card);
+	bool ParseCard(const std::string& cardNum, std::vector<Card*>& cards, Card* card);
 	/// <summary>
 	/// キーに応じたカードのパース
 	/// </summary>
@@ -207,6 +207,8 @@ protected:
 	/// <param name="card">カード</param>
 	/// <returns>成功したかどうか</returns>
 	bool CalculationCardExprNode(std::unique_ptr<ExprNode>& root, std::vector<Card*>& cards, Card* card);
+
+	bool CalcSelectCardIf(std::vector<Card*>& cards, std::vector<Card*>& trueCards, Card* card);
 private:
 	/// <summary>
 	/// 式ノードの設定

@@ -43,6 +43,8 @@ public:
 
 
 	FunctionResult FunctionLoad(Card* card, int functionID, int& functionLine);
+
+	bool HasFunction(const std::string& functionName);
 private:
 	std::vector<std::string> ParseLine(std::string& text);
 

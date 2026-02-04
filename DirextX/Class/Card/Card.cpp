@@ -154,7 +154,7 @@ bool Card::Effect() {
 	return true;
 }
 
-bool Card::Function(std::string& str) {
+bool Card::Function(const std::string& str) {
 	isVoid_ = true;
 	int dummyLine = 0;
 	FunctionResult result = cardData_->CardFunctionLoad(this, str, dummyLine);
@@ -162,6 +162,10 @@ bool Card::Function(std::string& str) {
 		return false;
 	}
 	return true;
+}
+
+bool Card::HasFunction(const std::string& functionName) {
+	return cardData_->HasFunction(functionName);
 }
 
 void Card::UpdateDesription() {

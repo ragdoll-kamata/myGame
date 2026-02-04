@@ -17,6 +17,7 @@ private:
 	int maxSelectNum_ = 0;
 	bool isStart_ = false;
 	std::vector<Card*> selectCards_;
+	std::vector<Card*> notSelectCards_;
 	int nawSelectCount_ = 0;
 };
 

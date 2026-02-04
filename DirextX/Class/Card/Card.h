@@ -82,7 +82,9 @@ public:
 
 	bool Effect();
 
-	bool Function(std::string& str);
+	bool Function(const std::string& str);
+
+	bool HasFunction(const std::string& functionName);
 
 public:
 
@@ -279,6 +281,7 @@ private:
 	std::unordered_map<std::string, std::vector<Card*>> cards;
 	std::unordered_map<std::string, int> ints;
 	std::string returnValue;
+	std::string selectCardIfFunctionName_;
 	Card* targetCard;
 public:
 	void SetTargetCard(Card* card) {
@@ -286,6 +289,12 @@ public:
 	}
 	Card* GetTargetCard() const {
 		return targetCard;
+	}
+	void SetSelectCardIfFunctionName(std::string selectCardIfFunctionName) {
+		selectCardIfFunctionName_ = selectCardIfFunctionName;
+	}
+	std::string GetSelectCardIfFunctionName() const {
+		return selectCardIfFunctionName_;
 	}
 	// 変数
 	void SetInt(const std::string& key, int value) {

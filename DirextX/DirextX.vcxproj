@@ -103,6 +103,7 @@
     <ClCompile Include="Class\CardCommand\Hand\SelectHandCommand.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Class\CardCommand\Select\SetSelectCardIfCommand.cpp" />
     <ClCompile Include="ShopManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
@@ -219,6 +220,7 @@
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Class\CardCommand\Select\SetSelectCardIfCommand.h" />
     <ClInclude Include="ShopManager.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="utf8\utf8.h" />

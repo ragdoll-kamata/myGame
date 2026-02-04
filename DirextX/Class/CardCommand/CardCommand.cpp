@@ -59,7 +59,7 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 	return -1;
 }
 
-bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Card* card) {
+bool CardCommand::ParseCard(const std::string& cardNum, std::vector<Card*>& cards, Card* card) {
 	if (cardNum.front() == '$') {
 		if (card == nullptr) {
 			return false;
@@ -85,31 +85,29 @@ bool CardCommand::ParseCard(std::string& cardNum, std::vector<Card*>& cards, Car
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
 		return true;
 	}
-	if (cardNum == "墓地") {
+	if (cardNum == "対象カード") {
 		cards.clear();
-		cards.push_back(card);
+		cards.push_back(card->GetTargetCard());
 		return true;
 	}
 	return false;
 }
 
 bool CardCommand::ParseCardIfKey(const std::string& key, const std::string& cardNum, std::vector<Card*>& cards, Card* card) {
-	if (cardNum.front() == '$') {
-		if (card == nullptr) {
+	if (card == nullptr) {
+		return false;
+	}
+
+	// キー指定の場合
+	size_t pos = cardNum.find('.');
+	std::string str = cardNum.substr(pos + 1);
+	if (str == key) {
+		std::string ke = cardNum.substr(0, pos);
+		if (!ParseCard(ke, cards, card)) {
 			return false;
 		}
-
-		// キー指定の場合
-		size_t pos = cardNum.find('.');
-		std::string str = cardNum.substr(pos + 1);
-		if (str == key) {
-			std::string ke = cardNum.substr(0, pos);
-			if (!ParseCard(ke, cards, card)) {
-				return false;
-			}
-			if (cards.size() > 0) {
-				return true;
-			}
+		if (cards.size() > 0) {
+			return true;
 		}
 	}
 	return false;
@@ -182,7 +180,7 @@ CardRarity CardCommand::ParseCardRarity(std::string rarity) {
 	if (rarity == "レジェンダリー") {
 		return CardRarity::Legendary;
 	}
-	if(rarity == "スタンダード") {
+	if (rarity == "スタンダード") {
 		return CardRarity::Standard;
 	}
 
@@ -336,7 +334,9 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 			continue;
 		}
 		// カード変数
-		if (token.front() == '$') {
+		std::unique_ptr<Card> kasou(new Card());
+		std::vector<Card*> kasous;
+		if (ParseCard(token, kasous, kasou.get())) {
 			size_t pos = token.find('.');
 			std::string str = token.substr(pos + 1);
 			if (str == "枚数") {
@@ -403,11 +403,17 @@ bool CardCommand::ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult,
 		if (group.next) {
 			result = ExecuteBool(group.next, card);
 		} else {
-			if (group.dates.size() != 3 && group.dates[0].type != ParseBoolType::Bool) {
-				return false;
+
+			if (group.dates.size() != 3) {
+				if (group.dates[0].type != ParseBoolType::Bool) {
+					return false;
+				}
 			}
-			if (group.dates[0].type != ParseBoolType::Bool && group.dates[1].type != ParseBoolType::Operators) {
-				return false;
+
+			if (group.dates[0].type != ParseBoolType::Bool) {
+				if (group.dates[1].type != ParseBoolType::Operators) {
+					return false;
+				}
 			}
 
 			// 比較処理
@@ -494,7 +500,6 @@ bool CardCommand::ExecuteBool(std::unique_ptr<ParseBoolResult>& parseBoolResult,
 			}
 			index++;
 		} else {
-
 			return result;
 		}
 	}
@@ -524,7 +529,7 @@ bool CardCommand::Parse(std::string str, std::vector<std::string>& token) {
 					token.push_back(st);
 					continue;
 				}
-				if(st == "+=" || st == "-=" || st == "*=" || st == "/=") {
+				if (st == "+=" || st == "-=" || st == "*=" || st == "/=") {
 					token.push_back(st);
 					continue;
 				}
@@ -671,7 +676,7 @@ std::unique_ptr<CardCommand::ExprNode> CardCommand::CreateCardExprNode(std::vect
 
 bool CardCommand::CalculationCardExprNode(std::unique_ptr<ExprNode>& root, std::vector<Card*>& cards, Card* card) {
 	if (root->type == IntExprNodeType::Num) {
-		if(!ParseCard(root->str, cards, card)) {
+		if (!ParseCard(root->str, cards, card)) {
 			return false;
 		}
 		return true;
@@ -714,8 +719,31 @@ bool CardCommand::CalculationCardExprNode(std::unique_ptr<ExprNode>& root, std::
 	return false;
 }
 
+bool CardCommand::CalcSelectCardIf(std::vector<Card*>& cards, std::vector<Card*>& trueCards, Card* card) {
+	std::string str = card->GetSelectCardIfFunctionName();
+	if (str != "") {
+		for (Card* ca : cards) {
+			card->SetTargetCard(ca);
+			if (!card->Function(str)) {
+				return false;
+			}
+			std::string ret = card->GetReturnValue();
+			if (ret == "true") {
+				trueCards.push_back(ca);
+			}
+		}
+		for (Card* ca : trueCards) {
+			auto it = std::find(cards.begin(), cards.end(), ca);
+			if (it != cards.end()) {
+				cards.erase(it); // target を vector から削除
+			}
+		}
+	}
+	return true;
+}
+
 void CardCommand::ExprNodeSet(std::unique_ptr<ExprNode>& root, std::unique_ptr<ExprNode>& node) {
-	if(root->type == IntExprNodeType::None) {
+	if (root->type == IntExprNodeType::None) {
 		root = std::move(node);
 		return;
 	}
@@ -725,7 +753,7 @@ void CardCommand::ExprNodeSet(std::unique_ptr<ExprNode>& root, std::unique_ptr<E
 	}
 	if (root->left->type != IntExprNodeType::Num) {
 		ExprNodeSet(root->left, node);
-		if(node ==nullptr) {
+		if (node == nullptr) {
 			return;
 		}
 	}
@@ -733,7 +761,7 @@ void CardCommand::ExprNodeSet(std::unique_ptr<ExprNode>& root, std::unique_ptr<E
 		root->right = std::move(node);
 		return;
 	}
-	
+
 	if (root->right->type != IntExprNodeType::Num) {
 		ExprNodeSet(root->right, node);
 	}

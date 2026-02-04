@@ -26,6 +26,8 @@
 
 #include "Characteristics/AddCardCharacteristicscommand.h"
 
+#include "Select/SetSelectCardIfCommand.h"
+
 #include "Variable/IntVariableControlCommand.h"
 #include "Variable/CardVariableControlCommand.h"
 
@@ -97,6 +99,11 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	// 特性
 	if (key == "特性付与") {
 		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return  CreateAddCardCharacteristicsCommand(commandTokens[0], commandTokens[1]); });
+	}
+
+	// 選択
+	if (key == "選択カード条件設定") {
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return  CreateSetSelectCardIfCommandCommand(commandTokens[0]); });
 	}
 
 	//　変数操作
@@ -276,6 +283,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateElementFilterCommand(std:
 std::unique_ptr<CardCommand> CardCommandFactory::CreateAddCardCharacteristicsCommand(std::string& card, std::string& characteristics) {
 	std::unique_ptr<AddCardCharacteristicsCommand> cmd = std::make_unique<AddCardCharacteristicsCommand>();
 	if (cmd->Initialize(card, characteristics)) {
+		return cmd;
+	}
+	return nullptr;
+}
+
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSetSelectCardIfCommandCommand(std::string& functionName) {
+	std::unique_ptr<SetSelectCardIfCommand> cmd = std::make_unique<SetSelectCardIfCommand>();
+	if (cmd->Initialize(functionName)) {
 		return cmd;
 	}
 	return nullptr;

@@ -308,6 +308,7 @@
     <ClCompile Include="Class\CardCommand\Resource\AddMoneyCommand.cpp">
       <Filter>ソース ファイル\CardCommand\Resourece</Filter>
     </ClCompile>
+    <ClCompile Include="Class\CardCommand\Select\SetSelectCardIfCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\AABB.h">
@@ -666,6 +667,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Class\CardCommand\Resource\AddMoneyCommand.h" />
+    <ClInclude Include="Class\CardCommand\Select\SetSelectCardIfCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Text.hlsli">

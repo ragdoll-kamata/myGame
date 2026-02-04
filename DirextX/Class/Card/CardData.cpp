@@ -91,6 +91,10 @@ FunctionResult CardData::FunctionLoad(Card* card, int functionID, int& functionL
 	return FunctionResult::Normal;
 }
 
+bool CardData::HasFunction(const std::string& functionName) {
+	return functionMap.contains(functionName);
+}
+
 std::vector<std::string> CardData::ParseLine(std::string& text) {
 	std::vector<std::string> tokens;
 	std::string token;
