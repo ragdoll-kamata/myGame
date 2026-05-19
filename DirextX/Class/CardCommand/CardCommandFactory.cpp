@@ -40,27 +40,27 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommand(std::string key, 
 	int tokenSize = static_cast<int>(commandTokens.size());
 	// 初期設定コマンド
 	if (key == "カード名") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardNameCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardNameCommand(commandTokens[0]); });
 	} else if (key == "カードタイプ") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardTypeCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardTypeCommand(commandTokens[0]); });
 	} else if (key == "属性") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardElementCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardElementCommand(commandTokens[0]); });
 	} else if (key == "カード説明") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardExplanationCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardExplanationCommand(commandTokens[0]); });
 	} else if (key == "エネルギーコスト") {
-		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreareCardCostCommand(commandTokens[0], commandTokens[1]); });
+		return CreateCommandIfArgsValid(tokenSize, 2, [&]() { return CreateCardCostCommand(commandTokens[0], commandTokens[1]); });
 	} else if (key == "レアリティ") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardRarityCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardRarityCommand(commandTokens[0]); });
 	} else if (key == "画像") {
-		//return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareCardNameCommand(commandTokens[0]); });
+		//return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateCardNameCommand(commandTokens[0]); });
 	} else if (key == "カード特性") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardCharacteristicsCommand(commandTokens); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateSetCardCharacteristicsCommand(commandTokens); });
 	} else if (key == "耐久値") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardDurabilityCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateSetCardDurabilityCommand(commandTokens[0]); });
 	} else if (key == "耐久値減少条件") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardDurabilityDecreaseConditionCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateSetCardDurabilityDecreaseConditionCommand(commandTokens[0]); });
 	} else if (key == "発動タイミング") {
-		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreareSetCardActivationTimingCommand(commandTokens[0]); });
+		return CreateCommandIfArgsValid(tokenSize, 1, [&]() { return CreateSetCardActivationTimingCommand(commandTokens[0]); });
 	}
 
 	///// 効果設定コマンド
@@ -127,7 +127,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreateCommandIfArgsValid(int si
 }
 
 // 初期設定コマンドの生成
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardNameCommand(std::string& cardName) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardNameCommand(std::string& cardName) {
 	std::unique_ptr<CardNameCommand> cmd = std::make_unique<CardNameCommand>();
 	if (cmd->Initialize(cardName)) {
 		return cmd;
@@ -135,7 +135,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardNameCommand(std::stri
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardTypeCommand(std::string& cardType) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardTypeCommand(std::string& cardType) {
 	std::unique_ptr<CardTypeCommand> cmd = std::make_unique<CardTypeCommand>();
 	if (cmd->Initialize(cardType)) {
 		return cmd;
@@ -143,7 +143,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardTypeCommand(std::stri
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardElementCommand(std::string& cardElement) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardElementCommand(std::string& cardElement) {
 	std::unique_ptr<CardElemetCommand> cmd = std::make_unique<CardElemetCommand>();
 	if (cmd->Initialize(cardElement)) {
 		return cmd;
@@ -151,14 +151,14 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardElementCommand(std::s
 	return std::unique_ptr<CardCommand>();
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardExplanationCommand(std::string& cardExplanation) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardExplanationCommand(std::string& cardExplanation) {
 	std::unique_ptr<CardExplanationCommand> cmd = std::make_unique<CardExplanationCommand>();
 	if (cmd->Initialize(cardExplanation)) {
 		return cmd;
 	}
 	return std::unique_ptr<CardCommand>();
 }
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardCostCommand(std::string& costElement, std::string& costNum) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardCostCommand(std::string& costElement, std::string& costNum) {
 	std::unique_ptr<CardCostCommand> cmd = std::make_unique<CardCostCommand>();
 	if (cmd->Initialize(costElement, costNum)) {
 		return cmd;
@@ -166,7 +166,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardCostCommand(std::stri
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareCardRarityCommand(std::string& cardRarity) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateCardRarityCommand(std::string& cardRarity) {
 	std::unique_ptr<CardRarityCommand> cmd = std::make_unique<CardRarityCommand>();
 	if (cmd->Initialize(cardRarity)) {
 		return cmd;
@@ -174,7 +174,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareCardRarityCommand(std::st
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardCharacteristicsCommand(std::vector<std::string>& characteristics) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSetCardCharacteristicsCommand(std::vector<std::string>& characteristics) {
 	std::unique_ptr<SetCardCharacteristicsCommand> cmd = std::make_unique<SetCardCharacteristicsCommand>();
 	if (cmd->Initialize(characteristics)) {
 		return cmd;
@@ -182,7 +182,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardCharacteristicsCom
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardDurabilityCommand(std::string& durability) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSetCardDurabilityCommand(std::string& durability) {
 	std::unique_ptr<SetCardDurabilityCommand> cmd = std::make_unique<SetCardDurabilityCommand>();
 	if (cmd->Initialize(durability)) {
 		return cmd;
@@ -190,7 +190,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardDurabilityCommand(
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardActivationTimingCommand(std::string& activationTimings) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSetCardActivationTimingCommand(std::string& activationTimings) {
 	std::unique_ptr<SetCardActivationTimingCommand> cmd = std::make_unique<SetCardActivationTimingCommand>();
 	if (cmd->Initialize(activationTimings)) {
 		return cmd;
@@ -198,7 +198,7 @@ std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardActivationTimingCo
 	return nullptr;
 }
 
-std::unique_ptr<CardCommand> CardCommandFactory::CreareSetCardDurabilityDecreaseConditionCommand(std::string& conditions) {
+std::unique_ptr<CardCommand> CardCommandFactory::CreateSetCardDurabilityDecreaseConditionCommand(std::string& conditions) {
 	std::unique_ptr<SetCardDurabilityDecreaseConditionCommand> cmd = std::make_unique<SetCardDurabilityDecreaseConditionCommand>();
 	if (cmd->Initialize(conditions)) {
 		return cmd;

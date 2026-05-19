@@ -12,16 +12,16 @@ namespace CardCommandFactory
 	std::unique_ptr<CardCommand>  CreateCommandIfArgsValid(int size, int index, std::function< std::unique_ptr<CardCommand>()> func);
 
 	// 初期設定コマンドの生成
-	std::unique_ptr<CardCommand> CreareCardNameCommand(std::string& cardName);
-	std::unique_ptr<CardCommand> CreareCardTypeCommand(std::string& cardType);
-	std::unique_ptr<CardCommand> CreareCardElementCommand(std::string& cardElement);
-	std::unique_ptr<CardCommand> CreareCardExplanationCommand(std::string& cardExplanation);
-	std::unique_ptr<CardCommand> CreareCardCostCommand(std::string& costElement,std::string& costNum);
-	std::unique_ptr<CardCommand> CreareCardRarityCommand(std::string& cardRarity);
-	std::unique_ptr<CardCommand> CreareSetCardCharacteristicsCommand(std::vector<std::string>& characteristics);
-	std::unique_ptr<CardCommand> CreareSetCardDurabilityCommand(std::string& durability);
-	std::unique_ptr<CardCommand> CreareSetCardActivationTimingCommand(std::string& activationTimings);
-	std::unique_ptr<CardCommand> CreareSetCardDurabilityDecreaseConditionCommand(std::string& conditions);
+	std::unique_ptr<CardCommand> CreateCardNameCommand(std::string& cardName);
+	std::unique_ptr<CardCommand> CreateCardTypeCommand(std::string& cardType);
+	std::unique_ptr<CardCommand> CreateCardElementCommand(std::string& cardElement);
+	std::unique_ptr<CardCommand> CreateCardExplanationCommand(std::string& cardExplanation);
+	std::unique_ptr<CardCommand> CreateCardCostCommand(std::string& costElement,std::string& costNum);
+	std::unique_ptr<CardCommand> CreateCardRarityCommand(std::string& cardRarity);
+	std::unique_ptr<CardCommand> CreateSetCardCharacteristicsCommand(std::vector<std::string>& characteristics);
+	std::unique_ptr<CardCommand> CreateSetCardDurabilityCommand(std::string& durability);
+	std::unique_ptr<CardCommand> CreateSetCardActivationTimingCommand(std::string& activationTimings);
+	std::unique_ptr<CardCommand> CreateSetCardDurabilityDecreaseConditionCommand(std::string& conditions);
 
 	// リソース系コマンドの生成
 	std::unique_ptr<CardCommand> CreateAddMoneyCommand(std::string& num);
