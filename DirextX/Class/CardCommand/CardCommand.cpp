@@ -60,18 +60,22 @@ int CardCommand::ParseInt(std::string num, Card* card) {
 }
 
 bool CardCommand::ParseCard(const std::string& cardNum, std::vector<Card*>& cards, Card* card) {
-	if (cardNum.front() == '$') {
-		if (card == nullptr) {
-			return false;
+	if (card != nullptr) {
+		if (cardNum.front() == '$') {
+			std::vector<Card*> getCards = card->GetCards(cardNum);
+			cards = getCards;
+			return true;
 		}
-		std::vector<Card*> getCards = card->GetCards(cardNum);
-		cards = getCards;
-		return true;
-	}
-	if (cardNum == "自分") {
-		cards.clear();
-		cards.push_back(card);
-		return true;
+		if (cardNum == "自分") {
+			cards.clear();
+			cards.push_back(card);
+			return true;
+		}
+		if (cardNum == "対象カード") {
+			cards.clear();
+			cards.push_back(card->GetTargetCard());
+			return true;
+		}
 	}
 	if (cardNum == "手札") {
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
@@ -85,18 +89,10 @@ bool CardCommand::ParseCard(const std::string& cardNum, std::vector<Card*>& card
 		cards = cardManager_->GetZoneCards(CardZone::Hand);
 		return true;
 	}
-	if (cardNum == "対象カード") {
-		cards.clear();
-		cards.push_back(card->GetTargetCard());
-		return true;
-	}
 	return false;
 }
 
 bool CardCommand::ParseCardIfKey(const std::string& key, const std::string& cardNum, std::vector<Card*>& cards, Card* card) {
-	if (card == nullptr) {
-		return false;
-	}
 
 	// キー指定の場合
 	size_t pos = cardNum.find('.');
@@ -336,8 +332,10 @@ std::unique_ptr<CardCommand::ParseBoolResult> CardCommand::ParseBool(const std::
 		// カード変数
 		std::unique_ptr<Card> kasou(new Card());
 		std::vector<Card*> kasous;
-		if (ParseCard(token, kasous, kasou.get())) {
-			size_t pos = token.find('.');
+
+		size_t pos = token.find('.');
+		std::string key = token.substr(0, pos);
+		if (ParseCard(key, kasous, kasou.get())) {
 			std::string str = token.substr(pos + 1);
 			if (str == "枚数") {
 				data.type = ParseBoolType::Int;

@@ -33,7 +33,7 @@ public:
 		sprite->SetSize(size);
 	}
 
-protected:
+private:
 	std::unique_ptr<Sprite> sprite;
 	bool isDraw_ = false;
 	uint32_t TH;
